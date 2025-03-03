@@ -1,10 +1,12 @@
 package controll;
 
-import javax.swing.JFrame;
-
-public class adminGui  {
- 
-	
 
 
+public class adminGui {
+    public static void main(String[] args)  {
+         adminCal adminCal = new adminCal();
+         adminCal.adminPage();
+    }
 }
+
+

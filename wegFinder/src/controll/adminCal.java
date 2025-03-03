@@ -5,7 +5,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 
 public class adminCal extends JFrame{
-   private void adminPage(){
+   public void adminPage(){
     this.setTitle("Admin-Dashboard");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setResizable(false);
@@ -13,6 +13,7 @@ public class adminCal extends JFrame{
     this.setVisible(true);
 
     this.getContentPane().setBackground(new Color(123,50,250));
+    System.out.print("page");
    }
 
 	

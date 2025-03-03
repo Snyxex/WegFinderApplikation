@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<target name="Running Platform">
+	<locations>
+		<location configuration="/Users/jasonjanzen/.eclipse/org.eclipse.platform_4.34.0_1231987628_macosx_cocoa_aarch64/configuration/" path="${eclipse_home}" type="Profile"/>
+	</locations>
+	<environment>
+		<arch>aarch64</arch>
+		<os>macosx</os>
+		<ws>cocoa</ws>
+		<nl>de_DE</nl>
+	</environment>
+</target>
