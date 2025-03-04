@@ -33,15 +33,9 @@ public class adminCal extends JFrame {
         JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
-        JButton userManageBtn = new JButton("User Management");
-        userManageBtn.addActionListener(e -> switchToPanel("User Management"));
-
-        JButton roomManageBtn = new JButton("Room Management");
-        roomManageBtn.addActionListener(e -> switchToPanel("Room Management"));
 
         panel.add(titleLabel);
-        panel.add(userManageBtn);
-        panel.add(roomManageBtn);
+        
 
         return panel;
     }
@@ -110,6 +104,15 @@ public class adminCal extends JFrame {
         cardLayout.show(mainPanel, panelName);
     }
 
+    private void createNavBar(){
+      
+      JButton userManageBtn = new JButton("User Management");
+      userManageBtn.addActionListener(e -> switchToPanel("User Management"));
+
+      JButton roomManageBtn = new JButton("Room Management");
+      roomManageBtn.addActionListener(e -> switchToPanel("Room Management"));
+
+    }
     private void addUser() {
         
         // Hier Code für das Hinzufügen eines Benutzers einfügen
