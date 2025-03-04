@@ -8,9 +8,10 @@ public class adminCal extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
-    public void adminPage() {
+    protected void adminPage() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(420, 420);
+        this.setSize(500, 500);
+        this.setTitle("Admin Dashboard");
 
         // CardLayout für den Wechsel zwischen den Panels
         cardLayout = new CardLayout();
@@ -26,71 +27,123 @@ public class adminCal extends JFrame {
     }
 
     private JPanel adminDashboardPanel() {
-        return createNavigationPanel("Admin Dashboard");
-    }
-
-    private JPanel userManagePage() {
-        return createNavigationPanel("User Management");
-    }
-
-    private JPanel roomManagePage() {
-        return createNavigationPanel("Room Management");
-    }
-
-    private JPanel createNavigationPanel(String title) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 1));
+        JPanel panel = new JPanel(new GridLayout(3, 1));
         panel.setBackground(Color.LIGHT_GRAY);
 
-        JLabel label = new JLabel(title, SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 16));
+        JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
 
         JButton userManageBtn = new JButton("User Management");
-        userManageBtn.addActionListener(e -> cardLayout.show(mainPanel, "User Management"));
+        userManageBtn.addActionListener(e -> switchToPanel("User Management"));
 
         JButton roomManageBtn = new JButton("Room Management");
-        roomManageBtn.addActionListener(e -> cardLayout.show(mainPanel, "Room Management"));
+        roomManageBtn.addActionListener(e -> switchToPanel("Room Management"));
 
-        JButton backButton = new JButton("Back to Dashboard");
-        backButton.addActionListener(e -> cardLayout.show(mainPanel, "Admin Dashboard"));
-
-        panel.add(label);
+        panel.add(titleLabel);
         panel.add(userManageBtn);
         panel.add(roomManageBtn);
-
-        if (!title.equals("Admin Dashboard")) {
-            panel.add(backButton);
-        }
 
         return panel;
     }
 
+    private JPanel userManagePage() {
+        JPanel panel = new JPanel(new GridLayout(5, 1));
+        panel.setBackground(Color.LIGHT_GRAY);
+
+        JLabel titleLabel = new JLabel("User Management", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JButton addUserBtn = new JButton("Add User");
+        addUserBtn.addActionListener(e -> addUser());
+
+        JButton deleteUserBtn = new JButton("Delete User");
+        deleteUserBtn.addActionListener(e -> deleteUser());
+
+        JButton updateUserBtn = new JButton("Update User");
+        updateUserBtn.addActionListener(e -> updateUser());
+
+        JButton backButton = new JButton("Back to Dashboard");
+        backButton.addActionListener(e -> switchToPanel("Admin Dashboard"));
+
+        panel.add(titleLabel);
+        panel.add(addUserBtn);
+        panel.add(deleteUserBtn);
+        panel.add(updateUserBtn);
+        panel.add(backButton);
+
+        return panel;
+    }
+
+    private JPanel roomManagePage() {
+        JPanel panel = new JPanel(new GridLayout(5, 1));
+        panel.setBackground(Color.LIGHT_GRAY);
+
+        JLabel titleLabel = new JLabel("Room Management", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+
+        JButton addRoomBtn = new JButton("Add Room");
+        addRoomBtn.addActionListener(e -> addRoom());
+
+        JButton deleteRoomBtn = new JButton("Delete Room");
+        deleteRoomBtn.addActionListener(e -> deleteRoom());
+
+        JButton lockRoomBtn = new JButton("Lock Room");
+        lockRoomBtn.addActionListener(e -> lockRoom());
+
+        JButton lockCorridorBtn = new JButton("Lock Corridor");
+        lockCorridorBtn.addActionListener(e -> lockCorridor());
+
+        JButton backButton = new JButton("Back to Dashboard");
+        backButton.addActionListener(e -> switchToPanel("Admin Dashboard"));
+
+        panel.add(titleLabel);
+        panel.add(addRoomBtn);
+        panel.add(deleteRoomBtn);
+        panel.add(lockRoomBtn);
+        panel.add(lockCorridorBtn);
+        panel.add(backButton);
+
+        return panel;
+    }
+
+    private void switchToPanel(String panelName) {
+        cardLayout.show(mainPanel, panelName);
+    }
+
     private void addUser() {
-        // Methode zum Hinzufügen eines Benutzers
+        
+        // Hier Code für das Hinzufügen eines Benutzers einfügen
     }
-    
+
     private void deleteUser() {
-        // Methode zum Löschen eines Benutzers
+       
+        // Hier Code für das Löschen eines Benutzers einfügen
     }
-    
+
     private void updateUser() {
-        // Methode zum Aktualisieren eines Benutzers
+       
+        // Hier Code für das Aktualisieren eines Benutzers einfügen
     }
-    
+
     private void addRoom() {
-        // Methode zum Hinzufügen eines Raums
+        
+        // Hier Code für das Hinzufügen eines Raums einfügen
     }
-    
+
     private void deleteRoom() {
-        // Methode zum Löschen eines Raums
+        
+        // Hier Code für das Löschen eines Raums einfügen
     }
-    
+
     private void lockRoom() {
-        // Methode zum Sperren eines Raums
+        
+        // Hier Code für das Sperren eines Raums einfügen
     }
-    
-    private void lockCoridoor() {
-        // Methode zum Sperren eines Flurs
+
+    private void lockCorridor() {
+        
+        // Hier Code für das Sperren eines Flurs einfügen
     }
+
     
 }
