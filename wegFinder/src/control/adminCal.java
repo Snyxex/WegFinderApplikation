@@ -2,13 +2,13 @@ package control;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 public class adminCal extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
-
-    
 
     protected void adminPage() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,65 +32,70 @@ public class adminCal extends JFrame {
     }
 
     private void createMenuBar() {
-        JMenuBar menuBar = new JMenuBar(); // Erstellen der Menüleiste
-        menuBar.setBackground(new Color(50,50,50));
+        JMenuBar menuBar = new JMenuBar(); // Menüleiste erstellen
 
-        // Erstellen von Menüs
-        JMenuItem dashboardItem = new JMenuItem("Dashboard");
-        dashboardItem.addActionListener(e -> switchToPanel("Admin Dashboard")); // Aktion für Dashboard
+        // Dashboard als Dropdown-Menü (verhindert Design-Probleme)
+        JMenu dashboardMenu = new JMenu("Dashboard");
+        dashboardMenu.add(createMenuItem("Dashboard", "dashboard_icon.png", KeyEvent.VK_D, e -> switchToPanel("Admin Dashboard")));
 
-        JMenu userManageItem = new JMenu("User Management");
-        
-        JMenuItem addUser = new JMenuItem("Add User");
-        addUser.addActionListener(e -> switchToPanel("User Management"));
-        userManageItem.add(addUser);
+        // User Management mit Dropdown
+        JMenu userMenu = new JMenu("User Management");
+        userMenu.add(createMenuItem("Benutzerliste", "user_list.png", KeyEvent.VK_U, e -> switchToPanel("User Management")));
+        userMenu.add(createMenuItem("Neuer Benutzer", "add_user.png", KeyEvent.VK_N, e -> System.out.println("Neuer Benutzer hinzugefügt")));
 
-        JMenu roomManageItem = new JMenu("Room Management");
-        roomManageItem.addActionListener(e -> switchToPanel("Room Management")); // Aktion für Raumverwaltung
+        // Room Management mit Dropdown
+        JMenu roomMenu = new JMenu("Room Management");
+        roomMenu.add(createMenuItem("Räume anzeigen", "room_list.png", KeyEvent.VK_R, e -> switchToPanel("Room Management")));
+        roomMenu.add(createMenuItem("Neuen Raum hinzufügen", "add_room.png", KeyEvent.VK_A, e -> System.out.println("Neuen Raum hinzufügen")));
 
-        
-      
+        // Menü zur Menüleiste hinzufügen
+        menuBar.add(dashboardMenu);
+        menuBar.add(userMenu);
+        menuBar.add(roomMenu);
 
-      
-        // Menüleiste zum JFrame hinzufügen
-        menuBar.add(dashboardItem);
-        menuBar.add(userManageItem);
-        menuBar.add(roomManageItem);
         this.setJMenuBar(menuBar);
-        
-        
     }
-    private JButton createNavButton(String text, String panelName) {
-        JButton button = new JButton(text);
-        button.setForeground(Color.WHITE);
-        button.setBackground(new Color(70, 70, 70));
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
- 
-        // Hover-Effekt
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(90, 90, 90));
-            }
- 
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(70, 70, 70));
-            }
-        });
- 
-        button.addActionListener(e -> switchToPanel(panelName));
-        return button;
+
+    /**
+     * Methode zur Erstellung eines Menüeintrags (JMenuItem) mit Icon, Tastenkürzel und Aktion.
+     */
+    private JMenuItem createMenuItem(String text, String iconPath, int keyEvent, ActionListener actionListener) {
+        JMenuItem menuItem = new JMenuItem(text);
+        if (iconPath != null) {
+            menuItem.setIcon(loadScaledIcon(iconPath));
+        }
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(keyEvent, getShortcutKeyMask()));
+        menuItem.addActionListener(actionListener);
+        return menuItem;
+    }
+
+    /**
+     * Methode zum Laden und Skalieren eines Icons.
+     */
+    private ImageIcon loadScaledIcon(String path) {
+        ImageIcon icon = new ImageIcon(path);
+        Image scaledImage = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
+    }
+
+    /**
+     * Methode zur Ermittlung der korrekten Tastenkombination für Shortcuts (Java 8+ kompatibel).
+     */
+    private static int getShortcutKeyMask() {
+        try {
+            return (int) Toolkit.getDefaultToolkit().getClass()
+                    .getMethod("getMenuShortcutKeyMaskEx")
+                    .invoke(Toolkit.getDefaultToolkit());
+        } catch (Exception e) {
+            return Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(); // Für Java 8
+        }
     }
 
     private JPanel adminDashboardPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
+        JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
-
         JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-
         panel.add(titleLabel, BorderLayout.NORTH);
         return panel;
     }
@@ -98,10 +103,8 @@ public class adminCal extends JFrame {
     private JPanel userManagePage() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
-
         JLabel titleLabel = new JLabel("User Management", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-
         panel.add(titleLabel, BorderLayout.NORTH);
         return panel;
     }
@@ -109,10 +112,8 @@ public class adminCal extends JFrame {
     private JPanel roomManagePage() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
-
         JLabel titleLabel = new JLabel("Room Management", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-
         panel.add(titleLabel, BorderLayout.NORTH);
         return panel;
     }
@@ -120,7 +121,4 @@ public class adminCal extends JFrame {
     private void switchToPanel(String panelName) {
         cardLayout.show(mainPanel, panelName);
     }
-
-
-
 }
