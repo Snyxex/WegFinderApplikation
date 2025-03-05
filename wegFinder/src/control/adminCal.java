@@ -3,7 +3,7 @@ package control;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+
 
 public class adminCal extends JFrame {
 
@@ -24,8 +24,6 @@ public class adminCal extends JFrame {
 
         // Panels hinzufügen
         mainPanel.add(adminDashboardPanel(), "Admin Dashboard");
-        mainPanel.add(userManagePage(), "User Management");
-        mainPanel.add(roomManagePage(), "Room Management");
         mainPanel.add(addUserPanel(), "Add User");
         mainPanel.add(deleteUserPanel(), "Delete User");
         mainPanel.add(updateUserPanel(),"Update User");
@@ -34,6 +32,7 @@ public class adminCal extends JFrame {
         mainPanel.add(deleteRoomPanel(), "Delete Room");
         mainPanel.add(lockRoomPanel(),"Lock Room");
         mainPanel.add(lockCoridoorPanel(),"Lock Coridoor");
+        mainPanel.add(helpPanel(),"Help");
 
         this.add(mainPanel, BorderLayout.CENTER);
         this.setVisible(true);
@@ -45,6 +44,7 @@ public class adminCal extends JFrame {
         // Dashboard als Dropdown-Menü (verhindert Design-Probleme)
         JMenu dashboardMenu = new JMenu("Dashboard");
         dashboardMenu.add(createMenuItem("Dashboard",  e -> switchToPanel("Admin Dashboard")));
+        dashboardMenu.add(createMenuItem("Help", e -> switchToPanel("Help")));
 
         // User Management mit Dropdown
         JMenu userMenu = new JMenu("User Management");
@@ -78,29 +78,11 @@ public class adminCal extends JFrame {
 
 
    
-
+//Panels for all Gui on Dashboard
     private JPanel adminDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.LIGHT_GRAY);
         JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        panel.add(titleLabel, BorderLayout.NORTH);
-        return panel;
-    }
-
-    private JPanel userManagePage() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.LIGHT_GRAY);
-        JLabel titleLabel = new JLabel("User Management", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        panel.add(titleLabel, BorderLayout.NORTH);
-        return panel;
-    }
-
-    private JPanel roomManagePage() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.LIGHT_GRAY);
-        JLabel titleLabel = new JLabel("Room Management", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         panel.add(titleLabel, BorderLayout.NORTH);
         return panel;
@@ -112,37 +94,49 @@ public class adminCal extends JFrame {
 
 
     private JPanel addUserPanel(){
-       return mainPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+       return panel;
     }
 
 
     private JPanel deleteUserPanel(){
-        return mainPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+       return panel;
     }
 
     private JPanel updateUserPanel(){
-        return mainPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+       return panel;
     }
 
     private JPanel addRoomPanel(){
-        return mainPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+        return panel;
     }
      
     private JPanel updateRoomPanel(){
-        return mainPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+        return panel;
     }
 
     private JPanel deleteRoomPanel(){
-        return mainPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+       return panel;
     }
 
     private JPanel lockRoomPanel(){
-        return mainPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+        return panel;
     }
 
     private JPanel lockCoridoorPanel(){
-        return mainPanel;
+        JPanel panel = new JPanel(new BorderLayout());
+       return panel;
     }
-
+   
+    private JPanel helpPanel(){
+        JPanel panel = new JPanel(new BorderLayout());
+       return panel;
+    }
 
 }

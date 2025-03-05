@@ -1,10 +1,8 @@
 package control;
 
-public class adminGui{
+public class adminGui extends adminCal {
     public static void main(String[] args) {
         
-        adminCal gui = new adminCal();
-        gui.adminPage();
-       
+        new adminCal().adminPage();
     }
 }
