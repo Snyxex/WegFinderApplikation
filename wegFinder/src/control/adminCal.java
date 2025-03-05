@@ -15,8 +15,8 @@ public class adminCal extends JFrame {
         this.setSize(800, 600);
         this.setTitle("Admin Dashboard");
 
-        // Navbar erstellen
-        createNavBar();
+        // Menüleiste erstellen
+        createMenuBar();
 
         // CardLayout für Panel-Wechsel
         cardLayout = new CardLayout();
@@ -31,24 +31,35 @@ public class adminCal extends JFrame {
         this.setVisible(true);
     }
 
-    private void createNavBar() {
-        JToolBar navBar = new JToolBar();
-        navBar.setFloatable(false); // Verhindert, dass die Leiste beweglich ist
-        navBar.setBackground(new Color(50, 50, 50)); // Dunkelgrauer Hintergrund
+    private void createMenuBar() {
+        JMenuBar menuBar = new JMenuBar(); // Erstellen der Menüleiste
+        menuBar.setBackground(new Color(50,50,50));
 
-        // Buttons für die Navigation
-        JButton dashboardBtn = createNavButton("Dashboard", "Admin Dashboard");
-        JButton userManageBtn = createNavButton("User Management", "User Management");
-        JButton roomManageBtn = createNavButton("Room Management", "Room Management");
+        // Erstellen von Menüs
+        JMenuItem dashboardItem = new JMenuItem("Dashboard");
+        dashboardItem.addActionListener(e -> switchToPanel("Admin Dashboard")); // Aktion für Dashboard
+
+        JMenu userManageItem = new JMenu("User Management");
+        
+        JMenuItem addUser = new JMenuItem("Add User");
+        addUser.addActionListener(e -> switchToPanel("User Management"));
+        userManageItem.add(addUser);
+
+        JMenu roomManageItem = new JMenu("Room Management");
+        roomManageItem.addActionListener(e -> switchToPanel("Room Management")); // Aktion für Raumverwaltung
 
         
-        navBar.add(dashboardBtn);
-        navBar.add(userManageBtn);
-        navBar.add(roomManageBtn);
+      
 
-        this.add(navBar, BorderLayout.NORTH);
+      
+        // Menüleiste zum JFrame hinzufügen
+        menuBar.add(dashboardItem);
+        menuBar.add(userManageItem);
+        menuBar.add(roomManageItem);
+        this.setJMenuBar(menuBar);
+        
+        
     }
-
     private JButton createNavButton(String text, String panelName) {
         JButton button = new JButton(text);
         button.setForeground(Color.WHITE);
@@ -56,18 +67,18 @@ public class adminCal extends JFrame {
         button.setFocusPainted(false);
         button.setBorderPainted(false);
         button.setFont(new Font("Arial", Font.BOLD, 14));
-
+ 
         // Hover-Effekt
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(new Color(90, 90, 90));
             }
-
+ 
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 button.setBackground(new Color(70, 70, 70));
             }
         });
-
+ 
         button.addActionListener(e -> switchToPanel(panelName));
         return button;
     }
@@ -80,7 +91,7 @@ public class adminCal extends JFrame {
         JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
-        panel.add(titleLabel, BorderLayout.CENTER);
+        panel.add(titleLabel, BorderLayout.NORTH);
         return panel;
     }
 
@@ -91,7 +102,7 @@ public class adminCal extends JFrame {
         JLabel titleLabel = new JLabel("User Management", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
-        panel.add(titleLabel, BorderLayout.CENTER);
+        panel.add(titleLabel, BorderLayout.NORTH);
         return panel;
     }
 
@@ -102,12 +113,14 @@ public class adminCal extends JFrame {
         JLabel titleLabel = new JLabel("Room Management", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
 
-        panel.add(titleLabel, BorderLayout.CENTER);
+        panel.add(titleLabel, BorderLayout.NORTH);
         return panel;
     }
 
     private void switchToPanel(String panelName) {
         cardLayout.show(mainPanel, panelName);
     }
+
+
 
 }

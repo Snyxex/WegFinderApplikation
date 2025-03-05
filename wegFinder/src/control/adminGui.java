@@ -9,4 +9,3 @@ public class adminGui extends adminCal {
          gui.adminPage();
     }
 }
-
