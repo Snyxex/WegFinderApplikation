@@ -26,6 +26,14 @@ public class adminCal extends JFrame {
         mainPanel.add(adminDashboardPanel(), "Admin Dashboard");
         mainPanel.add(userManagePage(), "User Management");
         mainPanel.add(roomManagePage(), "Room Management");
+        mainPanel.add(addUserPanel(), "Add User");
+        mainPanel.add(deleteUserPanel(), "Delete User");
+        mainPanel.add(updateUserPanel(),"Update User");
+        mainPanel.add(addRoomPanel(),"Add Room");
+        mainPanel.add(updateRoomPanel(), "Update Room");
+        mainPanel.add(deleteRoomPanel(), "Delete Room");
+        mainPanel.add(lockRoomPanel(),"Lock Room");
+        mainPanel.add(lockCoridoorPanel(),"Lock Coridoor");
 
         this.add(mainPanel, BorderLayout.CENTER);
         this.setVisible(true);
@@ -40,13 +48,18 @@ public class adminCal extends JFrame {
 
         // User Management mit Dropdown
         JMenu userMenu = new JMenu("User Management");
-        userMenu.add(createMenuItem("Benutzerliste",  e -> switchToPanel("User Management")));
-        userMenu.add(createMenuItem("Neuer Benutzer",  e -> System.out.println("Neuer Benutzer hinzugefügt")));
+        userMenu.add(createMenuItem("Add User",  e -> switchToPanel("Add User")));
+        userMenu.add(createMenuItem("Update User",  e -> switchToPanel("Update User")));
+        userMenu.add(createMenuItem("Delete User", e -> switchToPanel("Delete User")));
 
         // Room Management mit Dropdown
         JMenu roomMenu = new JMenu("Room Management");
-        roomMenu.add(createMenuItem("Räume anzeigen",  e -> switchToPanel("Room Management")));
-        roomMenu.add(createMenuItem("Neuen Raum hinzufügen",  e -> System.out.println("Neuen Raum hinzufügen")));
+        roomMenu.add(createMenuItem("Add Room",  e -> switchToPanel("Add Room")));
+        roomMenu.add(createMenuItem("Update Room",  e -> switchToPanel("Update Room")));
+        roomMenu.add(createMenuItem("Delete Room", e ->  switchToPanel("Delete Room")));
+        roomMenu.add(createMenuItem("Lock Room", e ->  switchToPanel("Lock Room")));
+        roomMenu.add(createMenuItem("Lock Coridoor", e ->  switchToPanel("Lock Coridoor")));
+        
 
         // Menü zur Menüleiste hinzufügen
         menuBar.add(dashboardMenu);
@@ -96,4 +109,40 @@ public class adminCal extends JFrame {
     private void switchToPanel(String panelName) {
         cardLayout.show(mainPanel, panelName);
     }
+
+
+    private JPanel addUserPanel(){
+       return mainPanel;
+    }
+
+
+    private JPanel deleteUserPanel(){
+        return mainPanel;
+    }
+
+    private JPanel updateUserPanel(){
+        return mainPanel;
+    }
+
+    private JPanel addRoomPanel(){
+        return mainPanel;
+    }
+     
+    private JPanel updateRoomPanel(){
+        return mainPanel;
+    }
+
+    private JPanel deleteRoomPanel(){
+        return mainPanel;
+    }
+
+    private JPanel lockRoomPanel(){
+        return mainPanel;
+    }
+
+    private JPanel lockCoridoorPanel(){
+        return mainPanel;
+    }
+
+
 }
