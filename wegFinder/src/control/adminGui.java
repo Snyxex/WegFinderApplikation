@@ -1,8 +1,10 @@
 package control;
 
-public class adminGui {
+public class adminGui{
     public static void main(String[] args) {
         
-        new adminCal().adminPage();
+        adminCal gui = new adminCal();
+        gui.adminPage();
+       
     }
 }

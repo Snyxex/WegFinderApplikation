@@ -36,17 +36,17 @@ public class adminCal extends JFrame {
 
         // Dashboard als Dropdown-Menü (verhindert Design-Probleme)
         JMenu dashboardMenu = new JMenu("Dashboard");
-        dashboardMenu.add(createMenuItem("Dashboard", "dashboard_icon.png", KeyEvent.VK_D, e -> switchToPanel("Admin Dashboard")));
+        dashboardMenu.add(createMenuItem("Dashboard",  e -> switchToPanel("Admin Dashboard")));
 
         // User Management mit Dropdown
         JMenu userMenu = new JMenu("User Management");
-        userMenu.add(createMenuItem("Benutzerliste", "user_list.png", KeyEvent.VK_U, e -> switchToPanel("User Management")));
-        userMenu.add(createMenuItem("Neuer Benutzer", "add_user.png", KeyEvent.VK_N, e -> System.out.println("Neuer Benutzer hinzugefügt")));
+        userMenu.add(createMenuItem("Benutzerliste",  e -> switchToPanel("User Management")));
+        userMenu.add(createMenuItem("Neuer Benutzer",  e -> System.out.println("Neuer Benutzer hinzugefügt")));
 
         // Room Management mit Dropdown
         JMenu roomMenu = new JMenu("Room Management");
-        roomMenu.add(createMenuItem("Räume anzeigen", "room_list.png", KeyEvent.VK_R, e -> switchToPanel("Room Management")));
-        roomMenu.add(createMenuItem("Neuen Raum hinzufügen", "add_room.png", KeyEvent.VK_A, e -> System.out.println("Neuen Raum hinzufügen")));
+        roomMenu.add(createMenuItem("Räume anzeigen",  e -> switchToPanel("Room Management")));
+        roomMenu.add(createMenuItem("Neuen Raum hinzufügen",  e -> System.out.println("Neuen Raum hinzufügen")));
 
         // Menü zur Menüleiste hinzufügen
         menuBar.add(dashboardMenu);
@@ -56,40 +56,15 @@ public class adminCal extends JFrame {
         this.setJMenuBar(menuBar);
     }
 
-    /**
-     * Methode zur Erstellung eines Menüeintrags (JMenuItem) mit Icon, Tastenkürzel und Aktion.
-     */
-    private JMenuItem createMenuItem(String text, String iconPath, int keyEvent, ActionListener actionListener) {
+   
+    private JMenuItem createMenuItem(String text, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(text);
-        if (iconPath != null) {
-            menuItem.setIcon(loadScaledIcon(iconPath));
-        }
-        menuItem.setAccelerator(KeyStroke.getKeyStroke(keyEvent, getShortcutKeyMask()));
         menuItem.addActionListener(actionListener);
         return menuItem;
     }
 
-    /**
-     * Methode zum Laden und Skalieren eines Icons.
-     */
-    private ImageIcon loadScaledIcon(String path) {
-        ImageIcon icon = new ImageIcon(path);
-        Image scaledImage = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaledImage);
-    }
 
-    /**
-     * Methode zur Ermittlung der korrekten Tastenkombination für Shortcuts (Java 8+ kompatibel).
-     */
-    private static int getShortcutKeyMask() {
-        try {
-            return (int) Toolkit.getDefaultToolkit().getClass()
-                    .getMethod("getMenuShortcutKeyMaskEx")
-                    .invoke(Toolkit.getDefaultToolkit());
-        } catch (Exception e) {
-            return Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(); // Für Java 8
-        }
-    }
+   
 
     private JPanel adminDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout());
