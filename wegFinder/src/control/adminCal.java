@@ -73,18 +73,21 @@ public class adminCal extends JFrame {
         roomMenu.add(createMenuItem("Lock Room", e ->  switchToPanel("Lock Room")));
         roomMenu.add(createMenuItem("Lock Coridoor", e ->  switchToPanel("Lock Coridoor")));
         
+       
 
         // Menü zur Menüleiste hinzufügen
         menuBar.add(dashboardMenu);
         menuBar.add(userMenu);
         menuBar.add(roomMenu);
 
+        menuBar.setBackground(new Color(50,50,50));
         this.setJMenuBar(menuBar);
     }
 
    
     private JMenuItem createMenuItem(String text, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(text);
+        menuItem.setBackground(new Color(255,255,255));
         menuItem.addActionListener(actionListener);
         return menuItem;
     }
@@ -94,13 +97,15 @@ public class adminCal extends JFrame {
 //Panels for all Gui on Dashboard
     private JPanel adminDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.LIGHT_GRAY);
+        panel.setBackground(Color.WHITE);
         JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
        
-        JTextField textLabel = new JTextField("Hier kannst du viele Einstellungen an Nutzer oder Räumen und Gängen vornehmen.");
+        JTextField textLabel = new JTextField("Hier kommt noch das MapGui hien task!!!!",SwingConstants.CENTER);
         textLabel.setFont(new Font("Arial", Font.BOLD, 19));
         textLabel.setEditable(false);
+        textLabel.setBounds(0, 0, 60, 40);
+        
      
         
       
@@ -116,6 +121,8 @@ public class adminCal extends JFrame {
 
     private JPanel addUserPanel(){
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(Color.white);
+        JTextField textLabel = new JTextField();
        return panel;
     }
 
@@ -159,5 +166,7 @@ public class adminCal extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
        return panel;
     }
+
+
 
 }
