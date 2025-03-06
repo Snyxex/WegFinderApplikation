@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 
 public class adminCal extends JFrame {
@@ -96,12 +97,15 @@ public class adminCal extends JFrame {
         panel.setBackground(Color.LIGHT_GRAY);
         JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        JTextArea textLabel = new JTextArea("Willkommen im Admin-Dashboard.\nHier kannst du viele Einstellungen an Nutzer oder Räumen und Gängen vornehmen. ");
-        textLabel.setFont(new Font("Arial", Font.BOLD, 20));
+       
+        JTextField textLabel = new JTextField("Hier kannst du viele Einstellungen an Nutzer oder Räumen und Gängen vornehmen.");
+        textLabel.setFont(new Font("Arial", Font.BOLD, 19));
         textLabel.setEditable(false);
-        textLabel.setHorizontalAligment(JTextField(JTextField.CENTER));
+     
+        
+      
         panel.add(titleLabel, BorderLayout.NORTH);
-        panel.add(textLabel, BorderLayout.CENTER);
+        panel.add(textLabel);
         return panel;
     }
 
