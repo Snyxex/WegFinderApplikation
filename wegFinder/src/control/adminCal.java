@@ -56,17 +56,20 @@ public class adminCal extends JFrame {
 
         // Dashboard als Dropdown-Menü (verhindert Design-Probleme)
         JMenu dashboardMenu = new JMenu("Dashboard");
+        dashboardMenu.setFont(new Font("Arial",0,20));
         dashboardMenu.add(createMenuItem("Dashboard",  e -> switchToPanel("Admin Dashboard")));
         dashboardMenu.add(createMenuItem("Help", e -> switchToPanel("Help")));
 
         // User Management mit Dropdown
         JMenu userMenu = new JMenu("User Management");
+        userMenu.setFont(new Font("Arial",0,20));
         userMenu.add(createMenuItem("Add User",  e -> switchToPanel("Add User")));
         userMenu.add(createMenuItem("Update User",  e -> switchToPanel("Update User")));
         userMenu.add(createMenuItem("Delete User", e -> switchToPanel("Delete User")));
 
         // Room Management mit Dropdown
         JMenu roomMenu = new JMenu("Room Management");
+        roomMenu.setFont(new Font("Arial",0,20));
         roomMenu.add(createMenuItem("Add Room",  e -> switchToPanel("Add Room")));
         roomMenu.add(createMenuItem("Update Room",  e -> switchToPanel("Update Room")));
         roomMenu.add(createMenuItem("Delete Room", e ->  switchToPanel("Delete Room")));
@@ -80,6 +83,7 @@ public class adminCal extends JFrame {
         menuBar.add(userMenu);
         menuBar.add(roomMenu);
 
+        
         menuBar.setBackground(new Color(50,50,50));
         this.setJMenuBar(menuBar);
     }
@@ -87,6 +91,7 @@ public class adminCal extends JFrame {
    
     private JMenuItem createMenuItem(String text, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(text);
+        menuItem.setFont(new Font("Arial",0,20));
         menuItem.setBackground(new Color(255,255,255));
         menuItem.addActionListener(actionListener);
         return menuItem;
