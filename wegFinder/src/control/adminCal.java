@@ -83,9 +83,9 @@ public class adminCal extends JFrame {
         roomMenu.add(createMenuItem("Lock Room", e ->  switchToPanel("Lock Room")));
         roomMenu.add(createMenuItem("Lock Coridoor", e ->  switchToPanel("Lock Coridoor")));
         
-        dashboardMenu.setFont(createFont());
-        userMenu.setFont(createFont());
-        roomMenu.setFont(createFont());
+        dashboardMenu.setFont(createFont("Arial","Font.PLAIN"));
+        userMenu.setFont(createFont("Arial","Font.PLAIN"));
+        roomMenu.setFont(createFont("Arial","Font.PLAIN"));
 
         // Menü zur Menüleiste hinzufügen
         menuBar.add(dashboardMenu);
@@ -123,7 +123,7 @@ public class adminCal extends JFrame {
         textLabel.setBounds(0, 0, 60, 40);
 
         titleLabel.setFont(createFont("Arial","Font.BOLD"));
-        textLabel.setFont(createFont("Arial","Font.PLAIN"));
+        textLabel.setFont(createFont("Arial","Font.BOLD"));
         
       
         panel.add(titleLabel, BorderLayout.NORTH);
@@ -204,11 +204,53 @@ public class adminCal extends JFrame {
         return panel;
     }
     
+private JPanel deleteUserPanel() {
+
+    JPanel panel = new JPanel(new BorderLayout()); // Hauptpanel mit BorderLayout
+    panel.setBackground(Color.white);
+
+    // Formular-Panel mit GridLayout (Eingabefelder)
+    JPanel formPanel = new JPanel(new GridLayout(4, 2));
+    JLabel userLabel = new JLabel("Benutzername:");
+
+    JTextField userField = new JTextField();
+    JButton deleteButton = new JButton("Löschen");
+    JLabel statusLabel = new JLabel();
+    //font
+    userLabel.setFont(createFont("Arial", "Font.PLAIN"));
+
+    deleteButton.setFont(createFont("Arial", "Font.PLAIN"));
+
     
-    private JPanel deleteUserPanel(){
-        JPanel panel = new JPanel(new BorderLayout());
-       return panel;
-    }
+    deleteButton.addActionListener(e -> {
+        String selectedUser = userField.getText();
+        if (selectedUser != null) {
+            deleteUserFunction(selectedUser);
+            System.out.print(selectedUser);
+        }
+    });
+
+    //add components to Panel
+    formPanel.add(userLabel);
+    formPanel.add(userField);
+    formPanel.add(deleteButton);
+    formPanel.add(statusLabel);
+
+    // Benutzerliste mit Scrollpane
+    userList = new JList<>(userListModel);
+    JScrollPane scrollPane = new JScrollPane(userList);
+
+    // Panel für Benutzerliste rechts
+    JPanel listPanel = new JPanel(new BorderLayout());
+    listPanel.add(new JLabel("Benutzerliste:"), BorderLayout.NORTH);
+    listPanel.add(scrollPane, BorderLayout.CENTER);
+
+    // Hauptpanel Anordnung
+    panel.add(formPanel, BorderLayout.CENTER); // Formular in die Mitte
+    panel.add(listPanel, BorderLayout.EAST);   // Liste nach rechts
+
+    return panel;
+}
 
     private JPanel updateUserPanel(){
         JPanel panel = new JPanel(new BorderLayout());
@@ -273,10 +315,57 @@ public class adminCal extends JFrame {
         }else if(art.equals("Arial") && font.equals("Font.BOLD")){
             return new Font("Arial",Font.BOLD,20);
         }
+        return null;
     }
 
-}
+    private void deleteUserFunction(String usernameValue) {
+        File inputFile = new File("users.txt");
+        File tempFile = new File("users_temp.txt");
+    
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+    
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    String username = parts[0];
+                    if (!username.equals(usernameValue)) {
+                        writer.write(line);
+                        writer.newLine();
+                        Integer time = 10;
+                        while(time.equals(10)){
+                          try {
+                            thread.sleep(1000);
 
+                          } catch (Exception e) {
+                            // TODO: handle exception
+                          }
+
+                          
+                          loadUsersFromFile();
+                          System.out.print(time);
+                        }               
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Fehler beim Lesen/Schreiben der Datei: " + e.getMessage());
+        }
+    
+        // Ersetze die Originaldatei mit der neuen Datei
+        if (!inputFile.delete()) {
+            System.out.println("Fehler beim Löschen der Originaldatei!");
+        }
+        if (!tempFile.renameTo(inputFile)) {
+            System.out.println("Fehler beim Umbenennen der temporären Datei!");
+        }
+    }
+    
+
+    
+}
+     
 
     
 
