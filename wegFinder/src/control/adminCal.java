@@ -58,34 +58,34 @@ public class adminCal extends JFrame {
         this.add(mainPanel, BorderLayout.CENTER);
         this.setVisible(true);
     }
-
+    
     
     private void createMenuBar() {
         JMenuBar menuBar = new JMenuBar(); // Menüleiste erstellen
 
         // Dashboard als Dropdown-Menü (verhindert Design-Probleme)
         JMenu dashboardMenu = new JMenu("Dashboard");
-        dashboardMenu.setFont(new Font("Arial",0,20));
         dashboardMenu.add(createMenuItem("Dashboard",  e -> switchToPanel("Admin Dashboard")));
         dashboardMenu.add(createMenuItem("Help", e -> switchToPanel("Help")));
 
         // User Management mit Dropdown
         JMenu userMenu = new JMenu("User Management");
-        userMenu.setFont(new Font("Arial",0,20));
+        
         userMenu.add(createMenuItem("Add User",  e -> switchToPanel("Add User")));
         userMenu.add(createMenuItem("Update User",  e -> switchToPanel("Update User")));
         userMenu.add(createMenuItem("Delete User", e -> switchToPanel("Delete User")));
 
         // Room Management mit Dropdown
         JMenu roomMenu = new JMenu("Room Management");
-        roomMenu.setFont(new Font("Arial",0,20));
         roomMenu.add(createMenuItem("Add Room",  e -> switchToPanel("Add Room")));
         roomMenu.add(createMenuItem("Update Room",  e -> switchToPanel("Update Room")));
         roomMenu.add(createMenuItem("Delete Room", e ->  switchToPanel("Delete Room")));
         roomMenu.add(createMenuItem("Lock Room", e ->  switchToPanel("Lock Room")));
         roomMenu.add(createMenuItem("Lock Coridoor", e ->  switchToPanel("Lock Coridoor")));
         
-       
+        dashboardMenu.setFont(createFont());
+        userMenu.setFont(createFont());
+        roomMenu.setFont(createFont());
 
         // Menü zur Menüleiste hinzufügen
         menuBar.add(dashboardMenu);
@@ -93,14 +93,16 @@ public class adminCal extends JFrame {
         menuBar.add(roomMenu);
 
         
-        menuBar.setBackground(new Color(50,50,50));
+       
         this.setJMenuBar(menuBar);
     }
 
    
     private JMenuItem createMenuItem(String text, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(text);
-        menuItem.setFont(new Font("Arial",0,20));
+
+        menuItem.setFont(createFont("Arial","Font.PLAIN"));
+
         menuItem.setBackground(new Color(255,255,255));
         menuItem.addActionListener(actionListener);
         return menuItem;
@@ -113,14 +115,15 @@ public class adminCal extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
         JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        
        
         JTextField textLabel = new JTextField("Hier kommt noch das MapGui hien task!!!!",SwingConstants.CENTER);
-        textLabel.setFont(new Font("Arial", Font.BOLD, 19));
+        
         textLabel.setEditable(false);
         textLabel.setBounds(0, 0, 60, 40);
-        
-     
+
+        titleLabel.setFont(createFont("Arial","Font.BOLD"));
+        textLabel.setFont(createFont("Arial","Font.PLAIN"));
         
       
         panel.add(titleLabel, BorderLayout.NORTH);
@@ -138,19 +141,29 @@ public class adminCal extends JFrame {
     private JPanel addUserPanel() {
         JPanel panel = new JPanel(new BorderLayout()); // Hauptpanel mit BorderLayout
         panel.setBackground(Color.white);
+       
     
         // Formular-Panel mit GridLayout (Eingabefelder)
         JPanel formPanel = new JPanel(new GridLayout(4, 2));
         JLabel userLabel = new JLabel("Benutzername:");
+      
         JTextField userField = new JTextField();
         JLabel passLabel = new JLabel("Passwort:");
+        
         JPasswordField passField = new JPasswordField();
         JLabel roleLabel = new JLabel("Rolle:");
+        
         String[] roles = {"Admin", "Mitarbeiter"};
         JComboBox<String> roleBox = new JComboBox<>(roles);
         JButton addUserButton = new JButton("Hinzufügen");
         JLabel statusLabel = new JLabel();
-    
+        //font
+        userLabel.setFont(createFont("Arial","Font.PLAIN"));
+        passLabel.setFont(createFont("Arial","Font.PLAIN"));
+        roleLabel.setFont(createFont("Arial","Font.PLAIN"));
+        addUserButton.setFont(createFont("Arial","Font.PLAIN"));
+
+        //add components to Panel
         formPanel.add(userLabel);
         formPanel.add(userField);
         formPanel.add(passLabel);
@@ -254,4 +267,16 @@ public class adminCal extends JFrame {
             e.printStackTrace();
         }
     }
+    private Font createFont(String art, String font){
+        if(art.equals("Arial") && font.equals("Font.PLAIN")){
+            return new Font("Arial",Font.PLAIN,20);
+        }else if(art.equals("Arial") && font.equals("Font.BOLD")){
+            return new Font("Arial",Font.BOLD,20);
+        }
+    }
+
 }
+
+
+    
+
