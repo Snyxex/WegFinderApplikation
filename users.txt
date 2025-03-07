@@ -1,0 +1,3 @@
+admin,password,Admin
+Phil.Benedikt,password,Mitarbeiter
+test,test,Admin

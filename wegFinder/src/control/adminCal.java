@@ -1,29 +1,37 @@
 package control;
-
+import javax.swing.*;
+import java.io.*;
+import javax.swing.JMenu;
+import java.util.HashMap;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-
 
 public class adminCal extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
+    private HashMap<String, String[]> users;
+    private DefaultListModel<String> userListModel;
+    private JList<String> userList;
 
     protected void adminPage() {
+        users = new HashMap<>();
+        userListModel = new DefaultListModel<>();
+   
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 600);
         this.setTitle("Admin Dashboard");
@@ -125,13 +133,48 @@ public class adminCal extends JFrame {
 
 
     private JPanel addUserPanel(){
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JPanel(new GridLayout(4,3));
         panel.setBackground(Color.white);
-        JTextField textLabel = new JTextField();
+        JLabel userLabel = new JLabel("Benutzername:");
+        JTextField userField = new JTextField();
+        JLabel passLabel = new JLabel("Passwort:");
+        JPasswordField passField = new JPasswordField();
+        JLabel roleLabel = new JLabel("Rolle");
+        String[] roles = {"Admin", "Mitarbeiter"};
+        JComboBox<String> roleBox = new JComboBox<>(roles);
+        JButton addUserButton = new JButton("Hinzufügen");
+        JLabel statusLabel = new JLabel();
+
+        addUserButton.addActionListener(e -> {
+            String user = userField.getText();
+            String pass = new String(passField.getPassword());
+            String role = (String) roleBox.getSelectedItem();
+            userList = new JList<>(userListModel);
+            JScrollPane scrollpane = new JScrollPane(userList);
+            if(!users.containsKey(user)){
+                users.put(user, new String[]{pass, role});
+                saveUserToFile(user, pass, role);
+                userListModel.addElement(user + " (" + role + ")");
+                statusLabel.setText("Benutzer hinzugefügt!");
+            }else{
+                statusLabel.setText("Benutzer existiert bereits!");
+            }
+        });
+        
+
+        panel.add(scrollpane);
+        panel.add(userLabel);
+        panel.add(userField);
+        panel.add(passLabel);
+        panel.add(passField);
+        panel.add(roleLabel);
+        panel.add(roleBox);
+        panel.add(addUserButton);
+        panel.add(statusLabel);
+
        return panel;
     }
-
-
+    
     private JPanel deleteUserPanel(){
         JPanel panel = new JPanel(new BorderLayout());
        return panel;
@@ -172,6 +215,28 @@ public class adminCal extends JFrame {
        return panel;
     }
 
+    private void saveUserToFile(String username, String password, String role) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
+            writer.write(username + "," + password + "," + role);
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void loadUsersFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    users.put(parts[0], new String[]{parts[1], parts[2]});
+                    userListModel.addElement(parts[0] + " (" + parts[2] + ")");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
