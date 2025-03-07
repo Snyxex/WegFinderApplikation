@@ -333,19 +333,8 @@ private JPanel deleteUserPanel() {
                     if (!username.equals(usernameValue)) {
                         writer.write(line);
                         writer.newLine();
-                        Integer time = 10;
-                        while(time.equals(10)){
-                          try {
-                            thread.sleep(1000);
-
-                          } catch (Exception e) {
-                            // TODO: handle exception
-                          }
-
-                          
-                          loadUsersFromFile();
-                          System.out.print(time);
-                        }               
+                        startTimer();
+                           
                     }
                 }
             }
@@ -360,6 +349,25 @@ private JPanel deleteUserPanel() {
         if (!tempFile.renameTo(inputFile)) {
             System.out.println("Fehler beim Umbenennen der temporären Datei!");
         }
+    }
+    
+    private void startTimer() {
+        int time = 3; // 3 Sekunden warten
+    
+        while (time > 0) {
+            try {
+                Thread.sleep(1000); // 1 Sekunde warten
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            
+            time--; // Zeit verringern
+            System.out.println("Wartezeit: " + time + " Sekunden...");
+        }
+    
+        // Nach 3 Sekunden wird loadUsersFromFile() aufgerufen
+        loadUsersFromFile();
+        System.out.println("Benutzerdaten geladen!");
     }
     
 
