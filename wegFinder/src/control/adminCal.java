@@ -322,10 +322,10 @@ private JPanel deleteUserPanel() {
     private void deleteUserFunction(String usernameValue) {
         File inputFile = new File("users.txt");
         File tempFile = new File("users_temp.txt");
-    
+
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
              BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-    
+
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -334,43 +334,27 @@ private JPanel deleteUserPanel() {
                     if (!username.equals(usernameValue)) {
                         writer.write(line);
                         writer.newLine();
-                        //startTimer();
-                        userListModel.removeElement(usernameValue);
+                    } else {
+                        users.remove(username);
                     }
                 }
             }
         } catch (IOException e) {
             System.out.println("Fehler beim Lesen/Schreiben der Datei: " + e.getMessage());
         }
-    
-        // Ersetze die Originaldatei mit der neuen Datei
+
         if (!inputFile.delete()) {
             System.out.println("Fehler beim Löschen der Originaldatei!");
         }
         if (!tempFile.renameTo(inputFile)) {
             System.out.println("Fehler beim Umbenennen der temporären Datei!");
         }
-        
+
+        userListModel.removeAllElements();
+        users.forEach((key, value) -> userListModel.addElement(key + " (" + value[1] + ")"));
     }
     
-    private void startTimer() {
-        int time = 3; // 3 Sekunden warten
     
-        while (time > 0) {
-            try {
-                Thread.sleep(1000); // 1 Sekunde warten
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            
-            time--; // Zeit verringern
-            System.out.println("Wartezeit: " + time + " Sekunden...");
-        }
-    
-        // Nach 3 Sekunden wird loadUsersFromFile() aufgerufen
-        //
-        System.out.println("Benutzerdaten geladen!");
-    }
     
 
     
