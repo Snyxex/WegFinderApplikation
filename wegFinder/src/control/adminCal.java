@@ -309,6 +309,7 @@ private JPanel deleteUserPanel() {
             e.printStackTrace();
         }
     }
+   
     private Font createFont(String art, String font){
         if(art.equals("Arial") && font.equals("Font.PLAIN")){
             return new Font("Arial",Font.PLAIN,20);
@@ -333,8 +334,8 @@ private JPanel deleteUserPanel() {
                     if (!username.equals(usernameValue)) {
                         writer.write(line);
                         writer.newLine();
-                        startTimer();
-                           
+                        //startTimer();
+                        userListModel.removeElement(usernameValue);
                     }
                 }
             }
@@ -349,6 +350,7 @@ private JPanel deleteUserPanel() {
         if (!tempFile.renameTo(inputFile)) {
             System.out.println("Fehler beim Umbenennen der temporären Datei!");
         }
+        
     }
     
     private void startTimer() {
@@ -366,7 +368,7 @@ private JPanel deleteUserPanel() {
         }
     
         // Nach 3 Sekunden wird loadUsersFromFile() aufgerufen
-        loadUsersFromFile();
+        //
         System.out.println("Benutzerdaten geladen!");
     }
     
