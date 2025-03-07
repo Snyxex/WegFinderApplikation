@@ -30,7 +30,7 @@ public class adminCal extends JFrame {
     protected void adminPage() {
         users = new HashMap<>();
         userListModel = new DefaultListModel<>();
-   
+        loadUsersFromFile();
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 600);
@@ -59,6 +59,7 @@ public class adminCal extends JFrame {
         this.setVisible(true);
     }
 
+    
     private void createMenuBar() {
         JMenuBar menuBar = new JMenuBar(); // Menüleiste erstellen
 
@@ -132,48 +133,64 @@ public class adminCal extends JFrame {
     }
 
 
-    private JPanel addUserPanel(){
-        JPanel panel = new JPanel(new GridLayout(4,3));
+    
+
+    private JPanel addUserPanel() {
+        JPanel panel = new JPanel(new BorderLayout()); // Hauptpanel mit BorderLayout
         panel.setBackground(Color.white);
+    
+        // Formular-Panel mit GridLayout (Eingabefelder)
+        JPanel formPanel = new JPanel(new GridLayout(4, 2));
         JLabel userLabel = new JLabel("Benutzername:");
         JTextField userField = new JTextField();
         JLabel passLabel = new JLabel("Passwort:");
         JPasswordField passField = new JPasswordField();
-        JLabel roleLabel = new JLabel("Rolle");
+        JLabel roleLabel = new JLabel("Rolle:");
         String[] roles = {"Admin", "Mitarbeiter"};
         JComboBox<String> roleBox = new JComboBox<>(roles);
         JButton addUserButton = new JButton("Hinzufügen");
         JLabel statusLabel = new JLabel();
-
+    
+        formPanel.add(userLabel);
+        formPanel.add(userField);
+        formPanel.add(passLabel);
+        formPanel.add(passField);
+        formPanel.add(roleLabel);
+        formPanel.add(roleBox);
+        formPanel.add(addUserButton);
+        formPanel.add(statusLabel);
+    
+        // Benutzerliste mit Scrollpane
+        userList = new JList<>(userListModel);
+        JScrollPane scrollPane = new JScrollPane(userList);
+    
+        // Panel für Benutzerliste rechts
+        JPanel listPanel = new JPanel(new BorderLayout());
+        listPanel.add(new JLabel("Benutzerliste:"), BorderLayout.NORTH);
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+    
+        // Hauptpanel Anordnung
+        panel.add(formPanel, BorderLayout.CENTER); // Formular in die Mitte
+        panel.add(listPanel, BorderLayout.EAST);   // Liste nach rechts
+    
         addUserButton.addActionListener(e -> {
             String user = userField.getText();
             String pass = new String(passField.getPassword());
             String role = (String) roleBox.getSelectedItem();
-            userList = new JList<>(userListModel);
-            JScrollPane scrollpane = new JScrollPane(userList);
-            if(!users.containsKey(user)){
+    
+            if (!users.containsKey(user)) {
                 users.put(user, new String[]{pass, role});
                 saveUserToFile(user, pass, role);
                 userListModel.addElement(user + " (" + role + ")");
                 statusLabel.setText("Benutzer hinzugefügt!");
-            }else{
+            } else {
                 statusLabel.setText("Benutzer existiert bereits!");
             }
         });
-        
-
-        panel.add(scrollpane);
-        panel.add(userLabel);
-        panel.add(userField);
-        panel.add(passLabel);
-        panel.add(passField);
-        panel.add(roleLabel);
-        panel.add(roleBox);
-        panel.add(addUserButton);
-        panel.add(statusLabel);
-
-       return panel;
+    
+        return panel;
     }
+    
     
     private JPanel deleteUserPanel(){
         JPanel panel = new JPanel(new BorderLayout());
@@ -223,7 +240,6 @@ public class adminCal extends JFrame {
             e.printStackTrace();
         }
     }
-
     private void loadUsersFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
             String line;
@@ -238,5 +254,4 @@ public class adminCal extends JFrame {
             e.printStackTrace();
         }
     }
-
 }
