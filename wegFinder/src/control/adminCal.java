@@ -302,7 +302,7 @@ private JPanel deleteUserPanel() {
                 String[] parts = line.split(",");
                 if (parts.length == 3) {
                     users.put(parts[0], new String[]{parts[1], parts[2]});
-                    userListModel.addElement(parts[0] + " (" + parts[2] + ")");
+                    userListModel.addElement(parts[0] +", " +  parts[1] +", (" + parts[2] + ")");
                 }
             }
         } catch (IOException e) {
