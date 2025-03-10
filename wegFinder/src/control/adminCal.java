@@ -374,12 +374,7 @@ private JPanel deleteUserPanel() {
 
         userListModel.removeAllElements();
         users.forEach((key, value) -> userListModel.addElement(key + " (" + value[1] + ")"));
-    }
-    
-    
-    
-
-    
+    }   
 }
      
 
