@@ -1,3 +1,9 @@
+    users = new HashMap<>();
+        userListModel = new DefaultListModel<>();
+
+            private HashMap<String, String[]> users;
+            private DefaultListModel<String> userListModel;
+
 private void deleteUserFunction(String usernameValue) {
         File inputFile = new File("users.txt");
         File tempFile = new File("users_temp.txt");
@@ -35,11 +41,7 @@ private void deleteUserFunction(String usernameValue) {
 
 
 
-    users = new HashMap<>();
-        userListModel = new DefaultListModel<>();
 
-
-            private DefaultListModel<String> userListModel;
 
 
 
@@ -157,3 +159,61 @@ private void deleteUserFunction(String usernameValue) {
         
         return panel;
     }
+
+
+
+
+
+
+
+
+
+    private JPanel deleteUserPanel() {
+
+    JPanel panel = new JPanel(new BorderLayout()); // Hauptpanel mit BorderLayout
+    panel.setBackground(Color.white);
+
+    // Formular-Panel mit GridLayout (Eingabefelder)
+    JPanel formPanel = new JPanel(new GridLayout(4, 2));
+    JLabel userLabel = new JLabel("Benutzername:");
+
+    JTextField userField = new JTextField();
+    JButton deleteButton = new JButton("Löschen");
+    JLabel statusLabel = new JLabel();
+    //font
+    userLabel.setFont(createFont("Arial", "Font.PLAIN", "20"));
+
+    deleteButton.setFont(createFont("Arial", "Font.PLAIN","20"));
+
+    
+    deleteButton.addActionListener(e -> {
+        String selectedUser = userField.getText();
+        if (selectedUser != null) {
+            userDataManager.deleteUser(selectedUser);
+            System.out.print(selectedUser);
+        } else{
+            statusLabel.setText("Bitte Benutzername eingeben!");
+        }
+    });
+
+    //add components to Panel
+    formPanel.add(userLabel);
+    formPanel.add(userField);
+    formPanel.add(deleteButton);
+    formPanel.add(statusLabel);
+
+    // Benutzerliste mit Scrollpane
+    JList<String> userList = new JList<>(userDataManager.getUserListModel());
+    JScrollPane scrollPane = new JScrollPane(userList);
+
+    // Panel für Benutzerliste rechts
+    JPanel listPanel = new JPanel(new BorderLayout());
+    listPanel.add(new JLabel("Benutzerliste:"), BorderLayout.NORTH);
+    listPanel.add(scrollPane, BorderLayout.CENTER);
+
+    // Hauptpanel Anordnung
+    panel.add(formPanel, BorderLayout.CENTER); // Formular in die Mitte
+    panel.add(listPanel, BorderLayout.EAST);   // Liste nach rechts
+
+    return panel;
+}

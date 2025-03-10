@@ -1,1 +1,3 @@
+admin,admin,Admin
 jason,password,Admin
+test.test,password,Mitarbeiter

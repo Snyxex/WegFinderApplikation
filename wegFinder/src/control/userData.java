@@ -14,21 +14,7 @@ public class userData {
         loadUsersFromFile();
     }
 
-    private void loadUsersFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 3) {
-                    users.put(parts[0], new String[]{parts[1], parts[2]});
-                    userListModel.addElement(parts[0] +","+ parts[1] +","+ " (" + parts[2] + ")");
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+   
     public void deleteUser(String usernameValue) {
         File inputFile = new File("users.txt");
         File tempFile = new File("users_temp.txt");
@@ -81,6 +67,8 @@ public class userData {
         }
     }
     
+
+
     private void saveUserToFile(String username, String password, String role) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
             writer.write(username + "," + password + "," + role);
@@ -90,11 +78,29 @@ public class userData {
         }
     }
     
-    private void refreshUserList() {
-        userListModel.removeAllElements();
-        users.forEach((key, value) -> userListModel.addElement(key + " (" + value[1] + ")"));
+
+
+    private void loadUsersFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    users.put(parts[0], new String[]{parts[1], parts[2]});
+                    userListModel.addElement(parts[0] + "," + parts[1] + " (" + parts[2] + ")");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    private void refreshUserList() {
+        userListModel.removeAllElements();
+        users.forEach((key, value) -> userListModel.addElement(key + "," + value[0] + " (" + value[1] + ")"));
+    }
+    
+    
     public DefaultListModel<String> getUserListModel() {
         return userListModel;
     }
