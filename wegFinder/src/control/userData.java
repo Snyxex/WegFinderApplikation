@@ -1,4 +1,4 @@
-package control;
+/*package control;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -46,3 +46,4 @@ public class userData {
         users.forEach((key, value) -> userListModel.addElement(key + " (" + value[1] + ")"));
     }
 }
+*/
