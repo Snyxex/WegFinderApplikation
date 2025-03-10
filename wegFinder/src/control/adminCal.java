@@ -1,12 +1,12 @@
 package control;
+import java.awt.event.*;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.*;
-
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Font;
-import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -24,7 +24,7 @@ public class adminCal extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
-    
+    private boolean capsLock = false;
 
     private JList<String> userList;
     private userData userDataManager;
@@ -236,6 +236,13 @@ private JPanel deleteUserPanel() {
 
     JLabel userLabel = new JLabel("Benutzername:");
     JTextField userField = new JTextField(20); // Größeres Eingabefeld
+    userField.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            
+            setupkeyboard(userField);
+        }
+    });
     JButton deleteButton = new JButton("Löschen");
     JLabel statusLabel = new JLabel();
 
@@ -341,9 +348,53 @@ private JPanel deleteUserPanel() {
         return null;
     }
 
+    private void setupkeyboard(JTextField textField) {
+        textField.setFont(new Font("Arial", Font.PLAIN, 20));
+        textField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                keyboard(textField);
+            }
+        });
+    }
+
+    private void keyboard(JTextField textField) {
+        JDialog keyboardDialog = new JDialog(this, "Virtuelle Tastatur", true);
+        keyboardDialog.setSize(600, 250);
+        keyboardDialog.setLayout(new GridLayout(5, 10));
+
+        String[] keys = {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+            "Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P",
+            "A", "S", "D", "F", "G", "H", "J", "K", "L", "ENTER",
+            "Y", "X", "C", "V", "B", "N", "M", ",", ".", "<-",
+            "CAPS" 
+        };
+
+        for (String key : keys) {
+            JButton button = new JButton(key);
+            button.addActionListener(e -> {
+                if (key.equals("ENTER")) {
+                    keyboardDialog.dispose();
+                } else if (key.equals("<-")) {
+                    String text = textField.getText();
+                    if (!text.isEmpty()) {
+                        textField.setText(text.substring(0, text.length() - 1));
+                    }
+                } else if (key.equals("CAPS")) {
+                    capsLock = !capsLock;
+                } else {
+                    String inputKey = capsLock ? key.toUpperCase() : key.toLowerCase();
+                    textField.setText(textField.getText() + inputKey);
+                }
+            });
+            keyboardDialog.add(button);
+        }
+
+        keyboardDialog.setLocationRelativeTo(this);
+        keyboardDialog.setVisible(true);
+    }
     
+
+
 }
-     
-
-    
-
