@@ -1,2 +1,1 @@
-admin,admin,Admin
-jason,admin,Admin
+jason,password,Admin

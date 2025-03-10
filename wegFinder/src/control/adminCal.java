@@ -29,13 +29,15 @@ public class adminCal extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private HashMap<String, String[]> users;
-    private DefaultListModel<String> userListModel;
+
     private JList<String> userList;
+    private userData userDataManager;
+    
 
     protected void adminPage() {
-        users = new HashMap<>();
-        userListModel = new DefaultListModel<>();
-        loadUsersFromFile();
+        userDataManager = new userData();
+        
+        
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 600);
@@ -139,21 +141,16 @@ public class adminCal extends JFrame {
     private void switchToPanel(String panelName) {
         cardLayout.show(mainPanel, panelName);
     }
-
-
-    
-
     private JPanel addUserPanel() {
-        JPanel panel = new JPanel(new BorderLayout(10, 10)); // Abstand hinzugefügt
+        JPanel panel = new JPanel(new BorderLayout(10, 10)); 
         panel.setBackground(Color.white);
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Rand für besseren Look
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
     
-        // Formular-Panel mit GridBagLayout für flexiblere Anordnung
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5); // Abstand zwischen Komponenten
-        
+        gbc.insets = new Insets(5, 5, 5, 5);
+    
         JLabel userLabel = new JLabel("Benutzername:");
         JTextField userField = new JTextField(15);
         JLabel passLabel = new JLabel("Passwort:");
@@ -163,15 +160,13 @@ public class adminCal extends JFrame {
         JComboBox<String> roleBox = new JComboBox<>(roles);
         JButton addUserButton = new JButton("Hinzufügen");
         JLabel statusLabel = new JLabel();
-        
-        // Fonts setzen
+    
         Font labelFont = new Font("Arial", Font.PLAIN, 14);
         userLabel.setFont(labelFont);
         passLabel.setFont(labelFont);
         roleLabel.setFont(labelFont);
         addUserButton.setFont(new Font("Arial", Font.BOLD, 14));
-        
-        // Komponenten zum formPanel hinzufügen
+    
         gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
         gbc.gridx = 0; gbc.gridy = 1; formPanel.add(passLabel, gbc);
@@ -180,48 +175,42 @@ public class adminCal extends JFrame {
         gbc.gridx = 1; gbc.gridy = 2; formPanel.add(roleBox, gbc);
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; formPanel.add(addUserButton, gbc);
         gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
-        
-        // Benutzerliste mit ScrollPane
-        userList = new JList<>(userListModel);
+    
+        userList = new JList<>(userDataManager.getUserListModel());
         JScrollPane scrollPane = new JScrollPane(userList);
         scrollPane.setPreferredSize(new Dimension(200, 150));
-        
+    
         JPanel listPanel = new JPanel(new BorderLayout());
         JLabel listLabel = new JLabel("Benutzerliste:");
-        listLabel.setFont(createFont("Arial", "Font.BOLD","14"));
+        listLabel.setFont(new Font("Arial", Font.BOLD, 14));
         listPanel.add(listLabel, BorderLayout.NORTH);
         listPanel.add(scrollPane, BorderLayout.CENTER);
-        
-        // Hauptpanel Anordnung
+    
         panel.add(formPanel, BorderLayout.CENTER);
         panel.add(listPanel, BorderLayout.EAST);
-        
-        // ActionListener für den Button
+    
         addUserButton.addActionListener(e -> {
             String user = userField.getText().trim();
             String pass = new String(passField.getPassword()).trim();
             String role = (String) roleBox.getSelectedItem();
     
-            if (user.isEmpty() || pass.isEmpty()) {
-                statusLabel.setForeground(Color.RED);
-                statusLabel.setText("Benutzername und Passwort dürfen nicht leer sein!");
-                return;
-            }
-    
-            if (!users.containsKey(user)) {
-                users.put(user, new String[]{pass, role});
-                saveUserToFile(user, pass, role);
-                userListModel.addElement(user + " (" + role + ")");
+            try {
+                userDataManager.addUser(user, pass, role);
                 statusLabel.setForeground(Color.GREEN);
                 statusLabel.setText("Benutzer hinzugefügt!");
-            } else {
+            } catch (IllegalArgumentException ex) {
                 statusLabel.setForeground(Color.RED);
-                statusLabel.setText("Benutzer existiert bereits!");
+                statusLabel.setText(ex.getMessage());
             }
         });
-        
+    
         return panel;
     }
+    
+
+    
+
+  
     
     
 private JPanel deleteUserPanel() {
@@ -245,8 +234,10 @@ private JPanel deleteUserPanel() {
     deleteButton.addActionListener(e -> {
         String selectedUser = userField.getText();
         if (selectedUser != null) {
-            deleteUserFunction(selectedUser);
+            userDataManager.deleteUser(selectedUser);
             System.out.print(selectedUser);
+        } else{
+            statusLabel.setText("Bitte Benutzername eingeben!");
         }
     });
 
@@ -257,7 +248,7 @@ private JPanel deleteUserPanel() {
     formPanel.add(statusLabel);
 
     // Benutzerliste mit Scrollpane
-    userList = new JList<>(userListModel);
+    JList<String> userList = new JList<>(userDataManager.getUserListModel());
     JScrollPane scrollPane = new JScrollPane(userList);
 
     // Panel für Benutzerliste rechts
@@ -307,28 +298,8 @@ private JPanel deleteUserPanel() {
        return panel;
     }
 
-    private void saveUserToFile(String username, String password, String role) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
-            writer.write(username + "," + password + "," + role);
-            writer.newLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private void loadUsersFromFile() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 3) {
-                    users.put(parts[0], new String[]{parts[1], parts[2]});
-                    userListModel.addElement(parts[0] +", " +  parts[1] +", (" + parts[2] + ")");
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+   
+   
    
     private Font createFont(String art, String font, String size){
         if(art.equals("Arial") && font.equals("Font.PLAIN") && size.equals("20")){
@@ -341,40 +312,7 @@ private JPanel deleteUserPanel() {
         return null;
     }
 
-    private void deleteUserFunction(String usernameValue) {
-        File inputFile = new File("users.txt");
-        File tempFile = new File("users_temp.txt");
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 3) {
-                    String username = parts[0];
-                    if (!username.equals(usernameValue)) {
-                        writer.write(line);
-                        writer.newLine();
-                    } else {
-                        users.remove(username);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Fehler beim Lesen/Schreiben der Datei: " + e.getMessage());
-        }
-
-        if (!inputFile.delete()) {
-            System.out.println("Fehler beim Löschen der Originaldatei!");
-        }
-        if (!tempFile.renameTo(inputFile)) {
-            System.out.println("Fehler beim Umbenennen der temporären Datei!");
-        }
-
-        userListModel.removeAllElements();
-        users.forEach((key, value) -> userListModel.addElement(key + " (" + value[1] + ")"));
-    }   
+    
 }
      
 
