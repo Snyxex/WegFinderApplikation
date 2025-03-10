@@ -1,4 +1,10 @@
 package control;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.Color;
+import java.awt.Dimension;
+
 import javax.swing.*;
 import java.io.*;
 import javax.swing.JMenu;
@@ -12,7 +18,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
@@ -83,9 +88,9 @@ public class adminCal extends JFrame {
         roomMenu.add(createMenuItem("Lock Room", e ->  switchToPanel("Lock Room")));
         roomMenu.add(createMenuItem("Lock Coridoor", e ->  switchToPanel("Lock Coridoor")));
         
-        dashboardMenu.setFont(createFont("Arial","Font.PLAIN"));
-        userMenu.setFont(createFont("Arial","Font.PLAIN"));
-        roomMenu.setFont(createFont("Arial","Font.PLAIN"));
+        dashboardMenu.setFont(createFont("Arial","Font.PLAIN","20"));
+        userMenu.setFont(createFont("Arial","Font.PLAIN","20"));
+        roomMenu.setFont(createFont("Arial","Font.PLAIN","20"));
 
         // Menü zur Menüleiste hinzufügen
         menuBar.add(dashboardMenu);
@@ -101,7 +106,7 @@ public class adminCal extends JFrame {
     private JMenuItem createMenuItem(String text, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(text);
 
-        menuItem.setFont(createFont("Arial","Font.PLAIN"));
+        menuItem.setFont(createFont("Arial","Font.PLAIN","20"));
 
         menuItem.setBackground(new Color(255,255,255));
         menuItem.addActionListener(actionListener);
@@ -122,8 +127,8 @@ public class adminCal extends JFrame {
         textLabel.setEditable(false);
         textLabel.setBounds(0, 0, 60, 40);
 
-        titleLabel.setFont(createFont("Arial","Font.BOLD"));
-        textLabel.setFont(createFont("Arial","Font.BOLD"));
+        titleLabel.setFont(createFont("Arial","Font.BOLD","20"));
+        textLabel.setFont(createFont("Arial","Font.BOLD","20"));
         
       
         panel.add(titleLabel, BorderLayout.NORTH);
@@ -139,70 +144,85 @@ public class adminCal extends JFrame {
     
 
     private JPanel addUserPanel() {
-        JPanel panel = new JPanel(new BorderLayout()); // Hauptpanel mit BorderLayout
+        JPanel panel = new JPanel(new BorderLayout(10, 10)); // Abstand hinzugefügt
         panel.setBackground(Color.white);
-       
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Rand für besseren Look
     
-        // Formular-Panel mit GridLayout (Eingabefelder)
-        JPanel formPanel = new JPanel(new GridLayout(4, 2));
+        // Formular-Panel mit GridBagLayout für flexiblere Anordnung
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5); // Abstand zwischen Komponenten
+        
         JLabel userLabel = new JLabel("Benutzername:");
-      
-        JTextField userField = new JTextField();
+        JTextField userField = new JTextField(15);
         JLabel passLabel = new JLabel("Passwort:");
-        
-        JPasswordField passField = new JPasswordField();
+        JPasswordField passField = new JPasswordField(15);
         JLabel roleLabel = new JLabel("Rolle:");
-        
         String[] roles = {"Admin", "Mitarbeiter"};
         JComboBox<String> roleBox = new JComboBox<>(roles);
         JButton addUserButton = new JButton("Hinzufügen");
         JLabel statusLabel = new JLabel();
-        //font
-        userLabel.setFont(createFont("Arial","Font.PLAIN"));
-        passLabel.setFont(createFont("Arial","Font.PLAIN"));
-        roleLabel.setFont(createFont("Arial","Font.PLAIN"));
-        addUserButton.setFont(createFont("Arial","Font.PLAIN"));
-
-        //add components to Panel
-        formPanel.add(userLabel);
-        formPanel.add(userField);
-        formPanel.add(passLabel);
-        formPanel.add(passField);
-        formPanel.add(roleLabel);
-        formPanel.add(roleBox);
-        formPanel.add(addUserButton);
-        formPanel.add(statusLabel);
-    
-        // Benutzerliste mit Scrollpane
+        
+        // Fonts setzen
+        Font labelFont = new Font("Arial", Font.PLAIN, 14);
+        userLabel.setFont(labelFont);
+        passLabel.setFont(labelFont);
+        roleLabel.setFont(labelFont);
+        addUserButton.setFont(new Font("Arial", Font.BOLD, 14));
+        
+        // Komponenten zum formPanel hinzufügen
+        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(passLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(passField, gbc);
+        gbc.gridx = 0; gbc.gridy = 2; formPanel.add(roleLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 2; formPanel.add(roleBox, gbc);
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; formPanel.add(addUserButton, gbc);
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+        
+        // Benutzerliste mit ScrollPane
         userList = new JList<>(userListModel);
         JScrollPane scrollPane = new JScrollPane(userList);
-    
-        // Panel für Benutzerliste rechts
+        scrollPane.setPreferredSize(new Dimension(200, 150));
+        
         JPanel listPanel = new JPanel(new BorderLayout());
-        listPanel.add(new JLabel("Benutzerliste:"), BorderLayout.NORTH);
+        JLabel listLabel = new JLabel("Benutzerliste:");
+        listLabel.setFont(createFont("Arial", "Font.BOLD","14"));
+        listPanel.add(listLabel, BorderLayout.NORTH);
         listPanel.add(scrollPane, BorderLayout.CENTER);
-    
+        
         // Hauptpanel Anordnung
-        panel.add(formPanel, BorderLayout.CENTER); // Formular in die Mitte
-        panel.add(listPanel, BorderLayout.EAST);   // Liste nach rechts
-    
+        panel.add(formPanel, BorderLayout.CENTER);
+        panel.add(listPanel, BorderLayout.EAST);
+        
+        // ActionListener für den Button
         addUserButton.addActionListener(e -> {
-            String user = userField.getText();
-            String pass = new String(passField.getPassword());
+            String user = userField.getText().trim();
+            String pass = new String(passField.getPassword()).trim();
             String role = (String) roleBox.getSelectedItem();
+    
+            if (user.isEmpty() || pass.isEmpty()) {
+                statusLabel.setForeground(Color.RED);
+                statusLabel.setText("Benutzername und Passwort dürfen nicht leer sein!");
+                return;
+            }
     
             if (!users.containsKey(user)) {
                 users.put(user, new String[]{pass, role});
                 saveUserToFile(user, pass, role);
                 userListModel.addElement(user + " (" + role + ")");
+                statusLabel.setForeground(Color.GREEN);
                 statusLabel.setText("Benutzer hinzugefügt!");
             } else {
+                statusLabel.setForeground(Color.RED);
                 statusLabel.setText("Benutzer existiert bereits!");
             }
         });
-    
+        
         return panel;
     }
+    
     
 private JPanel deleteUserPanel() {
 
@@ -217,9 +237,9 @@ private JPanel deleteUserPanel() {
     JButton deleteButton = new JButton("Löschen");
     JLabel statusLabel = new JLabel();
     //font
-    userLabel.setFont(createFont("Arial", "Font.PLAIN"));
+    userLabel.setFont(createFont("Arial", "Font.PLAIN", "20"));
 
-    deleteButton.setFont(createFont("Arial", "Font.PLAIN"));
+    deleteButton.setFont(createFont("Arial", "Font.PLAIN","20"));
 
     
     deleteButton.addActionListener(e -> {
@@ -310,11 +330,13 @@ private JPanel deleteUserPanel() {
         }
     }
    
-    private Font createFont(String art, String font){
-        if(art.equals("Arial") && font.equals("Font.PLAIN")){
+    private Font createFont(String art, String font, String size){
+        if(art.equals("Arial") && font.equals("Font.PLAIN") && size.equals("20")){
             return new Font("Arial",Font.PLAIN,20);
-        }else if(art.equals("Arial") && font.equals("Font.BOLD")){
+        }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("20")){
             return new Font("Arial",Font.BOLD,20);
+        }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("14")){
+
         }
         return null;
     }

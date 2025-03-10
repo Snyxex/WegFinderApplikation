@@ -1,3 +1,3 @@
-Phil.Benedikt,password,Mitarbeiter
-Jason.Janzen,password,Mitarbeiter
-admin,password,Admin
+admin,admin,Admin
+jason,admin,Admin
+test,password,Admin
