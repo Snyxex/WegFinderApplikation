@@ -350,51 +350,73 @@ private JPanel deleteUserPanel() {
 
     private void setupkeyboard(JTextField textField) {
         textField.setFont(new Font("Arial", Font.PLAIN, 20));
-        textField.addMouseListener(new MouseAdapter() {
+        textField.addMouseListener(new MouseAdapter() { // Korrektur hier
             @Override
             public void mouseClicked(MouseEvent e) {
                 keyboard(textField);
             }
         });
     }
+   
 
-    private void keyboard(JTextField textField) {
+    private void keyboard(JTextField targetField) {
         JDialog keyboardDialog = new JDialog(this, "Virtuelle Tastatur", true);
-        keyboardDialog.setSize(600, 250);
-        keyboardDialog.setLayout(new GridLayout(5, 10));
-
+        keyboardDialog.setSize(600, 300);
+        keyboardDialog.setLayout(new BorderLayout());
+    
+        // Textfeld für die Live-Eingabe
+        JTextField keyboardInputField = new JTextField(targetField.getText());
+        keyboardInputField.setFont(new Font("Arial", Font.BOLD, 16));
+        keyboardInputField.setHorizontalAlignment(JTextField.CENTER);
+        keyboardDialog.add(keyboardInputField, BorderLayout.NORTH);
+    
+        JPanel keyPanel = new JPanel(new GridLayout(5, 10));
+        
         String[] keys = {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
             "Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P",
-            "A", "S", "D", "F", "G", "H", "J", "K", "L", "ENTER",
-            "Y", "X", "C", "V", "B", "N", "M", ",", ".", "<-",
-            "CAPS" 
+            "A", "S", "D", "F", "G", "H", "J", "K", "L", "<-",
+            "Y", "X", "C", "V", "B", "N", "M", ",", ".", "ENTER",
+            "CAPS"
         };
-
+    
+        JButton capsButton = new JButton("CAPS");
+    
         for (String key : keys) {
             JButton button = new JButton(key);
-            button.addActionListener(e -> {
-                if (key.equals("ENTER")) {
-                    keyboardDialog.dispose();
-                } else if (key.equals("<-")) {
-                    String text = textField.getText();
-                    if (!text.isEmpty()) {
-                        textField.setText(text.substring(0, text.length() - 1));
-                    }
-                } else if (key.equals("CAPS")) {
+            
+            if (key.equals("CAPS")) {
+                button = capsButton;
+                button.addActionListener(e -> {
                     capsLock = !capsLock;
-                } else {
+                    capsButton.setBackground(capsLock ? Color.LIGHT_GRAY : null);
+                });
+            } else if (key.equals("ENTER")) {
+                button.addActionListener(e -> {
+                    targetField.setText(keyboardInputField.getText());
+                    keyboardDialog.dispose();
+                });
+            } else if (key.equals("<-")) {
+                button.addActionListener(e -> {
+                    String text = keyboardInputField.getText();
+                    if (!text.isEmpty()) {
+                        keyboardInputField.setText(text.substring(0, text.length() - 1));
+                    }
+                });
+            } else {
+                button.addActionListener(e -> {
                     String inputKey = capsLock ? key.toUpperCase() : key.toLowerCase();
-                    textField.setText(textField.getText() + inputKey);
-                }
-            });
-            keyboardDialog.add(button);
+                    keyboardInputField.setText(keyboardInputField.getText() + inputKey);
+                });
+            }
+            keyPanel.add(button);
         }
-
+    
+        keyboardDialog.add(keyPanel, BorderLayout.CENTER);
         keyboardDialog.setLocationRelativeTo(this);
         keyboardDialog.setVisible(true);
     }
     
-
+   
 
 }
