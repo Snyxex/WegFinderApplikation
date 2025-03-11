@@ -236,13 +236,16 @@ private JPanel deleteUserPanel() {
 
     JLabel userLabel = new JLabel("Benutzername:");
     JTextField userField = new JTextField(20); // Größeres Eingabefeld
-    userField.addMouseListener(new MouseAdapter() {
+
+    userField.addMouseListener(new MouseAdapter() { // Korrektur hier
         @Override
         public void mouseClicked(MouseEvent e) {
             
             setupkeyboard(userField);
         }
+        
     });
+
     JButton deleteButton = new JButton("Löschen");
     JLabel statusLabel = new JLabel();
 
@@ -360,7 +363,7 @@ private JPanel deleteUserPanel() {
    
 
     private void keyboard(JTextField targetField) {
-        JDialog keyboardDialog = new JDialog(this, "Virtuelle Tastatur", true);
+        JFrame keyboardDialog = new JFrame();
         keyboardDialog.setSize(600, 300);
         keyboardDialog.setLayout(new BorderLayout());
     
@@ -370,7 +373,7 @@ private JPanel deleteUserPanel() {
         keyboardInputField.setHorizontalAlignment(JTextField.CENTER);
         keyboardDialog.add(keyboardInputField, BorderLayout.NORTH);
     
-        JPanel keyPanel = new JPanel(new GridLayout(5, 10));
+        JPanel keyPanel = new JPanel(new GridLayout(4, 10));
         
         String[] keys = {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
@@ -414,6 +417,7 @@ private JPanel deleteUserPanel() {
     
         keyboardDialog.add(keyPanel, BorderLayout.CENTER);
         keyboardDialog.setLocationRelativeTo(this);
+    
         keyboardDialog.setVisible(true);
     }
     
