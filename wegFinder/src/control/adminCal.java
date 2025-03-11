@@ -237,14 +237,13 @@ private JPanel deleteUserPanel() {
     JLabel userLabel = new JLabel("Benutzername:");
     JTextField userField = new JTextField(20); // Größeres Eingabefeld
 
-    userField.addMouseListener(new MouseAdapter() { // Korrektur hier
+    userField.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
-            
-            setupkeyboard(userField);
+            keyboard(userField);
         }
-        
     });
+    
 
     JButton deleteButton = new JButton("Löschen");
     JLabel statusLabel = new JLabel();
@@ -351,30 +350,23 @@ private JPanel deleteUserPanel() {
         return null;
     }
 
-    private void setupkeyboard(JTextField textField) {
-        textField.setFont(new Font("Arial", Font.PLAIN, 20));
-        textField.addMouseListener(new MouseAdapter() { // Korrektur hier
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                keyboard(textField);
-            }
-        });
-    }
    
-
     private void keyboard(JTextField targetField) {
-        JFrame keyboardDialog = new JFrame();
-        keyboardDialog.setSize(600, 300);
-        keyboardDialog.setLayout(new BorderLayout());
+        JFrame keyboardFrame = new JFrame("Keyboard");
+        keyboardFrame.setSize(700, 350);
+        keyboardFrame.setLayout(new BorderLayout());
+        keyboardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     
-        // Textfeld für die Live-Eingabe
-        JTextField keyboardInputField = new JTextField(targetField.getText());
-        keyboardInputField.setFont(new Font("Arial", Font.BOLD, 16));
+        // Textfeld für Live-Eingabe
+        JTextField keyboardInputField = new JTextField(targetField.getText(), 20);
+        keyboardInputField.setFont(new Font("Arial", Font.BOLD, 18));
         keyboardInputField.setHorizontalAlignment(JTextField.CENTER);
-        keyboardDialog.add(keyboardInputField, BorderLayout.NORTH);
+        keyboardInputField.setEditable(false);
+        keyboardFrame.add(keyboardInputField, BorderLayout.NORTH);
     
-        JPanel keyPanel = new JPanel(new GridLayout(4, 10));
-        
+        // Panel für Tasten
+        JPanel keyPanel = new JPanel(new GridLayout(5, 10, 5, 5));
+    
         String[] keys = {
             "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
             "Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P",
@@ -383,21 +375,24 @@ private JPanel deleteUserPanel() {
             "CAPS"
         };
     
+        final boolean[] capsLock = {false}; // Speichert den CAPS-Status
+    
         JButton capsButton = new JButton("CAPS");
     
         for (String key : keys) {
             JButton button = new JButton(key);
-            
+            button.setFont(new Font("Arial", Font.BOLD, 14));
+    
             if (key.equals("CAPS")) {
                 button = capsButton;
                 button.addActionListener(e -> {
-                    capsLock = !capsLock;
-                    capsButton.setBackground(capsLock ? Color.LIGHT_GRAY : null);
+                    capsLock[0] = !capsLock[0];
+                    capsButton.setBackground(capsLock[0] ? Color.LIGHT_GRAY : null);
                 });
             } else if (key.equals("ENTER")) {
                 button.addActionListener(e -> {
                     targetField.setText(keyboardInputField.getText());
-                    keyboardDialog.dispose();
+                    keyboardFrame.dispose();
                 });
             } else if (key.equals("<-")) {
                 button.addActionListener(e -> {
@@ -408,18 +403,20 @@ private JPanel deleteUserPanel() {
                 });
             } else {
                 button.addActionListener(e -> {
-                    String inputKey = capsLock ? key.toUpperCase() : key.toLowerCase();
+                    String inputKey = capsLock[0] ? key.toUpperCase() : key.toLowerCase();
                     keyboardInputField.setText(keyboardInputField.getText() + inputKey);
                 });
             }
             keyPanel.add(button);
         }
     
-        keyboardDialog.add(keyPanel, BorderLayout.CENTER);
-        keyboardDialog.setLocationRelativeTo(this);
+        keyboardFrame.add(keyPanel, BorderLayout.CENTER);
+        keyboardFrame.setLocationRelativeTo(null);
+        
     
-        keyboardDialog.setVisible(true);
+        keyboardFrame.setVisible(true);
     }
+    
     
    
 
