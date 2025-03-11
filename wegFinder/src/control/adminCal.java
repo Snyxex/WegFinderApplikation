@@ -89,9 +89,9 @@ public class adminCal extends JFrame {
         
         
     
-        dashboardMenu.setFont(createFont("Arial", "Font.BOLD", "16"));
-        userMenu.setFont(createFont("Arial", "Font.BOLD", "16"));
-        roomMenu.setFont(createFont("Arial", "Font.BOLD", "16"));
+        dashboardMenu.setFont(new Font("Arial", Font.BOLD, 16));
+        userMenu.setFont(new Font("Arial", Font.BOLD, 16));
+        roomMenu.setFont(new Font("Arial", Font.BOLD, 16));
     
         
     
@@ -105,7 +105,7 @@ public class adminCal extends JFrame {
     
     private JMenuItem createMenuItem(String text, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(text);
-        menuItem.setFont(createFont("Arial", "Font.PLAIN", "16"));
+        menuItem.setFont(new Font("Arial", Font.PLAIN, 16));
     
         // Hintergrund- und Schriftfarbe setzen
         menuItem.setOpaque(true);
@@ -143,8 +143,8 @@ public class adminCal extends JFrame {
         textLabel.setEditable(false);
         textLabel.setBounds(0, 0, 60, 40);
 
-        titleLabel.setFont(createFont("Arial","Font.BOLD","20"));
-        textLabel.setFont(createFont("Arial","Font.BOLD","20"));
+        titleLabel.setFont(new Font("Arial",Font.BOLD,20));
+        textLabel.setFont(new Font("Arial",Font.BOLD,20));
         
       
         panel.add(titleLabel, BorderLayout.NORTH);
@@ -180,7 +180,7 @@ public class adminCal extends JFrame {
         userLabel.setFont(labelFont);
         passLabel.setFont(labelFont);
         roleLabel.setFont(labelFont);
-        addUserButton.setFont(createFont("Arial", "Font.BOLD", "14"));
+        addUserButton.setFont(new Font("Arial", Font.BOLD, 14));
     
         gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
@@ -197,7 +197,7 @@ public class adminCal extends JFrame {
     
         JPanel listPanel = new JPanel(new BorderLayout());
         JLabel listLabel = new JLabel("Benutzerliste:");
-        listLabel.setFont(createFont("Arial", "Font.BOLD", "14"));
+        listLabel.setFont(new Font("Arial", Font.BOLD, 14));
         listPanel.add(listLabel, BorderLayout.NORTH);
         listPanel.add(scrollPane, BorderLayout.CENTER);
     
@@ -248,8 +248,8 @@ private JPanel deleteUserPanel() {
     JLabel statusLabel = new JLabel();
 
     
-    userLabel.setFont(createFont("Arial","Font.BOLD", "16"));
-    deleteButton.setFont(createFont("Arial","Font.BOLD", "16"));
+    userLabel.setFont(new Font("Arial",Font.BOLD, 16));
+    deleteButton.setFont(new Font("Arial",Font.BOLD, 16));
 
     gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
     gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
@@ -275,7 +275,7 @@ private JPanel deleteUserPanel() {
 
     JPanel listPanel = new JPanel(new BorderLayout());
     JLabel listLabel = new JLabel("Benutzerliste:");
-    listLabel.setFont(createFont("Arial","Font.BOLD", "16"));
+    listLabel.setFont(new Font("Arial",Font.BOLD, 16));
     listPanel.add(listLabel, BorderLayout.NORTH);
     listPanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -329,29 +329,7 @@ private JPanel deleteUserPanel() {
     }
 
    
-   
-   
-    private Font createFont(String art, String font, String size){
-        if(art.equals("Arial") && font.equals("Font.PLAIN") && size.equals("20")){
-                   return new Font("Arial",Font.PLAIN,20);
 
-        }else if(art.equals("Arial") && font.equals("Font.PLAIN") && size.equals("16")){
-                  return new Font("Arial",Font.PLAIN,16);
-
-        }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("20")){
-                  return new Font("Arial",Font.BOLD,20);
-
-        }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("14")){
-                  return new Font("Arial",Font.BOLD,14);
-
-        }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("16")){
-               return new Font("Arial",Font.BOLD,16);
-
-        }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("18")){
-            return new Font("Arial",Font.BOLD,18);
-        }
-        return null;
-    }
 
     private void keyboard(JTextField targetField) {
         JFrame keyboardFrame = new JFrame("Keyboard");
@@ -361,7 +339,7 @@ private JPanel deleteUserPanel() {
     
         // Textfeld für Live-Eingabe
         JTextField keyboardInputField = new JTextField(targetField.getText(), 20);
-        keyboardInputField.setFont(createFont("Arial", "Font.BOLD","16"));
+        keyboardInputField.setFont(new Font("Arial", Font.BOLD,16));
         keyboardInputField.setHorizontalAlignment(JTextField.CENTER);
         keyboardInputField.setEditable(false);
         keyboardFrame.add(keyboardInputField, BorderLayout.NORTH);
@@ -409,7 +387,7 @@ private JPanel deleteUserPanel() {
     // Hilfsmethode zum Erstellen von Buttons
     private JButton createKeyButton(String key, JTextField keyboardInputField, JTextField targetField, JFrame keyboardFrame) {
         JButton button = new JButton(key);
-        button.setFont(createFont("Arial", "Font.BOLD", "14"));
+        button.setFont(new Font("Arial", Font.BOLD, 14));
     
         if (key.equals("")) {
             button.setVisible(false); // Platzhalter für "Q" 
