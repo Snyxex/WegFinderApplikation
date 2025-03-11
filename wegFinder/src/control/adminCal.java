@@ -24,7 +24,6 @@ public class adminCal extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
-    private boolean capsLock = false;
 
     private JList<String> userList;
     private userData userDataManager;
@@ -334,23 +333,26 @@ private JPanel deleteUserPanel() {
    
     private Font createFont(String art, String font, String size){
         if(art.equals("Arial") && font.equals("Font.PLAIN") && size.equals("20")){
-            return new Font("Arial",Font.PLAIN,20);
+                   return new Font("Arial",Font.PLAIN,20);
 
         }else if(art.equals("Arial") && font.equals("Font.PLAIN") && size.equals("16")){
+                  return new Font("Arial",Font.PLAIN,16);
 
         }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("20")){
-            return new Font("Arial",Font.BOLD,20);
+                  return new Font("Arial",Font.BOLD,20);
 
         }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("14")){
-          return new Font("Arial",Font.BOLD,14);
+                  return new Font("Arial",Font.BOLD,14);
 
         }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("16")){
+               return new Font("Arial",Font.BOLD,16);
 
+        }else if(art.equals("Arial") && font.equals("Font.BOLD") && size.equals("18")){
+            return new Font("Arial",Font.BOLD,18);
         }
         return null;
     }
 
-   
     private void keyboard(JTextField targetField) {
         JFrame keyboardFrame = new JFrame("Keyboard");
         keyboardFrame.setSize(700, 350);
@@ -359,65 +361,83 @@ private JPanel deleteUserPanel() {
     
         // Textfeld für Live-Eingabe
         JTextField keyboardInputField = new JTextField(targetField.getText(), 20);
-        keyboardInputField.setFont(new Font("Arial", Font.BOLD, 18));
+        keyboardInputField.setFont(createFont("Arial", "Font.BOLD","16"));
         keyboardInputField.setHorizontalAlignment(JTextField.CENTER);
         keyboardInputField.setEditable(false);
         keyboardFrame.add(keyboardInputField, BorderLayout.NORTH);
     
-        // Panel für Tasten
-        JPanel keyPanel = new JPanel(new GridLayout(5, 10, 5, 5));
+        // Haupt-Panel für die Tastatur
+        JPanel mainPanel = new JPanel(new GridLayout(4, 1, 5, 5));
     
-        String[] keys = {
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
-            "Q", "W", "E", "R", "T", "Z", "U", "I", "O", "P",
-            "A", "S", "D", "F", "G", "H", "J", "K", "L", "<-",
-            "Y", "X", "C", "V", "B", "N", "M", ",", ".", "ENTER",
-            "CAPS"
-        };
+        // Zeilen mit separaten Panels
+        JPanel row1 = new JPanel(new GridLayout(1, 10, 5, 5)); // Zahlenreihe
+        JPanel row2 = new JPanel(new GridLayout(1, 9, 5, 5));  // Erste Buchstabenreihe
+        JPanel row3 = new JPanel(new GridLayout(1, 10, 5, 5)); // Zweite Buchstabenreihe
+        JPanel row4 = new JPanel(new GridLayout(1, 10, 5, 5)); // Dritte Buchstabenreihe
     
-        final boolean[] capsLock = {false}; // Speichert den CAPS-Status
+        // Zahlenreihe
+        String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+        for (String key : numbers) row1.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame));
     
-        JButton capsButton = new JButton("CAPS");
+        // Erste Buchstabenreihe (Q verschoben)
+        String[] row1Keys = {"", "Q", "W", "E", "R", "T", "Z", "U", "I", "O"};
+        for (String key : row1Keys) row2.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame));
     
-        for (String key : keys) {
-            JButton button = new JButton(key);
-            button.setFont(new Font("Arial", Font.BOLD, 14));
+        // Zweite Buchstabenreihe
+        String[] row2Keys = {"P", "A", "S", "D", "F", "G", "H", "J", "K", "L"};
+        for (String key : row2Keys) row3.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame));
     
-            if (key.equals("CAPS")) {
-                button = capsButton;
-                button.addActionListener(e -> {
-                    capsLock[0] = !capsLock[0];
-                    capsButton.setBackground(capsLock[0] ? Color.LIGHT_GRAY : null);
-                });
-            } else if (key.equals("ENTER")) {
-                button.addActionListener(e -> {
-                    targetField.setText(keyboardInputField.getText());
-                    keyboardFrame.dispose();
-                });
-            } else if (key.equals("<-")) {
-                button.addActionListener(e -> {
-                    String text = keyboardInputField.getText();
-                    if (!text.isEmpty()) {
-                        keyboardInputField.setText(text.substring(0, text.length() - 1));
-                    }
-                });
-            } else {
-                button.addActionListener(e -> {
-                    String inputKey = capsLock[0] ? key.toUpperCase() : key.toLowerCase();
-                    keyboardInputField.setText(keyboardInputField.getText() + inputKey);
-                });
-            }
-            keyPanel.add(button);
+        // Dritte Buchstabenreihe mit Steuerungstasten
+        String[] row3Keys = {"<-", "Y", "X", "C", "V", "B", "N", "M", ",", "."};
+        for (String key : row3Keys) row4.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame));
+    
+        // Steuerungstasten (ENTER, CAPS)
+        row4.add(createKeyButton("ENTER", keyboardInputField, targetField, keyboardFrame));
+        row4.add(createKeyButton("CAPS", keyboardInputField, targetField, keyboardFrame));
+    
+        // Panels zur Haupttastatur hinzufügen
+        mainPanel.add(row1);
+        mainPanel.add(row2);
+        mainPanel.add(row3);
+        mainPanel.add(row4);
+        keyboardFrame.add(mainPanel, BorderLayout.CENTER);
+    
+        keyboardFrame.setLocationRelativeTo(null);
+        keyboardFrame.setVisible(true);
+    }
+    
+    // Hilfsmethode zum Erstellen von Buttons
+    private JButton createKeyButton(String key, JTextField keyboardInputField, JTextField targetField, JFrame keyboardFrame) {
+        JButton button = new JButton(key);
+        button.setFont(createFont("Arial", "Font.BOLD", "14"));
+    
+        if (key.equals("")) {
+            button.setVisible(false); // Platzhalter für "Q" 
+        } else if (key.equals("ENTER")) {
+            button.addActionListener(e -> {
+                targetField.setText(keyboardInputField.getText());
+                keyboardFrame.dispose();
+            });
+        } else if (key.equals("<-")) {
+            button.addActionListener(e -> {
+                String text = keyboardInputField.getText();
+                if (!text.isEmpty()) {
+                    keyboardInputField.setText(text.substring(0, text.length() - 1));
+                }
+            });
+        } else if (key.equals("CAPS")) {
+            button.addActionListener(e -> {
+                keyboardInputField.setText(keyboardInputField.getText().toUpperCase());
+            });
+        } else {
+            button.addActionListener(e -> {
+                keyboardInputField.setText(keyboardInputField.getText() + key);
+            });
         }
     
-        keyboardFrame.add(keyPanel, BorderLayout.CENTER);
-        keyboardFrame.setLocationRelativeTo(null);
-        
-    
-        keyboardFrame.setVisible(true);
+        return button;
     }
     
     
    
-
 }
