@@ -181,6 +181,22 @@ public class adminCal extends JFrame {
         passLabel.setFont(labelFont);
         roleLabel.setFont(labelFont);
         addUserButton.setFont(new Font("Arial", Font.BOLD, 14));
+
+        userField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                keyboard(userField);
+                userField.setText("");
+            }
+        });
+
+        passField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                keyboard(passField);
+                passField.setText("");
+            }
+        });
     
         gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
@@ -242,27 +258,63 @@ private JPanel deleteUserPanel() {
             keyboard(userField);
         }
     });
-    
-
+    JLabel adminPassLabel = new JLabel("Admin Password:");
+    JTextField adminPasswordJField = new JTextField(20);
+        
+    adminPasswordJField.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            keyboard(adminPasswordJField);
+        }
+    });
     JButton deleteButton = new JButton("Löschen");
     JLabel statusLabel = new JLabel();
 
     
     userLabel.setFont(new Font("Arial",Font.BOLD, 16));
+    adminPassLabel.setFont(new Font("Arial",Font.BOLD,16));
     deleteButton.setFont(new Font("Arial",Font.BOLD, 16));
 
     gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
     gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
-    gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 2; formPanel.add(deleteButton, gbc);
-    gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+    gbc.gridx = 0; gbc.gridy = 1; formPanel.add(adminPassLabel, gbc);
+    gbc.gridx = 1; gbc.gridy = 1; formPanel.add(adminPasswordJField, gbc);
+    gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; formPanel.add(deleteButton, gbc);
+    gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
 
     deleteButton.addActionListener(e -> {
         String selectedUser = userField.getText().trim();
+        String  adminPassword = adminPasswordJField.getText().trim();
+     
         if (!selectedUser.isEmpty()) {
-            userDataManager.deleteUser(selectedUser);
-            statusLabel.setForeground(Color.GREEN);
-            statusLabel.setText("Benutzer gelöscht!");
-            userField.setText("");
+            
+            
+
+            deleteButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e){
+                    keyboard(adminPasswordJField);
+                   
+                    adminPasswordJField.setText("");
+                }
+            });
+
+        String logedinAdmin = "jason";
+        boolean isAdmin = userDataManager.loadAdminDataFromFile(logedinAdmin, adminPassword);
+            System.out.print(isAdmin);
+            System.out.println(adminPassword);
+                if(isAdmin){
+                    userDataManager.deleteUser(selectedUser);
+                    statusLabel.setForeground(Color.GREEN);
+                    statusLabel.setText("Benutzer gelöscht!");
+                    userField.setText("");
+                }else{
+                    statusLabel.setText("Password nicht Richtig");
+                }
+                
+                    
+            
+                
         } else {
             statusLabel.setForeground(Color.RED);
             statusLabel.setText("Bitte Benutzername eingeben!");
@@ -328,10 +380,8 @@ private JPanel deleteUserPanel() {
        return panel;
     }
 
-   
-
-
-    private void keyboard(JTextField targetField) {
+     
+         private void keyboard(JTextField targetField) {
         JFrame keyboardFrame = new JFrame("Keyboard");
         keyboardFrame.setSize(700, 350);
         keyboardFrame.setLayout(new BorderLayout());
@@ -339,7 +389,7 @@ private JPanel deleteUserPanel() {
     
         // Textfeld für Live-Eingabe
         JTextField keyboardInputField = new JTextField(targetField.getText(), 20);
-        keyboardInputField.setFont(new Font("Arial", Font.BOLD,16));
+        keyboardInputField.setFont(new Font("Arial", Font.BOLD, 16));
         keyboardInputField.setHorizontalAlignment(JTextField.CENTER);
         keyboardInputField.setEditable(false);
         keyboardFrame.add(keyboardInputField, BorderLayout.NORTH);
@@ -353,25 +403,35 @@ private JPanel deleteUserPanel() {
         JPanel row3 = new JPanel(new GridLayout(1, 10, 5, 5)); // Zweite Buchstabenreihe
         JPanel row4 = new JPanel(new GridLayout(1, 10, 5, 5)); // Dritte Buchstabenreihe
     
+        // Variable für Caps-Lock-Status
+        final boolean[] capsLock = {false};
+    
         // Zahlenreihe
         String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
-        for (String key : numbers) row1.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame));
+        for (String key : numbers) row1.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame, capsLock));
     
         // Erste Buchstabenreihe (Q verschoben)
         String[] row1Keys = {"", "Q", "W", "E", "R", "T", "Z", "U", "I", "O"};
-        for (String key : row1Keys) row2.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame));
+        for (String key : row1Keys) row2.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame, capsLock));
     
         // Zweite Buchstabenreihe
         String[] row2Keys = {"P", "A", "S", "D", "F", "G", "H", "J", "K", "L"};
-        for (String key : row2Keys) row3.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame));
+        for (String key : row2Keys) row3.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame, capsLock));
     
         // Dritte Buchstabenreihe mit Steuerungstasten
         String[] row3Keys = {"<-", "Y", "X", "C", "V", "B", "N", "M", ",", "."};
-        for (String key : row3Keys) row4.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame));
+        for (String key : row3Keys) row4.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame, capsLock));
     
         // Steuerungstasten (ENTER, CAPS)
-        row4.add(createKeyButton("ENTER", keyboardInputField, targetField, keyboardFrame));
-        row4.add(createKeyButton("CAPS", keyboardInputField, targetField, keyboardFrame));
+        JButton capsButton = new JButton("CAPS");
+        capsButton.setFont(new Font("Arial", Font.BOLD, 14));
+        capsButton.addActionListener(e -> {
+            capsLock[0] = !capsLock[0]; // Umschalten von Caps-Lock
+            capsButton.setBackground(capsLock[0] ? Color.LIGHT_GRAY : null);
+        });
+    
+        row4.add(createKeyButton("ENTER", keyboardInputField, targetField, keyboardFrame, capsLock));
+        row4.add(capsButton);
     
         // Panels zur Haupttastatur hinzufügen
         mainPanel.add(row1);
@@ -384,13 +444,13 @@ private JPanel deleteUserPanel() {
         keyboardFrame.setVisible(true);
     }
     
-    // Hilfsmethode zum Erstellen von Buttons
-    private JButton createKeyButton(String key, JTextField keyboardInputField, JTextField targetField, JFrame keyboardFrame) {
+    // Hilfsmethode zum Erstellen von Buttons mit Caps-Lock-Unterstützung
+    private JButton createKeyButton(String key, JTextField keyboardInputField, JTextField targetField, JFrame keyboardFrame, boolean[] capsLock) {
         JButton button = new JButton(key);
         button.setFont(new Font("Arial", Font.BOLD, 14));
     
         if (key.equals("")) {
-            button.setVisible(false); // Platzhalter für "Q" 
+            button.setVisible(false); // Platzhalter für "Q"
         } else if (key.equals("ENTER")) {
             button.addActionListener(e -> {
                 targetField.setText(keyboardInputField.getText());
@@ -403,19 +463,15 @@ private JPanel deleteUserPanel() {
                     keyboardInputField.setText(text.substring(0, text.length() - 1));
                 }
             });
-        } else if (key.equals("CAPS")) {
-            button.addActionListener(e -> {
-                keyboardInputField.setText(keyboardInputField.getText().toUpperCase());
-            });
         } else {
             button.addActionListener(e -> {
-                keyboardInputField.setText(keyboardInputField.getText() + key);
+                String inputKey = capsLock[0] ? key.toUpperCase() : key.toLowerCase();
+                keyboardInputField.setText(keyboardInputField.getText() + inputKey);
             });
         }
     
         return button;
     }
-    
     
    
 }

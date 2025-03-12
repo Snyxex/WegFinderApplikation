@@ -1,2 +1,2 @@
 jason,password,Admin
-test.test,password,Mitarbeiter
+test,test,Mitarbeiter
