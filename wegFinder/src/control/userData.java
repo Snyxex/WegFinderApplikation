@@ -98,14 +98,18 @@ public class userData {
     
         public boolean loadAdminDataFromFile(String adminUsername, String password) {
             boolean admintrue = false;
+            String roleadmin = "Admin";
             try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(",");
                     if (parts.length == 3) {
-                        if (adminUsername.equals(parts[0]) && password.equals(parts[1])) {
-                            admintrue = true;
-                            break; // Beenden Sie die Schleife, wenn der Admin gefunden wurde
+                            if (adminUsername.equals(parts[0]) && password.equals(parts[1]) && parts[2].equals(roleadmin)) {
+                                admintrue = true;
+                                break; // Beenden Sie die Schleife, wenn der Admin gefunden wurde
+                            
+                        }else{
+                            System.out.println("no admin");
                         }
                     }
                 }
