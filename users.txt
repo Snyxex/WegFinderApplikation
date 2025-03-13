@@ -1,1 +1,3 @@
 jason,password,Admin
+test,test,Mitarbeiter
+phil,phil,Admin
