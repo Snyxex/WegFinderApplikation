@@ -119,7 +119,21 @@ public class userData {
             return admintrue;      
         }
         
-
+        public void updateUser(String username, String newPassword, String newRole) {
+            if (username.isEmpty()) {
+                throw new IllegalArgumentException("Benutzername darf nicht leer sein!");
+            }
+        
+            if (users.containsKey(username)) {
+                // Benutzer existiert, also aktualisieren wir die Daten
+                users.put(username, new String[]{newPassword, newRole});
+                saveUserToFile(username, newPassword, newRole); // Speichern der Benutzerdaten
+                refreshUserList(); // Benutzerliste aktualisieren
+            } else {
+                throw new IllegalArgumentException("Benutzer existiert nicht!");
+            }
+        }
+        
     private void refreshUserList() {
         userListModel.removeAllElements();
         users.forEach((key, value) -> userListModel.addElement(key + "," + value[0] + " (" + value[1] + ")"));

@@ -1,3 +1,4 @@
-jason,password,Admin
-test,test,Mitarbeiter
-phil,phil,Admin
+
+admin,password,Admin
+test,test,Admin
+test,password,Admin
