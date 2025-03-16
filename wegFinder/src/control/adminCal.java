@@ -64,7 +64,7 @@ public class adminCal extends JFrame {
     
     private void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(new Color(70, 70, 70)); // Dunkler Hintergrund für modernes Design
+        menuBar.setBackground(new Color(255, 255, 255));
     
         // Dashboard-Menü
         JMenu dashboardMenu = new JMenu("Dashboard");
@@ -337,7 +337,65 @@ private JPanel deleteUserPanel() {
     return panel;
 }
 
-    
+private JPanel updateUserPanel() {
+    JPanel panel = new JPanel(new BorderLayout(10, 10));
+    panel.setBackground(Color.white);
+    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+    JPanel formPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+    gbc.insets = new Insets(5, 5, 5, 5);
+
+    JLabel oldUserLabel = new JLabel("Alter Benutzername:");
+    JTextField oldUserField = new JTextField(15);
+    JLabel newUserLabel = new JLabel("Neuer Benutzername:");
+    JTextField newUserField = new JTextField(15);
+    JLabel passLabel = new JLabel("Neues Passwort:");
+    JPasswordField passField = new JPasswordField(15);
+    JLabel roleLabel = new JLabel("Neue Rolle:");
+    String[] roles = {"Admin", "Mitarbeiter"};
+    JComboBox<String> roleBox = new JComboBox<>(roles);
+    JButton updateUserButton = new JButton("Aktualisieren");
+    JLabel statusLabel = new JLabel();
+
+    Font labelFont = new Font("Arial", Font.PLAIN, 14);
+    oldUserLabel.setFont(labelFont);
+    newUserLabel.setFont(labelFont);
+    passLabel.setFont(labelFont);
+    roleLabel.setFont(labelFont);
+    updateUserButton.setFont(new Font("Arial", Font.BOLD, 14));
+
+    gbc.gridx = 0; gbc.gridy = 0; formPanel.add(oldUserLabel, gbc);
+    gbc.gridx = 1; gbc.gridy = 0; formPanel.add(oldUserField, gbc);
+    gbc.gridx = 0; gbc.gridy = 1; formPanel.add(newUserLabel, gbc);
+    gbc.gridx = 1; gbc.gridy = 1; formPanel.add(newUserField, gbc);
+    gbc.gridx = 0; gbc.gridy = 2; formPanel.add(passLabel, gbc);
+    gbc.gridx = 1; gbc.gridy = 2; formPanel.add(passField, gbc);
+    gbc.gridx = 0; gbc.gridy = 3; formPanel.add(roleLabel, gbc);
+    gbc.gridx = 1; gbc.gridy = 3; formPanel.add(roleBox, gbc);
+    gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(updateUserButton, gbc);
+    gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+
+    updateUserButton.addActionListener(e -> {
+        String oldUser = oldUserField.getText().trim();
+        String newUser = newUserField.getText().trim();
+        String pass = new String(passField.getPassword()).trim();
+        String role = (String) roleBox.getSelectedItem();
+
+        try {
+            userDataManager.updateUser(oldUser, newUser, pass, role);
+            statusLabel.setForeground(Color.GREEN);
+            statusLabel.setText("Benutzerdaten aktualisiert!");
+        } catch (IllegalArgumentException ex) {
+            statusLabel.setForeground(Color.RED);
+            statusLabel.setText(ex.getMessage());
+        }
+    });
+
+    panel.add(formPanel, BorderLayout.CENTER);
+    return panel;
+}
 
     
 
@@ -345,60 +403,7 @@ private JPanel deleteUserPanel() {
     
     
 
-    private JPanel updateUserPanel(){
-        JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBackground(Color.white);
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
-    
-        JLabel userLabel = new JLabel("Benutzername:");
-        JTextField userField = new JTextField(15);
-        JLabel passLabel = new JLabel("Neues Passwort:");
-        JPasswordField passField = new JPasswordField(15);
-        JLabel roleLabel = new JLabel("Neue Rolle:");
-        String[] roles = {"Admin", "Mitarbeiter"};
-        JComboBox<String> roleBox = new JComboBox<>(roles);
-        JButton updateUserButton = new JButton("Aktualisieren");
-        JLabel statusLabel = new JLabel();
-    
-        Font labelFont = new Font("Arial", Font.PLAIN, 14);
-        userLabel.setFont(labelFont);
-        passLabel.setFont(labelFont);
-        roleLabel.setFont(labelFont);
-        updateUserButton.setFont(new Font("Arial", Font.BOLD, 14));
-    
-        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
-        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(passLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(passField, gbc);
-        gbc.gridx = 0; gbc.gridy = 2; formPanel.add(roleLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 2; formPanel.add(roleBox, gbc);
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; formPanel.add(updateUserButton, gbc);
-        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
-    
-        updateUserButton.addActionListener(e -> {
-            String user = userField.getText().trim();
-            String pass = new String(passField.getPassword()).trim();
-            String role = (String) roleBox.getSelectedItem();
-    
-            try {
-                userDataManager.updateUser(user, pass, role);
-                statusLabel.setForeground(Color.GREEN);
-                statusLabel.setText("Benutzerdaten aktualisiert!");
-            } catch (IllegalArgumentException ex) {
-                statusLabel.setForeground(Color.RED);
-                statusLabel.setText(ex.getMessage());
-            }
-        });
-    
-        panel.add(formPanel, BorderLayout.CENTER);
-        return panel;
-    }
-
+   
     private JPanel addRoomPanel(){
         JPanel panel = new JPanel(new BorderLayout());
         return panel;

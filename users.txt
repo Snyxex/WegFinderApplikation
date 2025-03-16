@@ -1,2 +1,2 @@
-test,password,Admin
+,,Mitarbeiter
 admin,password,Admin

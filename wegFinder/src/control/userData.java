@@ -119,20 +119,24 @@ public class userData {
             return admintrue;      
         }
         
-        public void updateUser(String username, String newPassword, String newRole) {
-            if (username.isEmpty()) {
-                throw new IllegalArgumentException("Benutzername darf nicht leer sein!");
+        public void updateUser(String oldUsername, String newUsername, String newPassword, String newRole) {
+            if (oldUsername.isEmpty()) {
+                throw new IllegalArgumentException("Alter Benutzername darf nicht leer sein!");
             }
         
-            if (users.containsKey(username)) {
+            if (users.containsKey(oldUsername)) {
                 // Benutzer existiert, also aktualisieren wir die Daten
-                users.put(username, new String[]{newPassword, newRole});
+                // Entfernen des alten Benutzernamens
+                String[] userData = users.remove(oldUsername);
+                
+                // Hinzufügen des neuen Benutzernamens
+                users.put(newUsername, new String[]{newPassword, newRole});
                 
                 // Speichern der aktualisierten Benutzerdaten in der Datei
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt"))) {
                     for (String userKey : users.keySet()) {
-                        String[] userData = users.get(userKey);
-                        writer.write(userKey + "," + userData[0] + "," + userData[1]);
+                        String[] data = users.get(userKey);
+                        writer.write(userKey + "," + data[0] + "," + data[1]);
                         writer.newLine();
                     }
                 } catch (IOException e) {
