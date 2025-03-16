@@ -1,4 +1,2 @@
-
-admin,password,Admin
-test,test,Admin
 test,password,Admin
+admin,password,Admin

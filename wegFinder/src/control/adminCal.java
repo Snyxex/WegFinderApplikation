@@ -429,7 +429,7 @@ private JPanel deleteUserPanel() {
        return panel;
     }
 
-     
+     //Keyboard pannel/popup
          private void keyboard(JTextField targetField) {
         JFrame keyboardFrame = new JFrame("Keyboard");
         keyboardFrame.setSize(700, 350);

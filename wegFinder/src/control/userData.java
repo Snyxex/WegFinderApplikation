@@ -127,7 +127,17 @@ public class userData {
             if (users.containsKey(username)) {
                 // Benutzer existiert, also aktualisieren wir die Daten
                 users.put(username, new String[]{newPassword, newRole});
-                saveUserToFile(username, newPassword, newRole); // Speichern der Benutzerdaten
+                
+                // Speichern der aktualisierten Benutzerdaten in der Datei
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt"))) {
+                    for (String userKey : users.keySet()) {
+                        String[] userData = users.get(userKey);
+                        writer.write(userKey + "," + userData[0] + "," + userData[1]);
+                        writer.newLine();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 refreshUserList(); // Benutzerliste aktualisieren
             } else {
                 throw new IllegalArgumentException("Benutzer existiert nicht!");
