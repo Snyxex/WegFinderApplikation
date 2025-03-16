@@ -349,9 +349,9 @@ private JPanel updateUserPanel() {
 
     JLabel oldUserLabel = new JLabel("Alter Benutzername:");
     JTextField oldUserField = new JTextField(15);
-    JLabel newUserLabel = new JLabel("Neuer Benutzername:");
+    JLabel newUserLabel = new JLabel("Neuer Benutzername (leer lassen, um den alten zu behalten):");
     JTextField newUserField = new JTextField(15);
-    JLabel passLabel = new JLabel("Neues Passwort:");
+    JLabel passLabel = new JLabel("Neues Passwort (leer lassen, um das alte zu behalten):");
     JPasswordField passField = new JPasswordField(15);
     JLabel roleLabel = new JLabel("Neue Rolle:");
     String[] roles = {"Admin", "Mitarbeiter"};
@@ -396,10 +396,6 @@ private JPanel updateUserPanel() {
     panel.add(formPanel, BorderLayout.CENTER);
     return panel;
 }
-
-    
-
-  
     
     
 

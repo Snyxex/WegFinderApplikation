@@ -1,2 +1,3 @@
 ,,Mitarbeiter
 admin,password,Admin
+user,password,Mitarbeiter

@@ -126,12 +126,24 @@ public class userData {
         
             if (users.containsKey(oldUsername)) {
                 // Benutzer existiert, also aktualisieren wir die Daten
-                // Entfernen des alten Benutzernamens
-                String[] userData = users.remove(oldUsername);
+                String[] existingData = users.get(oldUsername);
                 
-                // Hinzufügen des neuen Benutzernamens
+                // Wenn der neue Benutzername leer ist, verwenden wir den alten Benutzernamen
+                if (newUsername.isEmpty()) {
+                    newUsername = oldUsername;
+                } else {
+                    // Entfernen des alten Benutzernamens, wenn ein neuer Benutzername angegeben wird
+                    users.remove(oldUsername);
+                }
+        
+                // Wenn das neue Passwort leer ist, verwenden wir das alte Passwort
+                if (newPassword.isEmpty()) {
+                    newPassword = existingData[0];
+                }
+        
+                // Hinzufügen des neuen Benutzernamens und der neuen Daten
                 users.put(newUsername, new String[]{newPassword, newRole});
-                
+        
                 // Speichern der aktualisierten Benutzerdaten in der Datei
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt"))) {
                     for (String userKey : users.keySet()) {
