@@ -407,6 +407,7 @@ private JPanel updateUserPanel() {
     gbc.gridx = 1; gbc.gridy = 3; formPanel.add(roleBox, gbc);
     gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(updateUserButton, gbc);
     gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+    
 
     updateUserButton.addActionListener(e -> {
         String oldUser = oldUserField.getText().trim();
