@@ -271,235 +271,232 @@ public class adminCal extends JFrame {
         return panel;
     }
 
+
 /**
      * Creates the user deletion panel with confirmation workflow.
      * Requires admin password verification before deletion.
      * 
      * @return Configured panel for deleting users
      */
-private JPanel deleteUserPanel() {
-    JPanel panel = new JPanel(new BorderLayout(15, 15)); // Mehr Abstand für bessere Optik
-    panel.setBackground(Color.white);
-    panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-
-    JPanel formPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.fill = GridBagConstraints.HORIZONTAL;
-    gbc.insets = new Insets(8, 8, 8, 8); // Größere Abstände für bessere Lesbarkeit
-
-    JLabel userLabel = new JLabel("Benutzername:");
-    JTextField userField = new JTextField(20); // Größeres Eingabefeld
-
-    userField.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            keyboard(userField);
-        }
-    });
-    JLabel adminPassLabel = new JLabel("Admin Password:");
-    JTextField adminPasswordJField = new JTextField(20);
-        
-    adminPasswordJField.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            keyboard(adminPasswordJField);
-        }
-    });
-    JButton deleteButton = new JButton("Löschen");
-    JLabel statusLabel = new JLabel();
-
+    private JPanel deleteUserPanel() {
+        JPanel panel = new JPanel(new BorderLayout(15, 15)); // Mehr Abstand für bessere Optik
+        panel.setBackground(Color.white);
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
     
-    userLabel.setFont(new Font("Arial",Font.BOLD, 16));
-    adminPassLabel.setFont(new Font("Arial",Font.BOLD,16));
-    deleteButton.setFont(new Font("Arial",Font.BOLD, 16));
-
-    gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
-    gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
-    gbc.gridx = 0; gbc.gridy = 1; formPanel.add(adminPassLabel, gbc);
-    gbc.gridx = 1; gbc.gridy = 1; formPanel.add(adminPasswordJField, gbc);
-    gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; formPanel.add(deleteButton, gbc);
-    gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
-
-    deleteButton.addActionListener(e -> {
-        String selectedUser = userField.getText().trim();
-        String  adminPassword = adminPasswordJField.getText().trim();
-     
-        if (!selectedUser.isEmpty()) {
-            
-            
-
-            deleteButton.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e){
-                    keyboard(adminPasswordJField);
-                   
-                    adminPasswordJField.setText("");
-                }
-            });
-
-     
-        boolean isAdmin = userDataManager.loadAdminDataFromFile(logedinAdmin, adminPassword);
-            System.out.print(isAdmin);
-            System.out.println(adminPassword);
-                if(isAdmin){
-                    userDataManager.deleteUser(selectedUser);
-                    statusLabel.setForeground(Color.GREEN);
-                    statusLabel.setText("Benutzer gelöscht!");
-                    userField.setText("");
-                }else{
-                    statusLabel.setText("Password nicht Richtig");
-                }
-                
-                    
-            
-                
-        } else {
-            statusLabel.setForeground(Color.RED);
-            statusLabel.setText("Bitte Benutzername eingeben!");
-        }
-    });
-
-    JList<String> userList = new JList<>(userDataManager.getUserListModel());
-    JScrollPane scrollPane = new JScrollPane(userList);
-    scrollPane.setPreferredSize(new Dimension(250, 180));
-
-    JPanel listPanel = new JPanel(new BorderLayout());
-    JLabel listLabel = new JLabel("Benutzerliste:");
-    listLabel.setFont(new Font("Arial",Font.BOLD, 16));
-    listPanel.add(listLabel, BorderLayout.NORTH);
-    listPanel.add(scrollPane, BorderLayout.CENTER);
-
-    panel.add(formPanel, BorderLayout.CENTER);
-    panel.add(listPanel, BorderLayout.EAST);
-
-    return panel;
-}
- /**
-     * Creates panel for updating existing user information.
-     * Allows modification of username, password and role.
-     * 
-     * @return Configured panel for updating users
-     */
-private JPanel updateUserPanel() {
-    JPanel panel = new JPanel(new BorderLayout(10, 10));
-    panel.setBackground(Color.white);
-    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-    JPanel formPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.fill = GridBagConstraints.HORIZONTAL;
-    gbc.insets = new Insets(5, 5, 5, 5);
-
-    JLabel oldUserLabel = new JLabel("Alter Benutzername:");
-    JTextField oldUserField = new JTextField(15);
-    oldUserField.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            keyboard(oldUserField);
-        }
-    });
-    JLabel newUserLabel = new JLabel("Neuer Benutzername:");
-    JTextField newUserField = new JTextField(15);
-   newUserField.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            keyboard(newUserField);
-        }
-    });
-    JLabel passLabel = new JLabel("Neues Passwort:");
-    JPasswordField passField = new JPasswordField(15);
-    passField.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            keyboard(passField);
-        }
-    });
-    JTextField adminPasswordJField = new JTextField(20);
-        
-    adminPasswordJField.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            keyboard(adminPasswordJField);
-        }
-    });
-    JLabel roleLabel = new JLabel("Neue Rolle:");
-    String[] roles = {"Admin", "Mitarbeiter"};
-    JComboBox<String> roleBox = new JComboBox<>(roles);
-    JButton updateUserButton = new JButton("Aktualisieren");
-    JLabel statusLabel = new JLabel();
-
-    Font labelFont = new Font("Arial", Font.PLAIN, 14);
-    oldUserLabel.setFont(labelFont);
-    newUserLabel.setFont(labelFont);
-    passLabel.setFont(labelFont);
-    roleLabel.setFont(labelFont);
-    updateUserButton.setFont(new Font("Arial", Font.BOLD, 14));
-
-    gbc.gridx = 0; gbc.gridy = 0; formPanel.add(oldUserLabel, gbc);
-    gbc.gridx = 1; gbc.gridy = 0; formPanel.add(oldUserField, gbc);
-    gbc.gridx = 0; gbc.gridy = 1; formPanel.add(newUserLabel, gbc);
-    gbc.gridx = 1; gbc.gridy = 1; formPanel.add(newUserField, gbc);
-    gbc.gridx = 0; gbc.gridy = 2; formPanel.add(passLabel, gbc);
-    gbc.gridx = 1; gbc.gridy = 2; formPanel.add(passField, gbc);
-    gbc.gridx = 0; gbc.gridy = 3; formPanel.add(roleLabel, gbc);
-    gbc.gridx = 1; gbc.gridy = 3; formPanel.add(roleBox, gbc);
-    gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(updateUserButton, gbc);
-    gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(8, 8, 8, 8); // Größere Abstände für bessere Lesbarkeit
     
-    userList = new JList<>(userDataManager.getUserListModel());
-    JScrollPane scrollPane = new JScrollPane(userList);
-    scrollPane.setPreferredSize(new Dimension(200, 150));
-
-    JPanel listPanel = new JPanel(new BorderLayout());
-    JLabel listLabel = new JLabel("Benutzerliste:");
-    listLabel.setFont(new Font("Arial", Font.BOLD, 14));
-    listPanel.add(listLabel, BorderLayout.NORTH);
-    listPanel.add(scrollPane, BorderLayout.CENTER);
-
-    panel.add(listPanel, BorderLayout.EAST);
-
-    updateUserButton.addActionListener(e -> {
-        String  adminPassword = adminPasswordJField.getText().trim();
-        String oldUser = oldUserField.getText().trim();
-        String newUser = newUserField.getText().trim();
-        String pass = new String(passField.getPassword()).trim();
-        String role = (String) roleBox.getSelectedItem();
-
-      
-
-        updateUserButton.addMouseListener(new MouseAdapter() {
+        JLabel userLabel = new JLabel("Benutzername:");
+        JTextField userField = new JTextField(20); // Größeres Eingabefeld
+    
+        userField.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e){
-                keyboard(adminPasswordJField);
-               
-                adminPasswordJField.setText("");
+            public void mouseClicked(MouseEvent e) {
+                keyboard(userField);
             }
         });
-        boolean isAdmin = userDataManager.loadAdminDataFromFile(logedinAdmin, adminPassword);
-            System.out.print(isAdmin);
-            System.out.println(adminPassword);
-                if(isAdmin){
-                    try {
-                        userDataManager.updateUser(oldUser, newUser, pass, role);
+        JLabel adminPassLabel = new JLabel("Admin Password:");
+        JTextField adminPasswordJField = new JTextField(20);
+            
+        adminPasswordJField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                keyboard(adminPasswordJField);
+            }
+        });
+        JButton deleteButton = new JButton("Löschen");
+        JLabel statusLabel = new JLabel();
+    
+        
+        userLabel.setFont(new Font("Arial",Font.BOLD, 16));
+        adminPassLabel.setFont(new Font("Arial",Font.BOLD,16));
+        deleteButton.setFont(new Font("Arial",Font.BOLD, 16));
+    
+        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(adminPassLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(adminPasswordJField, gbc);
+        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; formPanel.add(deleteButton, gbc);
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+    
+        deleteButton.addActionListener(e -> {
+            String selectedUser = userField.getText().trim();
+            String  adminPassword = adminPasswordJField.getText().trim();
+         
+            if (!selectedUser.isEmpty()) {
+                
+                
+    
+                deleteButton.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e){
+                        keyboard(adminPasswordJField);
+                       
+                        adminPasswordJField.setText("");
+                    }
+                });
+    
+         
+            boolean isAdmin = userDataManager.loadAdminDataFromFile(logedinAdmin, adminPassword);
+                System.out.print(isAdmin);
+                System.out.println(adminPassword);
+                    if(isAdmin){
+                        userDataManager.deleteUser(selectedUser);
                         statusLabel.setForeground(Color.GREEN);
-                        statusLabel.setText("Benutzerdaten aktualisiert!");
-                    } catch (IllegalArgumentException ex) {
-                        statusLabel.setForeground(Color.RED);
-                        statusLabel.setText(ex.getMessage());
+                        statusLabel.setText("Benutzer gelöscht!");
+                        userField.setText("");
+                    }else{
+                        statusLabel.setText("Password nicht Richtig");
                     }
                     
+                        
+                
                     
-                }else{
-                    statusLabel.setForeground(Color.RED);
-                    statusLabel.setText("Password nicht Richtig");
-                }
-    });
-   
-    panel.add(adminPasswordJField);
-    panel.add(formPanel, BorderLayout.CENTER);
-    return panel;
-}
+            } else {
+                statusLabel.setForeground(Color.RED);
+                statusLabel.setText("Bitte Benutzername eingeben!");
+            }
+        });
     
+        JList<String> userList = new JList<>(userDataManager.getUserListModel());
+        JScrollPane scrollPane = new JScrollPane(userList);
+        scrollPane.setPreferredSize(new Dimension(250, 180));
+    
+        JPanel listPanel = new JPanel(new BorderLayout());
+        JLabel listLabel = new JLabel("Benutzerliste:");
+        listLabel.setFont(new Font("Arial",Font.BOLD, 16));
+        listPanel.add(listLabel, BorderLayout.NORTH);
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+    
+        panel.add(formPanel, BorderLayout.CENTER);
+        panel.add(listPanel, BorderLayout.EAST);
+    
+        return panel;
+    }
+     /**
+         * Creates panel for updating existing user information.
+         * Allows modification of username, password and role.
+         * 
+         * @return Configured panel for updating users
+         */
+    private JPanel updateUserPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(Color.white);
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+    
+        JLabel oldUserLabel = new JLabel("Alter Benutzername:");
+        JTextField oldUserField = new JTextField(15);
+        oldUserField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                keyboard(oldUserField);
+            }
+        });
+        JLabel newUserLabel = new JLabel("Neuer Benutzername:");
+        JTextField newUserField = new JTextField(15);
+       newUserField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                keyboard(newUserField);
+            }
+        });
+        JLabel passLabel = new JLabel("Neues Passwort:");
+        JPasswordField passField = new JPasswordField(15);
+        passField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                keyboard(passField);
+            }
+        });
+        JLabel adminPassLabel = new JLabel("Admin Password:");
+        JTextField adminPasswordJField = new JTextField(20);
+            
+        adminPasswordJField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                keyboard(adminPasswordJField);
+            }
+        });
+        JLabel roleLabel = new JLabel("Neue Rolle:");
+        String[] roles = {"Admin", "Mitarbeiter"};
+        JComboBox<String> roleBox = new JComboBox<>(roles);
+        JButton updateUserButton = new JButton("Aktualisieren");
+        JLabel statusLabel = new JLabel();
+    
+        Font labelFont = new Font("Arial", Font.PLAIN, 14);
+        adminPassLabel.setFont(labelFont);
+        oldUserLabel.setFont(labelFont);
+        newUserLabel.setFont(labelFont);
+        passLabel.setFont(labelFont);
+        roleLabel.setFont(labelFont);
+        updateUserButton.setFont(new Font("Arial", Font.BOLD, 14));
+    
+        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(oldUserLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 0; formPanel.add(oldUserField, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(newUserLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(newUserField, gbc);
+        gbc.gridx = 0; gbc.gridy = 2; formPanel.add(passLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 2; formPanel.add(passField, gbc);
+        gbc.gridx = 0; gbc.gridy = 3; formPanel.add(roleLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 3; formPanel.add(roleBox, gbc);
+        gbc.gridx = 0; gbc.gridy = 4; formPanel.add(adminPassLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 4; formPanel.add(adminPasswordJField,gbc);
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2; formPanel.add(updateUserButton, gbc);
+        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+       
+        userList = new JList<>(userDataManager.getUserListModel());
+        JScrollPane scrollPane = new JScrollPane(userList);
+        scrollPane.setPreferredSize(new Dimension(200, 150));
+    
+        JPanel listPanel = new JPanel(new BorderLayout());
+        JLabel listLabel = new JLabel("Benutzerliste:");
+        listLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        listPanel.add(listLabel, BorderLayout.NORTH);
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+    
+        panel.add(listPanel, BorderLayout.EAST);
+    
+        updateUserButton.addActionListener(e -> {
+            String  adminPassword = adminPasswordJField.getText().trim();
+            String oldUser = oldUserField.getText().trim();
+            String newUser = newUserField.getText().trim();
+            String pass = new String(passField.getPassword()).trim();
+            String role = (String) roleBox.getSelectedItem();
+    
+    
+            boolean isAdmin = userDataManager.loadAdminDataFromFile(logedinAdmin, adminPassword);
+                
+                System.out.println(adminPassword);
+                System.out.print(isAdmin);
+                    if(isAdmin){
+                        try {
+                            userDataManager.updateUser(oldUser, newUser, pass, role);
+                            statusLabel.setForeground(Color.GREEN);
+                            statusLabel.setText("Benutzerdaten aktualisiert!");
+                            adminPasswordJField.setText("");
+                        } catch (IllegalArgumentException ex) {
+                            statusLabel.setForeground(Color.RED);
+                            statusLabel.setText(ex.getMessage());
+                        }
+                        
+                        
+                    }else{
+                        statusLabel.setForeground(Color.RED);
+                        statusLabel.setText("Password nicht Richtig");
+                    }
+        });
+       
+        
+        panel.add(formPanel, BorderLayout.CENTER);
+        return panel;
+    }
     
 
    
