@@ -25,6 +25,8 @@ public class adminCal extends JFrame {
      
      /** Manager class for handling user data operations */
      private userData userDataManager;
+
+    public String logedinAdmin = "jason";
  /**
      * Initializes and displays the admin dashboard.
      * Sets up the main window, menu bar, and all management panels.
@@ -88,6 +90,14 @@ public class adminCal extends JFrame {
         roomMenu.add(createMenuItem("Raum Sperren", e -> switchToPanel("Lock Room")));
         roomMenu.add(createMenuItem("Flur Sperren", e -> switchToPanel("Lock Corridor")));
     
+
+        // SigOut Nav-Menü
+        JMenu signOut = new JMenu("Sign Out");
+        signOut.add(createMenuItem("Sign Out", e -> System.out.print("abgmeldet")));
+
+       
+
+
         // Einheitliche Schriftart und Farbe für Menüs
         
         
@@ -95,13 +105,15 @@ public class adminCal extends JFrame {
         dashboardMenu.setFont(new Font("Arial", Font.BOLD, 16));
         userMenu.setFont(new Font("Arial", Font.BOLD, 16));
         roomMenu.setFont(new Font("Arial", Font.BOLD, 16));
-    
+        signOut.setFont(new Font("Arial",Font.BOLD,16));
         
     
         // Menüs zur Menüleiste hinzufügen
         menuBar.add(dashboardMenu);
         menuBar.add(userMenu);
         menuBar.add(roomMenu);
+        menuBar.add(Box.createHorizontalGlue());
+        menuBar.add(signOut);
     
         this.setJMenuBar(menuBar);
     }
@@ -325,7 +337,7 @@ private JPanel deleteUserPanel() {
                 }
             });
 
-        String logedinAdmin = "jason";
+     
         boolean isAdmin = userDataManager.loadAdminDataFromFile(logedinAdmin, adminPassword);
             System.out.print(isAdmin);
             System.out.println(adminPassword);
@@ -380,10 +392,36 @@ private JPanel updateUserPanel() {
 
     JLabel oldUserLabel = new JLabel("Alter Benutzername:");
     JTextField oldUserField = new JTextField(15);
-    JLabel newUserLabel = new JLabel("Neuer Benutzername (leer lassen, um den alten zu behalten):");
+    oldUserField.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            keyboard(oldUserField);
+        }
+    });
+    JLabel newUserLabel = new JLabel("Neuer Benutzername:");
     JTextField newUserField = new JTextField(15);
-    JLabel passLabel = new JLabel("Neues Passwort (leer lassen, um das alte zu behalten):");
+   newUserField.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            keyboard(newUserField);
+        }
+    });
+    JLabel passLabel = new JLabel("Neues Passwort:");
     JPasswordField passField = new JPasswordField(15);
+    passField.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            keyboard(passField);
+        }
+    });
+    JTextField adminPasswordJField = new JTextField(20);
+        
+    adminPasswordJField.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            keyboard(adminPasswordJField);
+        }
+    });
     JLabel roleLabel = new JLabel("Neue Rolle:");
     String[] roles = {"Admin", "Mitarbeiter"};
     JComboBox<String> roleBox = new JComboBox<>(roles);
@@ -408,23 +446,56 @@ private JPanel updateUserPanel() {
     gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(updateUserButton, gbc);
     gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
     
+    userList = new JList<>(userDataManager.getUserListModel());
+    JScrollPane scrollPane = new JScrollPane(userList);
+    scrollPane.setPreferredSize(new Dimension(200, 150));
+
+    JPanel listPanel = new JPanel(new BorderLayout());
+    JLabel listLabel = new JLabel("Benutzerliste:");
+    listLabel.setFont(new Font("Arial", Font.BOLD, 14));
+    listPanel.add(listLabel, BorderLayout.NORTH);
+    listPanel.add(scrollPane, BorderLayout.CENTER);
+
+    panel.add(listPanel, BorderLayout.EAST);
 
     updateUserButton.addActionListener(e -> {
+        String  adminPassword = adminPasswordJField.getText().trim();
         String oldUser = oldUserField.getText().trim();
         String newUser = newUserField.getText().trim();
         String pass = new String(passField.getPassword()).trim();
         String role = (String) roleBox.getSelectedItem();
 
-        try {
-            userDataManager.updateUser(oldUser, newUser, pass, role);
-            statusLabel.setForeground(Color.GREEN);
-            statusLabel.setText("Benutzerdaten aktualisiert!");
-        } catch (IllegalArgumentException ex) {
-            statusLabel.setForeground(Color.RED);
-            statusLabel.setText(ex.getMessage());
-        }
-    });
+      
 
+        updateUserButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e){
+                keyboard(adminPasswordJField);
+               
+                adminPasswordJField.setText("");
+            }
+        });
+        boolean isAdmin = userDataManager.loadAdminDataFromFile(logedinAdmin, adminPassword);
+            System.out.print(isAdmin);
+            System.out.println(adminPassword);
+                if(isAdmin){
+                    try {
+                        userDataManager.updateUser(oldUser, newUser, pass, role);
+                        statusLabel.setForeground(Color.GREEN);
+                        statusLabel.setText("Benutzerdaten aktualisiert!");
+                    } catch (IllegalArgumentException ex) {
+                        statusLabel.setForeground(Color.RED);
+                        statusLabel.setText(ex.getMessage());
+                    }
+                    
+                    
+                }else{
+                    statusLabel.setForeground(Color.RED);
+                    statusLabel.setText("Password nicht Richtig");
+                }
+    });
+   
+    panel.add(adminPasswordJField);
     panel.add(formPanel, BorderLayout.CENTER);
     return panel;
 }
@@ -457,11 +528,57 @@ private JPanel updateUserPanel() {
        return panel;
     }
    
-    private JPanel helpPanel(){
-        JPanel panel = new JPanel(new BorderLayout());
-       return panel;
+    private JPanel helpPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    
+        // Überschrift
+        JLabel titleLabel = new JLabel("Hilfe & Dokumentation", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        panel.add(titleLabel, BorderLayout.NORTH);
+    
+        // Hilfetext erstellen
+        String helpText = "Nutzer Management:\n" +
+                         "------------------\n" +
+                         "• Nutzer Hinzufügen: Erstellen Sie neue Benutzerkonten mit Benutzername, Passwort und Rolle (Admin/Mitarbeiter).\n" +
+                         "• Nutzer Updaten: Aktualisieren Sie bestehende Benutzerkonten (Passwort oder Rolle ändern),\n(für Alten Benutzer Namen feld (Neuer Nutzer leer lassen),(für Altes Password Neues Password Feld leer lassen)).\n" +
+                         "• Nutzer Löschen: Entfernen Sie Benutzerkonten aus dem System (erfordert Admin-Berechtigung).\n\n" +
+                         "Raum Management:\n" +
+                         "---------------\n" +
+                         "• Raum Hinzufügen: Fügen Sie neue Räume zum System hinzu.\n" +
+                         "• Raum Updaten: Aktualisieren Sie Rauminformationen.\n" +
+                         "• Raum Löschen: Entfernen Sie Räume aus dem System.\n" +
+                         "• Raum Sperren: Markieren Sie Räume als nicht zugänglich.\n" +
+                         "• Flur Sperren: Sperren Sie Verbindungswege zwischen Räumen.\n\n" +
+                         "Navigation:\n" +
+                         "----------\n" +
+                         "• Dashboard: Übersicht über das System und Hauptfunktionen.\n" +
+                         "• Menüleiste: Schneller Zugriff auf alle Funktionen.\n" +
+                         "• Sign Out: Sicheres Abmelden vom System.\n\n" +
+                         "Tastatur:\n" +
+                         "---------\n" +
+                         "• Virtuelle Tastatur für sichere Eingabe.\n" +
+                         "• CAPS-Taste für Großbuchstaben.\n" +
+                         "• Eingabe bestätigen mit ENTER.";
+    
+        // Text in JTextArea anzeigen
+        JTextArea helpTextArea = new JTextArea(helpText);
+        helpTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        helpTextArea.setEditable(false);
+        helpTextArea.setMargin(new Insets(10, 10, 10, 10));
+        helpTextArea.setBackground(new Color(245, 245, 245));
+        helpTextArea.setLineWrap(true);
+        helpTextArea.setWrapStyleWord(true);
+    
+        // ScrollPane für den Text
+        JScrollPane scrollPane = new JScrollPane(helpTextArea);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        panel.add(scrollPane, BorderLayout.CENTER);
+    
+        return panel;
     }
-
+        
      /**
      * Displays an on-screen keyboard for text input.
      * Supports uppercase/lowercase and basic text editing.
