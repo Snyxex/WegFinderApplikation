@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.HashMap;
 import javax.swing.DefaultListModel;
 
-public class userData {
+public class UserData {
 
         /** Stores user data with username as key and [password, role] as value */
     private HashMap<String, String[]> users;
@@ -16,7 +16,7 @@ public class userData {
      * Initializes user data management system.
      * Creates empty user storage and loads existing users from file.
      */
-    public userData() {
+    public UserData() {
         users = new HashMap<>();
         userListModel = new DefaultListModel<>();
         loadUsersFromFile();

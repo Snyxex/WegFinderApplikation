@@ -12,7 +12,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Font;
 
-public class adminCal extends JFrame {
+public class AdminCal extends JFrame {
 
      /** CardLayout manager for switching between different panels */
      private CardLayout cardLayout;
@@ -24,7 +24,7 @@ public class adminCal extends JFrame {
      private JList<String> userList;
      
      /** Manager class for handling user data operations */
-     private userData userDataManager;
+     private UserData userDataManager;
 
     public String logedinAdmin = "jason";
  /**
@@ -32,7 +32,7 @@ public class adminCal extends JFrame {
      * Sets up the main window, menu bar, and all management panels.
      */
     protected void adminPage() {
-        userDataManager = new userData();
+        userDataManager = new UserData();
         
         
 
