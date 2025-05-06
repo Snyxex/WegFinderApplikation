@@ -335,15 +335,7 @@ public class AdminCal extends JFrame {
             if (!selectedUser.isEmpty()) {
                 
                 
-    
-                deleteButton.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e){
-                        new CustomKeyboard(adminPasswordJField);
-                       
-                        adminPasswordJField.setText("");
-                    }
-                });
+
     
          
             boolean isAdmin = userDataManager.loadAdminDataFromFile(logedinAdmin, adminPassword);
@@ -354,6 +346,7 @@ public class AdminCal extends JFrame {
                         statusLabel.setForeground(Color.GREEN);
                         statusLabel.setText("Benutzer gelöscht!");
                         userField.setText("");
+                        adminPasswordJField.setText("");
                     }else{
                         statusLabel.setText("Password nicht Richtig");
                     }
