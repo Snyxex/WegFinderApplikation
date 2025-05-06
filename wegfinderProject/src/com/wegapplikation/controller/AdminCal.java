@@ -1,4 +1,6 @@
-package control;
+package com.wegapplikation.controller;
+import com.wegapplikation.CustomKeyboard;
+import com.wegapplikation.model.UserData;
 import java.awt.event.*;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -26,14 +28,18 @@ public class AdminCal extends JFrame {
      /** Manager class for handling user data operations */
      private UserData userDataManager;
 
+
+
     public String logedinAdmin = "jason";
  /**
      * Initializes and displays the admin dashboard.
      * Sets up the main window, menu bar, and all management panels.
      */
     protected void adminPage() {
+        /** Neues Objekt Für UserData  */
         userDataManager = new UserData();
         
+        /** Neues Objekt Für Die Tastatur  */
         
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -218,7 +224,8 @@ public class AdminCal extends JFrame {
         userField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                keyboard(userField);
+                new CustomKeyboard(userField);
+               
                 userField.setText("");
             }
         });
@@ -226,7 +233,7 @@ public class AdminCal extends JFrame {
         passField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                keyboard(passField);
+                new CustomKeyboard(passField);
                 passField.setText("");
             }
         });
@@ -294,7 +301,7 @@ public class AdminCal extends JFrame {
         userField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                keyboard(userField);
+                 new CustomKeyboard(userField);
             }
         });
         JLabel adminPassLabel = new JLabel("Admin Password:");
@@ -303,7 +310,7 @@ public class AdminCal extends JFrame {
         adminPasswordJField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                keyboard(adminPasswordJField);
+                new CustomKeyboard(adminPasswordJField);
             }
         });
         JButton deleteButton = new JButton("Löschen");
@@ -332,7 +339,7 @@ public class AdminCal extends JFrame {
                 deleteButton.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e){
-                        keyboard(adminPasswordJField);
+                        new CustomKeyboard(adminPasswordJField);
                        
                         adminPasswordJField.setText("");
                     }
@@ -396,7 +403,7 @@ public class AdminCal extends JFrame {
         oldUserField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                keyboard(oldUserField);
+                new CustomKeyboard(oldUserField);
             }
         });
         JLabel newUserLabel = new JLabel("Neuer Benutzername:");
@@ -404,7 +411,7 @@ public class AdminCal extends JFrame {
        newUserField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                keyboard(newUserField);
+                new CustomKeyboard(newUserField);
             }
         });
         JLabel passLabel = new JLabel("Neues Passwort:");
@@ -412,7 +419,7 @@ public class AdminCal extends JFrame {
         passField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                keyboard(passField);
+               new CustomKeyboard(passField);
             }
         });
         JLabel adminPassLabel = new JLabel("Admin Password:");
@@ -421,7 +428,7 @@ public class AdminCal extends JFrame {
         adminPasswordJField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                keyboard(adminPasswordJField);
+               new  CustomKeyboard(adminPasswordJField);
             }
         });
         JLabel roleLabel = new JLabel("Neue Rolle:");
@@ -576,112 +583,7 @@ public class AdminCal extends JFrame {
         return panel;
     }
         
-     /**
-     * Displays an on-screen keyboard for text input.
-     * Supports uppercase/lowercase and basic text editing.
-     * 
-     * @param targetField The text field that will receive the keyboard input
-     */
-         private void keyboard(JTextField targetField) {
-        JFrame keyboardFrame = new JFrame("Keyboard");
-        keyboardFrame.setSize(700, 350);
-        keyboardFrame.setLayout(new BorderLayout());
-        keyboardFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    
-        // Textfeld für Live-Eingabe
-        JTextField keyboardInputField = new JTextField(targetField.getText(), 20);
-        keyboardInputField.setFont(new Font("Arial", Font.BOLD, 16));
-        keyboardInputField.setHorizontalAlignment(JTextField.CENTER);
-        keyboardInputField.setEditable(false);
-        keyboardFrame.add(keyboardInputField, BorderLayout.NORTH);
-    
-        // Haupt-Panel für die Tastatur
-        JPanel mainPanel = new JPanel(new GridLayout(4, 1, 5, 5));
-    
-        // Zeilen mit separaten Panels
-        JPanel row1 = new JPanel(new GridLayout(1, 10, 5, 5)); // Zahlenreihe
-        JPanel row2 = new JPanel(new GridLayout(1, 9, 5, 5));  // Erste Buchstabenreihe
-        JPanel row3 = new JPanel(new GridLayout(1, 10, 5, 5)); // Zweite Buchstabenreihe
-        JPanel row4 = new JPanel(new GridLayout(1, 10, 5, 5)); // Dritte Buchstabenreihe
-    
-        // Variable für Caps-Lock-Status
-        final boolean[] capsLock = {false};
-    
-        // Zahlenreihe
-        String[] numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
-        for (String key : numbers) row1.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame, capsLock));
-    
-        // Erste Buchstabenreihe (Q verschoben)
-        String[] row1Keys = {"", "Q", "W", "E", "R", "T", "Z", "U", "I", "O"};
-        for (String key : row1Keys) row2.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame, capsLock));
-    
-        // Zweite Buchstabenreihe
-        String[] row2Keys = {"P", "A", "S", "D", "F", "G", "H", "J", "K", "L"};
-        for (String key : row2Keys) row3.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame, capsLock));
-    
-        // Dritte Buchstabenreihe mit Steuerungstasten
-        String[] row3Keys = {"<-", "Y", "X", "C", "V", "B", "N", "M", ",", "."};
-        for (String key : row3Keys) row4.add(createKeyButton(key, keyboardInputField, targetField, keyboardFrame, capsLock));
-    
-        // Steuerungstasten (ENTER, CAPS)
-        JButton capsButton = new JButton("CAPS");
-        capsButton.setFont(new Font("Arial", Font.BOLD, 14));
-        capsButton.addActionListener(e -> {
-            capsLock[0] = !capsLock[0]; // Umschalten von Caps-Lock
-            capsButton.setBackground(capsLock[0] ? Color.LIGHT_GRAY : null);
-        });
-    
-        row4.add(createKeyButton("ENTER", keyboardInputField, targetField, keyboardFrame, capsLock));
-        row4.add(capsButton);
-    
-        // Panels zur Haupttastatur hinzufügen
-        mainPanel.add(row1);
-        mainPanel.add(row2);
-        mainPanel.add(row3);
-        mainPanel.add(row4);
-        keyboardFrame.add(mainPanel, BorderLayout.CENTER);
-    
-        keyboardFrame.setLocationRelativeTo(null);
-        keyboardFrame.setVisible(true);
-    }
-    
-    /**
-     * Creates a styled keyboard button with appropriate action listener.
-     * 
-     * @param key The key text to display
-     * @param keyboardInputField Field showing current input
-     * @param targetField Field that will receive final input
-     * @param keyboardFrame Parent keyboard frame
-     * @param capsLock Array holding caps lock state
-     * @return Configured button for the on-screen keyboard
-     */
-    private JButton createKeyButton(String key, JTextField keyboardInputField, JTextField targetField, JFrame keyboardFrame, boolean[] capsLock) {
-        JButton button = new JButton(key);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-    
-        if (key.equals("")) {
-            button.setVisible(false); // Platzhalter für "Q"
-        } else if (key.equals("ENTER")) {
-            button.addActionListener(e -> {
-                targetField.setText(keyboardInputField.getText());
-                keyboardFrame.dispose();
-            });
-        } else if (key.equals("<-")) {
-            button.addActionListener(e -> {
-                String text = keyboardInputField.getText();
-                if (!text.isEmpty()) {
-                    keyboardInputField.setText(text.substring(0, text.length() - 1));
-                }
-            });
-        } else {
-            button.addActionListener(e -> {
-                String inputKey = capsLock[0] ? key.toUpperCase() : key.toLowerCase();
-                keyboardInputField.setText(keyboardInputField.getText() + inputKey);
-            });
-        }
-    
-        return button;
-    }
+     
     
    
 }
