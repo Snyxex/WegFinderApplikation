@@ -1,3 +1,6 @@
 jason,password,Admin
 admin,admin,Mitarbeiter
 user,password,Mitarbeiter
+kinia,kinia,Admin
+1111,222,Admin
+11112,23333,Admin

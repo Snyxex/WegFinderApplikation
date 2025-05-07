@@ -22,7 +22,10 @@ public class UserData {
         users = new HashMap<>();
         userListModel = new DefaultListModel<>();
         loadUsersFromFile();
+        refreshUserList();
     }
+
+    
     
        /**
      * Deletes a user from the system.
@@ -214,6 +217,15 @@ public class UserData {
      */
     private void refreshUserList() {
         userListModel.removeAllElements();
+        users.forEach((key, value) -> {
+            if (value[1].equals("Admin")) {
+                value[0] = "*****"; // Mask the password for admin users
+                
+                
+            }
+            
+        });
+        
         users.forEach((key, value) -> userListModel.addElement(key + "," + value[0] + " (" + value[1] + ")"));
     }
     

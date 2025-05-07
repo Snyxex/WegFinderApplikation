@@ -53,6 +53,7 @@ public class AdminCal extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
+        
         // Panels hinzufügen
         mainPanel.add(adminDashboardPanel(), "Admin Dashboard");
         mainPanel.add(addUserPanel(), "Add User");
@@ -108,10 +109,10 @@ public class AdminCal extends JFrame {
         
         
     
-        dashboardMenu.setFont(new Font("Arial", Font.BOLD, 16));
-        userMenu.setFont(new Font("Arial", Font.BOLD, 16));
-        roomMenu.setFont(new Font("Arial", Font.BOLD, 16));
-        signOut.setFont(new Font("Arial",Font.BOLD,16));
+        dashboardMenu.setFont(new Font("Arial", Font.BOLD, 15));
+        userMenu.setFont(new Font("Arial", Font.BOLD, 15));
+        roomMenu.setFont(new Font("Arial", Font.BOLD, 15));
+        signOut.setFont(new Font("Arial",Font.BOLD,15));
         
     
         // Menüs zur Menüleiste hinzufügen
@@ -132,7 +133,7 @@ public class AdminCal extends JFrame {
      */
     private JMenuItem createMenuItem(String text, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(text);
-        menuItem.setFont(new Font("Arial", Font.PLAIN, 16));
+        menuItem.setFont(new Font("Arial", Font.PLAIN, 15));
     
         // Hintergrund- und Schriftfarbe setzen
         menuItem.setOpaque(true);
@@ -165,7 +166,7 @@ public class AdminCal extends JFrame {
      */
     private JPanel adminDashboardPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(Color.white);
         JLabel titleLabel = new JLabel("Admin Dashboard", SwingConstants.CENTER);
         
        
@@ -197,7 +198,7 @@ public class AdminCal extends JFrame {
      */
     private JPanel addUserPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10)); 
-        panel.setBackground(Color.white);
+        panel.setBackground(Color.lightGray);
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
     
         JPanel formPanel = new JPanel(new GridBagLayout());
@@ -205,6 +206,8 @@ public class AdminCal extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
     
+        JLabel titleLabel = new JLabel("Benutzer Hinzufügen", SwingConstants.CENTER);
+
         JLabel userLabel = new JLabel("Benutzername:");
         JTextField userField = new JTextField(15);
         JLabel passLabel = new JLabel("Passwort:");
@@ -216,6 +219,7 @@ public class AdminCal extends JFrame {
         JLabel statusLabel = new JLabel();
     
         Font labelFont = new Font("Arial", Font.PLAIN, 14);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         userLabel.setFont(labelFont);
         passLabel.setFont(labelFont);
         roleLabel.setFont(labelFont);
@@ -237,15 +241,15 @@ public class AdminCal extends JFrame {
                 passField.setText("");
             }
         });
-    
-        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
-        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(passLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(passField, gbc);
-        gbc.gridx = 0; gbc.gridy = 2; formPanel.add(roleLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 2; formPanel.add(roleBox, gbc);
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; formPanel.add(addUserButton, gbc);
-        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+        gbc .gridx = 0; gbc.gridy = 0; formPanel.add(titleLabel, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(userLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(userField, gbc);
+        gbc.gridx = 0; gbc.gridy = 2; formPanel.add(passLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 2; formPanel.add(passField, gbc);
+        gbc.gridx = 0; gbc.gridy = 3; formPanel.add(roleLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 3; formPanel.add(roleBox, gbc);
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(addUserButton, gbc);
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
     
         userList = new JList<>(userDataManager.getUserListModel());
         JScrollPane scrollPane = new JScrollPane(userList);
@@ -269,10 +273,14 @@ public class AdminCal extends JFrame {
                 userDataManager.addUser(user, pass, role);
                 statusLabel.setForeground(Color.GREEN);
                 statusLabel.setText("Benutzer hinzugefügt!");
+               
             } catch (IllegalArgumentException ex) {
                 statusLabel.setForeground(Color.RED);
                 statusLabel.setText(ex.getMessage());
             }
+            // Eingabefelder zurücksetzen
+            userField.setText("");
+            passField.setText("");
         });
     
         return panel;
@@ -286,15 +294,16 @@ public class AdminCal extends JFrame {
      * @return Configured panel for deleting users
      */
     private JPanel deleteUserPanel() {
-        JPanel panel = new JPanel(new BorderLayout(15, 15)); // Mehr Abstand für bessere Optik
-        panel.setBackground(Color.white);
-        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        JPanel panel = new JPanel(new BorderLayout(10, 10)); // Mehr Abstand für bessere Optik
+        panel.setBackground(Color.lightGray);
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(8, 8, 8, 8); // Größere Abstände für bessere Lesbarkeit
+        gbc.insets = new Insets(5, 5, 5, 5); // Größere Abstände für bessere Lesbarkeit
     
+        JLabel titleLabel = new JLabel("Benutzer Löschen", SwingConstants.CENTER);
         JLabel userLabel = new JLabel("Benutzername:");
         JTextField userField = new JTextField(20); // Größeres Eingabefeld
     
@@ -316,17 +325,19 @@ public class AdminCal extends JFrame {
         JButton deleteButton = new JButton("Löschen");
         JLabel statusLabel = new JLabel();
     
-        
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         userLabel.setFont(new Font("Arial",Font.BOLD, 16));
         adminPassLabel.setFont(new Font("Arial",Font.BOLD,16));
         deleteButton.setFont(new Font("Arial",Font.BOLD, 16));
     
-        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(userLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 0; formPanel.add(userField, gbc);
-        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(adminPassLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(adminPasswordJField, gbc);
+        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(titleLabel, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(userLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(userField, gbc);
+        gbc.gridx = 0; gbc.gridy = 2; formPanel.add(adminPassLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 2; formPanel.add(adminPasswordJField, gbc);
         gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; formPanel.add(deleteButton, gbc);
         gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+        
     
         deleteButton.addActionListener(e -> {
             String selectedUser = userField.getText().trim();
@@ -345,8 +356,6 @@ public class AdminCal extends JFrame {
                         userDataManager.deleteUser(selectedUser);
                         statusLabel.setForeground(Color.GREEN);
                         statusLabel.setText("Benutzer gelöscht!");
-                        userField.setText("");
-                        adminPasswordJField.setText("");
                     }else{
                         statusLabel.setText("Password nicht Richtig");
                     }
@@ -358,15 +367,18 @@ public class AdminCal extends JFrame {
                 statusLabel.setForeground(Color.RED);
                 statusLabel.setText("Bitte Benutzername eingeben!");
             }
+            // Eingabefelder zurücksetzen
+            userField.setText("");
+            adminPasswordJField.setText("");
         });
     
         JList<String> userList = new JList<>(userDataManager.getUserListModel());
         JScrollPane scrollPane = new JScrollPane(userList);
-        scrollPane.setPreferredSize(new Dimension(250, 180));
+        scrollPane.setPreferredSize(new Dimension(200, 150));
     
         JPanel listPanel = new JPanel(new BorderLayout());
         JLabel listLabel = new JLabel("Benutzerliste:");
-        listLabel.setFont(new Font("Arial",Font.BOLD, 16));
+        listLabel.setFont(new Font("Arial",Font.BOLD, 15));
         listPanel.add(listLabel, BorderLayout.NORTH);
         listPanel.add(scrollPane, BorderLayout.CENTER);
     
@@ -383,7 +395,7 @@ public class AdminCal extends JFrame {
          */
     private JPanel updateUserPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBackground(Color.white);
+        panel.setBackground(Color.lightGray);
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     
         JPanel formPanel = new JPanel(new GridBagLayout());
@@ -424,32 +436,36 @@ public class AdminCal extends JFrame {
                new  CustomKeyboard(adminPasswordJField);
             }
         });
+
+        JLabel titleLabel = new JLabel("Benutzer Updaten", SwingConstants.CENTER); 
         JLabel roleLabel = new JLabel("Neue Rolle:");
         String[] roles = {"Admin", "Mitarbeiter"};
         JComboBox<String> roleBox = new JComboBox<>(roles);
         JButton updateUserButton = new JButton("Aktualisieren");
         JLabel statusLabel = new JLabel();
     
-        Font labelFont = new Font("Arial", Font.PLAIN, 14);
+        Font labelFont = new Font("Arial", Font.PLAIN, 15);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         adminPassLabel.setFont(labelFont);
         oldUserLabel.setFont(labelFont);
         newUserLabel.setFont(labelFont);
         passLabel.setFont(labelFont);
         roleLabel.setFont(labelFont);
-        updateUserButton.setFont(new Font("Arial", Font.BOLD, 14));
+        updateUserButton.setFont(new Font("Arial", Font.BOLD, 15));
     
-        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(oldUserLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 0; formPanel.add(oldUserField, gbc);
-        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(newUserLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(newUserField, gbc);
-        gbc.gridx = 0; gbc.gridy = 2; formPanel.add(passLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 2; formPanel.add(passField, gbc);
-        gbc.gridx = 0; gbc.gridy = 3; formPanel.add(roleLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 3; formPanel.add(roleBox, gbc);
-        gbc.gridx = 0; gbc.gridy = 4; formPanel.add(adminPassLabel, gbc);
-        gbc.gridx = 1; gbc.gridy = 4; formPanel.add(adminPasswordJField,gbc);
-        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2; formPanel.add(updateUserButton, gbc);
-        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
+        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(titleLabel, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(oldUserLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 1; formPanel.add(oldUserField, gbc);
+        gbc.gridx = 0; gbc.gridy = 2; formPanel.add(newUserLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 2; formPanel.add(newUserField, gbc);
+        gbc.gridx = 0; gbc.gridy = 3; formPanel.add(passLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 3; formPanel.add(passField, gbc);
+        gbc.gridx = 0; gbc.gridy = 4; formPanel.add(roleLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 4; formPanel.add(roleBox, gbc);
+        gbc.gridx = 0; gbc.gridy = 5; formPanel.add(adminPassLabel, gbc);
+        gbc.gridx = 1; gbc.gridy = 5; formPanel.add(adminPasswordJField,gbc);
+        gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2; formPanel.add(updateUserButton, gbc);
+        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2; formPanel.add(statusLabel, gbc);
        
         userList = new JList<>(userDataManager.getUserListModel());
         JScrollPane scrollPane = new JScrollPane(userList);
@@ -480,7 +496,7 @@ public class AdminCal extends JFrame {
                             userDataManager.updateUser(oldUser, newUser, pass, role);
                             statusLabel.setForeground(Color.GREEN);
                             statusLabel.setText("Benutzerdaten aktualisiert!");
-                            adminPasswordJField.setText("");
+
                         } catch (IllegalArgumentException ex) {
                             statusLabel.setForeground(Color.RED);
                             statusLabel.setText(ex.getMessage());
@@ -491,6 +507,11 @@ public class AdminCal extends JFrame {
                         statusLabel.setForeground(Color.RED);
                         statusLabel.setText("Password nicht Richtig");
                     }
+            // Eingabefelder zurücksetzen
+            oldUserField.setText("");
+            newUserField.setText("");
+            passField.setText("");
+            adminPasswordJField.setText("");
         });
        
         
@@ -527,7 +548,7 @@ public class AdminCal extends JFrame {
    
     private JPanel helpPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(Color.lightGray);
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     
         // Überschrift
