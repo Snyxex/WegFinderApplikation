@@ -34,8 +34,8 @@ public class UserData {
      * @param usernameValue The username of the user to delete
      */
         public void deleteUser(String usernameValue) {
-            File inputFile = new File("users.txt");
-            File tempFile = new File("users_temp.txt");
+            File inputFile = new File("wegfinderProject/users.txt");
+            File tempFile = new File("wegfinderProject/users_temp.txt");
     
             boolean userDeleted = false;
     
@@ -104,7 +104,7 @@ public class UserData {
      * @param role The role to save
      */
         private void saveUserToFile(String username, String password, String role) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("wegfinderProject/users.txt", true))) {
                 writer.write(username + "," + password + "," + role);
                 writer.newLine();
             } catch (IOException e) {
@@ -118,7 +118,7 @@ public class UserData {
      * Populates both users HashMap and userListModel.
      */
         private void loadUsersFromFile() {
-            try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader("wegfinderProject/users.txt"))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(",");
@@ -141,7 +141,7 @@ public class UserData {
         public boolean loadAdminDataFromFile(String adminUsername, String password) {
             boolean admintrue = false;
             String roleadmin = "Admin";
-            try (BufferedReader reader = new BufferedReader(new FileReader("users.txt"))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader("wegfinderProject/users.txt"))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(",");
@@ -197,7 +197,7 @@ public class UserData {
                 users.put(newUsername, new String[]{newPassword, newRole});
         
                 // Speichern der aktualisierten Benutzerdaten in der Datei
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt"))) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter("wegfinderProject/users.txt"))) {
                     for (String userKey : users.keySet()) {
                         String[] data = users.get(userKey);
                         writer.write(userKey + "," + data[0] + "," + data[1]);
