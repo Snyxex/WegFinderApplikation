@@ -5,92 +5,115 @@ import java.util.HashMap;
 import javax.swing.DefaultListModel;
 
 public class RoomData {
-    private HashMap<String[], String> room;
+    private static final String ROOM_FILE = "wegfinderProject/room.txt";
+    private HashMap<String, Room> rooms;
     private DefaultListModel<String> roomListModel;
 
-    public RoomData(){
-      room = new HashMap<>();
-      roomListModel = new DefaultListModel<>();
-      refreshUserList();
+    public RoomData() {
+        rooms = new HashMap<>();
+        roomListModel = new DefaultListModel<>();
+        loadRoomsFromFile();
+        refreshRoomList();
     }
 
-    private void saveRoomToFile(String roomNumber, String text, String setter) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("wegfinderProject/room.txt", true))) {
-            writer.write(roomNumber + "," + text + "," + setter);
-            writer.newLine();
+    // Lädt die Räume aus der Datei
+    private void loadRoomsFromFile() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ROOM_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+            
+                String[] parts = line.split(",");
+                if (parts.length == 3) {
+                    String roomNumber = parts[0];
+                    String text = parts[1];
+                    Boolean setter = Boolean.parseBoolean(parts[2]);
+                    rooms.put(roomNumber, new Room(roomNumber, text, setter));
+                    System.out.println("Raum hinzugefügt: " + roomNumber); // Debug-Ausgabe
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Fehler beim Laden der Datei: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Aktualisiert einen Raum
+    public void updateRoom(String roomNumber, String text, Boolean setter) {
+        if (roomNumber == null || roomNumber.trim().isEmpty()) {
+            throw new IllegalArgumentException("Raum Nummer darf nicht leer sein!");
+        }
+
+        // Prüfen ob der Raum existiert
+        Room existingRoom = rooms.get(roomNumber);
+        if (existingRoom == null) {
+            throw new IllegalArgumentException("Raum existiert nicht!");
+        }
+
+        // Wenn text leer ist, den alten Text behalten
+        if (text == null || text.trim().isEmpty()) {
+            text = existingRoom.getText();
+        }
+
+        // Wenn setter null ist, den alten Setter behalten
+        if (setter == null) {
+            setter = existingRoom.getSetter();
+        }
+
+        // Erstellt ein neues Room-Objekt
+        Room room = new Room(roomNumber, text, setter);
+        // Fügt es zur HashMap hinzu
+        rooms.put(roomNumber, room);
+        
+        // Speichert in der Datei
+        saveAllRoomsToFile();
+        refreshRoomList();
+    }
+
+    // Speichert alle Räume in der Datei
+    private void saveAllRoomsToFile() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ROOM_FILE))) {
+            for (Room room : rooms.values()) {
+                writer.write(room.getRoomNumber() + "," + room.getText() + "," + room.getSetter());
+                writer.newLine();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void addRoom(String roomNumber, String text, String setter){
-
-        if(roomNumber.isEmpty() || text.isEmpty() || setter.isEmpty()){
-            throw new IllegalArgumentException("Raum Nummer, Bezeichnung und Öffentlichkeit dürfen nicht leer sein!");
-        }
-       
-        if(!room.containsKey(roomNumber)){
-           room.put(new String[]{roomNumber,setter},text);
-           saveRoomToFile(roomNumber, setter, text);
-        }else{
-            throw new IllegalArgumentException("Raum existiert bereits!");
-        }
-
-    }
-    public void deleteRoom(String roomNumber) {
-        File inputFile = new File("wegfinderProject/room.txt");
-        File tempFile = new File("wegfinderProject/room_temp.txt");
-
-        boolean roomDeleted = false;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length == 3) {
-                    String roomNumberValue = parts[0];
-                    if (!roomNumberValue.equals(roomNumber)) {
-                        writer.write(line);
-                        writer.newLine();
-                    } else {
-                        room.remove(roomNumberValue);
-                        roomDeleted = true;
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Fehler beim Lesen/Schreiben der Datei: " + e.getMessage());
-        }
-
-        if (!inputFile.delete()) {
-            System.out.println("Fehler beim Löschen der Originaldatei!");
-        }
-        if (!tempFile.renameTo(inputFile)) {
-            System.out.println("Fehler beim Umbenennen der temporären Datei!");
-        }
-
-        if (roomDeleted) {
-            refreshUserList();
-        }
-    }
-
-
-
-
-    private void refreshUserList() {
+    // Aktualisiert die Liste
+    private void refreshRoomList() {
         roomListModel.removeAllElements();
-        room.forEach((value, key) -> roomListModel.addElement(value[0] + " (" + value[1] + ")" + key));
-        
-       
+        for (Room room : rooms.values()) {
+            String status = room.getSetter() ? "Gesperrt" : "Offen";
+            roomListModel.addElement(room.getRoomNumber() + "," + room.getText() + " (Status: " + status + ")");
+        }
     }
 
+    // Getter für die Liste
     public DefaultListModel<String> getRoomListModel() {
         return roomListModel;
     }
 
-    public HashMap<String[], String> getRoom() {
-        return room;
+    // Getter für die Räume
+    public HashMap<String, Room> getRooms() {
+        return rooms;
+    }
+
+    // Innere Klasse für die Raumdaten
+    public static class Room {
+        private final String roomNumber;
+        private final String text;
+        private final Boolean setter;
+
+        public Room(String roomNumber, String text, Boolean setter) {
+            this.roomNumber = roomNumber;
+            this.text = text;
+            this.setter = setter;
+        }
+
+        public String getRoomNumber() { return roomNumber; }
+        public String getText() { return text; }
+        public Boolean getSetter() { return setter; }
     }
 }

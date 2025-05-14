@@ -1,6 +1,6 @@
 package com.wegapplikation.controller;
 import com.wegapplikation.CustomKeyboard;
-import com.wegapplikation.model.UserData;
+import com.wegapplikation.model.*;
 import java.awt.event.*;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -24,10 +24,11 @@ public class AdminCal extends JFrame {
  
      /** List component displaying all users */
      private JList<String> userList;
+     private JList<String> roomList;
      
      /** Manager class for handling user data operations */
      private UserData userDataManager;
-
+     private RoomData roomDataManager;
 
 
     public String logedinAdmin = "jason";
@@ -38,8 +39,9 @@ public class AdminCal extends JFrame {
     protected void adminPage() {
         /** Neues Objekt Für UserData  */
         userDataManager = new UserData();
+        roomDataManager = new RoomData();
         
-        /** Neues Objekt Für Die Tastatur  */
+      
         
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,10 +61,7 @@ public class AdminCal extends JFrame {
         mainPanel.add(addUserPanel(), "Add User");
         mainPanel.add(deleteUserPanel(), "Delete User");
         mainPanel.add(updateUserPanel(),"Update User");
-        mainPanel.add(addRoomPanel(),"Add Room");
         mainPanel.add(updateRoomPanel(), "Update Room");
-        mainPanel.add(deleteRoomPanel(), "Delete Room");
-        mainPanel.add(lockRoomPanel(),"Lock Room");
         mainPanel.add(lockCoridoorPanel(),"Lock Coridoor");
         mainPanel.add(helpPanel(),"Help");
 
@@ -91,10 +90,7 @@ public class AdminCal extends JFrame {
     
         // Room Management-Menü
         JMenu roomMenu = new JMenu("Raum Management");
-        roomMenu.add(createMenuItem("Raum Hinzufügen", e -> switchToPanel("Add Room")));
         roomMenu.add(createMenuItem("Raum Updaten", e -> switchToPanel("Update Room")));
-        roomMenu.add(createMenuItem("Raum Löschen", e -> switchToPanel("Delete Room")));
-        roomMenu.add(createMenuItem("Raum Sperren", e -> switchToPanel("Lock Room")));
         roomMenu.add(createMenuItem("Flur Sperren", e -> switchToPanel("Lock Corridor")));
     
 
@@ -521,26 +517,101 @@ public class AdminCal extends JFrame {
     
 
    
-    private JPanel addRoomPanel(){
-        JPanel panel = new JPanel(new BorderLayout());
-        return panel;
-    }
-     
-    private JPanel updateRoomPanel(){
-        JPanel panel = new JPanel(new BorderLayout());
+    private JPanel updateRoomPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(Color.lightGray);
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+    
+        // Erstellen der Komponenten
+        JLabel titleLabel = new JLabel("Raum Aktualisieren", SwingConstants.CENTER);
+        JLabel roomNumberLabel = new JLabel("Raum Nummer:");
+        JTextField roomNumberField = new JTextField(15);
+        JLabel textLabel = new JLabel("Raum Bezeichnung:");
+        JTextField textField = new JTextField(15);
+        JLabel setterLabel = new JLabel("Status:");
+        String[] status = {"Offen", "Gesperrt"};
+        JComboBox<String> setterBox = new JComboBox<>(status);
+        JButton updateRoomButton = new JButton("Aktualisieren");
+        JLabel statusLabel = new JLabel();
+    
+        // Font-Einstellungen
+        Font labelFont = new Font("Arial", Font.PLAIN, 15);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        roomNumberLabel.setFont(labelFont);
+        textLabel.setFont(labelFont);
+        setterLabel.setFont(labelFont);
+        updateRoomButton.setFont(new Font("Arial", Font.BOLD, 15));
+    
+        // Hinzufügen der Komponenten zum Panel
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        formPanel.add(titleLabel, gbc);
+        
+        gbc.gridwidth = 1;
+        gbc.gridx = 0; gbc.gridy = 1;
+        formPanel.add(roomNumberLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(roomNumberField, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 2;
+        formPanel.add(textLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(textField, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 3;
+        formPanel.add(setterLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(setterBox, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        formPanel.add(updateRoomButton, gbc);
+        
+        gbc.gridx = 0; gbc.gridy = 5; gbc.gridwidth = 2;
+        formPanel.add(statusLabel, gbc);
+    
+        // Raumliste erstellen
+        JList<String> roomList = new JList<>(roomDataManager.getRoomListModel());
+        JScrollPane scrollPane = new JScrollPane(roomList);
+        scrollPane.setPreferredSize(new Dimension(200, 150));
+    
+        JPanel listPanel = new JPanel(new BorderLayout());
+        JLabel listLabel = new JLabel("Raumliste:");
+        listLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        listPanel.add(listLabel, BorderLayout.NORTH);
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+    
+        panel.add(listPanel, BorderLayout.EAST);
+    
+        // Action Listener für den Update-Button
+        updateRoomButton.addActionListener(e -> {
+            String roomNumber = roomNumberField.getText().trim();
+            String text = textField.getText().trim();
+            Boolean setter = setterBox.getSelectedItem().equals("Gesperrt");
+    
+            try {
+                roomDataManager.updateRoom(roomNumber, text, setter);
+                statusLabel.setForeground(Color.GREEN);
+                statusLabel.setText("Raum erfolgreich aktualisiert!");
+    
+                // Eingabefelder zurücksetzen
+                roomNumberField.setText("");
+                textField.setText("");
+                setterBox.setSelectedIndex(0);
+            } catch (IllegalArgumentException ex) {
+                statusLabel.setForeground(Color.RED);
+                statusLabel.setText(ex.getMessage());
+            }
+        });
+    
+        panel.add(formPanel, BorderLayout.CENTER);
         return panel;
     }
 
-    private JPanel deleteRoomPanel(){
-        JPanel panel = new JPanel(new BorderLayout());
-       return panel;
-    }
-
-    private JPanel lockRoomPanel(){
-        JPanel panel = new JPanel(new BorderLayout());
-        return panel;
-    }
-
+    
     private JPanel lockCoridoorPanel(){
         JPanel panel = new JPanel(new BorderLayout());
        return panel;
