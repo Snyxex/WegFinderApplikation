@@ -635,10 +635,7 @@ public class AdminCal extends JFrame {
                          "• Nutzer Löschen: Entfernen Sie Benutzerkonten aus dem System (erfordert Admin-Berechtigung).\n\n" +
                          "Raum Management:\n" +
                          "---------------\n" +
-                         "• Raum Hinzufügen: Fügen Sie neue Räume zum System hinzu.\n" +
                          "• Raum Updaten: Aktualisieren Sie Rauminformationen.\n" +
-                         "• Raum Löschen: Entfernen Sie Räume aus dem System.\n" +
-                         "• Raum Sperren: Markieren Sie Räume als nicht zugänglich.\n" +
                          "• Flur Sperren: Sperren Sie Verbindungswege zwischen Räumen.\n\n" +
                          "Navigation:\n" +
                          "----------\n" +

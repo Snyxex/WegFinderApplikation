@@ -3,4 +3,4 @@ admin,admin,Mitarbeiter
 user,password,Mitarbeiter
 kinia,kinia,Admin
 1111,222,Admin
-0000000000000000,nnnnnnnnnnnnnnn,Admin
+wwww,222,Admin
