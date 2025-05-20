@@ -8,10 +8,6 @@ public class CustomKeyboard extends JFrame {
     private boolean[] capsLock;
     private JTextField displayField;
 
-    private JPanel keyboardContainer;  // Container mit CardLayout für Tabs
-    private final String LETTERS_PANEL = "letters";
-    private final String SYMBOLS_PANEL = "symbols";
-
     public CustomKeyboard(JTextField target) {
         this.targetField = target;
         this.capsLock = new boolean[]{false};
@@ -24,35 +20,24 @@ public class CustomKeyboard extends JFrame {
         setSize(900, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Displayfeld (Textanzeige)
+        // Display field
         displayField = new JTextField(targetField.getText());
         displayField.setEditable(false);
         displayField.setFont(new Font("Arial", Font.BOLD, 18));
         displayField.setPreferredSize(new Dimension(900, 40));
         add(displayField, BorderLayout.NORTH);
 
-        // Panel mit CardLayout für Buchstaben- und Sonderzeichen-Tastatur
-        keyboardContainer = new JPanel(new CardLayout());
+        // Keyboard panel
+        JPanel keyboardPanel = new JPanel(new GridLayout(5, 1, 5, 5));
+        keyboardPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Buchstaben-Panel
-        JPanel lettersPanel = new JPanel(new GridLayout(5, 1, 5, 5));
-        lettersPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        addNumberRow(lettersPanel);
-        addFirstLetterRow(lettersPanel);
-        addSecondLetterRow(lettersPanel);
-        addThirdLetterRow(lettersPanel);
-        addControlRow(lettersPanel);
+        addNumberRow(keyboardPanel);
+        addFirstLetterRow(keyboardPanel);
+        addSecondLetterRow(keyboardPanel);
+        addThirdLetterRow(keyboardPanel);
+        addControlRow(keyboardPanel);
 
-        // Sonderzeichen-Panel
-        JPanel symbolsPanel = new JPanel(new GridLayout(3, 1, 5, 5));
-        symbolsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        addSymbolsRows(symbolsPanel);
-
-        keyboardContainer.add(lettersPanel, LETTERS_PANEL);
-        keyboardContainer.add(symbolsPanel, SYMBOLS_PANEL);
-
-        add(keyboardContainer, BorderLayout.CENTER);
-
+        add(keyboardPanel, BorderLayout.CENTER);
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -86,8 +71,8 @@ public class CustomKeyboard extends JFrame {
 
     private void addThirdLetterRow(JPanel panel) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
-        // CAPS-Taste
+        
+        // CAPS button
         JButton capsButton = new JButton("CAPS");
         capsButton.setPreferredSize(new Dimension(100, 40));
         capsButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -102,7 +87,7 @@ public class CustomKeyboard extends JFrame {
             row.add(createKeyButton(key));
         }
 
-        // ENTER-Taste
+        // ENTER button
         JButton enterButton = new JButton("ENTER");
         enterButton.setPreferredSize(new Dimension(100, 40));
         enterButton.setFont(new Font("Arial", Font.BOLD, 14));
@@ -117,58 +102,17 @@ public class CustomKeyboard extends JFrame {
 
     private void addControlRow(JPanel panel) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-
-        // Button zum Umschalten auf Sonderzeichen
-        JButton symbolToggleButton = new JButton("Symbole");
-        symbolToggleButton.setPreferredSize(new Dimension(120, 40));
-        symbolToggleButton.setFont(new Font("Arial", Font.BOLD, 14));
-        symbolToggleButton.addActionListener(e -> switchKeyboardPanel(SYMBOLS_PANEL));
-        row.add(symbolToggleButton);
-
-        // Leertaste
+        
+        // Space button
         JButton spaceButton = new JButton("Leertaste");
-        spaceButton.setPreferredSize(new Dimension(280, 40));
+        spaceButton.setPreferredSize(new Dimension(400, 40));
         spaceButton.setFont(new Font("Arial", Font.BOLD, 14));
-        spaceButton.addActionListener(e -> displayField.setText(displayField.getText() + " "));
+        spaceButton.addActionListener(e -> {
+            displayField.setText(displayField.getText() + " ");
+        });
         row.add(spaceButton);
-
+        
         panel.add(row);
-    }
-
-    private void addSymbolsRows(JPanel panel) {
-        JPanel row1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        String[] symbols1 = {"!", "@", "#", "$", "%", "^", "&", "*", "(", ")"};
-        for (String key : symbols1) {
-            row1.add(createKeyButton(key));
-        }
-        panel.add(row1);
-
-        JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        String[] symbols2 = {"-", "_", "+", "=", "{", "}", "[", "]", "|", "\\"};
-        for (String key : symbols2) {
-            row2.add(createKeyButton(key));
-        }
-        panel.add(row2);
-
-        JPanel row3 = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        String[] symbols3 = {":", ";", "\"", "'", "<", ">", ",", ".", "?", "/"};
-        for (String key : symbols3) {
-            row3.add(createKeyButton(key));
-        }
-
-        // Zurück-Schalter
-        JButton backButton = new JButton("ABC");
-        backButton.setPreferredSize(new Dimension(100, 40));
-        backButton.setFont(new Font("Arial", Font.BOLD, 14));
-        backButton.addActionListener(e -> switchKeyboardPanel(LETTERS_PANEL));
-        row3.add(backButton);
-
-        panel.add(row3);
-    }
-
-    private void switchKeyboardPanel(String panelName) {
-        CardLayout cl = (CardLayout) (keyboardContainer.getLayout());
-        cl.show(keyboardContainer, panelName);
     }
 
     private JButton createKeyButton(String key) {
