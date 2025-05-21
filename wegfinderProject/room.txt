@@ -1,1 +1,1 @@
-1002,Büro,true
+1002,Büro,false
