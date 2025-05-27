@@ -1,4 +1,4 @@
-package com.wegapplikation;
+package com.wegapplikation.config;
 
 import javax.swing.*;
 import java.awt.*;
