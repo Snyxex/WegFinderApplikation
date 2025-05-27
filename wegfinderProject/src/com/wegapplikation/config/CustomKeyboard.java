@@ -7,7 +7,7 @@ import java.util.List;
 
 public class CustomKeyboard extends JFrame {
     private JTextField targetField;
-    private boolean isCapsLock = false;
+    private boolean isCapsLock = true;
     private JTextField displayField;
 
     private JPanel keyboardContainer;
@@ -46,7 +46,7 @@ public class CustomKeyboard extends JFrame {
         lettersPanel.add(createRow(new String[]{"1","2","3","4","5","6","7","8","9","0"}, false));
         lettersPanel.add(createRow(new String[]{"Q","W","E","R","T","Z","U","I","O","P"}, true));
         lettersPanel.add(createRow(new String[]{"A","S","D","F","G","H","J","K","L","Ü"}, true));
-        lettersPanel.add(createRow(new String[]{"Y","X","C","V","B","N","M","Ö","Ä","ß"}, true));
+        lettersPanel.add(createRow(new String[]{"Y","X","C","V","B","N","M","Ö","Ä"}, true));
         lettersPanel.add(createControlRow(true));
 
         // Seite 2 – Sonderzeichen
