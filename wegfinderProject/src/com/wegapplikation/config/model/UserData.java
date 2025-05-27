@@ -8,7 +8,7 @@ public class UserData {
     private String username;
     private String password;
     private String role;
-    private static final String FILE_PATH = "user.txt";
+    private static final String FILE_PATH = "/wegfinderProject/user.txt";
 
     public UserData() {
     }
