@@ -1,8 +1,6 @@
 package com.wegapplikation.config.view;
 
 import com.wegapplikation.config.controller.AdminCal;
-import com.wegapplikation.config.model.RoomData;
-import com.wegapplikation.config.model.UserData;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,11 +21,9 @@ public class AdminGUI extends JFrame {
     private CardLayout cardLayout;
     private JButton homeButton, userManagementButton, roomManagementButton, helpButton;
     private String loggedInUser = "jason"; // Standardwert, bis Login implementiert ist
-    private UserData userData; // Für Passwortprüfung
 
     public AdminGUI() {
         adminCal = new AdminCal();
-        userData = new UserData();
         initializeUI();
     }
 
@@ -245,7 +241,7 @@ public class AdminGUI extends JFrame {
         // Button-Aktionen
         addUserButton.addActionListener(e -> {
             if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Admin-passwort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             String username = usernameField.getText().trim();
@@ -253,7 +249,7 @@ public class AdminGUI extends JFrame {
             String role = (String) roleComboBox.getSelectedItem();
             if (!username.isEmpty() && !password.isEmpty()) {
                 try {
-                    adminCal.addUser(new UserData(username, password, role));
+                    adminCal.addUser(username, password, role);
                     System.out.println("Benutzer " + loggedInUser + " hat Benutzer hinzugefügt: " + username);
                     refreshUserTable();
                     clearUserFields();
@@ -267,7 +263,7 @@ public class AdminGUI extends JFrame {
 
         updateUserButton.addActionListener(e -> {
             if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Admin-passwort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int selectedRow = userTable.getSelectedRow();
@@ -278,7 +274,7 @@ public class AdminGUI extends JFrame {
                 String role = (String) roleComboBox.getSelectedItem();
                 if (!username.isEmpty() && !password.isEmpty()) {
                     try {
-                        adminCal.updateUser(oldUsername, new UserData(username, password, role));
+                        adminCal.updateUser(oldUsername, username, password, role);
                         System.out.println("Benutzer " + loggedInUser + " hat Benutzer aktualisiert: " + username);
                         refreshUserTable();
                         clearUserFields();
@@ -295,7 +291,7 @@ public class AdminGUI extends JFrame {
 
         deleteUserButton.addActionListener(e -> {
             if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Admin-passwort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int selectedRow = userTable.getSelectedRow();
@@ -420,7 +416,7 @@ public class AdminGUI extends JFrame {
         // Button-Aktionen
         addRoomButton.addActionListener(e -> {
             if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Admin-passwort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             String idStr = roomIdField.getText().trim();
@@ -430,7 +426,7 @@ public class AdminGUI extends JFrame {
                 try {
                     int id = Integer.parseInt(idStr);
                     if (id <= 0) throw new IllegalArgumentException("Raum-ID muss eine positive Ganzzahl sein.");
-                    adminCal.addRoom(new RoomData(id, designation, locked));
+                    adminCal.addRoom(id, designation, locked);
                     System.out.println("Benutzer " + loggedInUser + " hat Raum hinzugefügt: " + designation);
                     refreshRoomTable();
                     clearRoomFields();
@@ -446,7 +442,7 @@ public class AdminGUI extends JFrame {
 
         updateRoomButton.addActionListener(e -> {
             if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Admin-passwort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int selectedRow = roomTable.getSelectedRow();
@@ -459,7 +455,7 @@ public class AdminGUI extends JFrame {
                     try {
                         int newId = Integer.parseInt(idStr);
                         if (newId <= 0) throw new IllegalArgumentException("Raum-ID muss eine positive Ganzzahl sein.");
-                        adminCal.updateRoom(oldId, new RoomData(newId, designation, locked));
+                        adminCal.updateRoom(oldId, newId, designation, locked);
                         System.out.println("Benutzer " + loggedInUser + " hat Raum aktualisiert: " + designation);
                         refreshRoomTable();
                         clearRoomFields();
@@ -478,7 +474,7 @@ public class AdminGUI extends JFrame {
 
         deleteRoomButton.addActionListener(e -> {
             if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Admin-passwort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             int selectedRow = roomTable.getSelectedRow();
@@ -504,7 +500,7 @@ public class AdminGUI extends JFrame {
             if (selectedRow >= 0) {
                 roomIdField.setText(roomTable.getValueAt(selectedRow, 0).toString());
                 roomDesignationField.setText(roomTable.getValueAt(selectedRow, 1).toString());
-                lockedCheckBox.setSelected(Boolean.parseBoolean(roomTable.getValueAt(selectedRow, 2).toString()));
+                lockedCheckBox.setSelected((Boolean) roomTable.getValueAt(selectedRow, 2));
             }
         });
 
@@ -519,7 +515,7 @@ public class AdminGUI extends JFrame {
         int result = JOptionPane.showConfirmDialog(this, panel, "Benutzer-Authentifizierung", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
             String enteredPassword = new String(passwordField.getPassword());
-            return userData.verifyPassword(loggedInUser, enteredPassword);
+            return adminCal.verifyPassword(loggedInUser, enteredPassword);
         }
         return false;
     }
@@ -581,18 +577,18 @@ public class AdminGUI extends JFrame {
     private void refreshUserTable() {
         DefaultTableModel model = (DefaultTableModel) userTable.getModel();
         model.setRowCount(0);
-        List<UserData> users = adminCal.getAllUsers();
-        for (UserData user : users) {
-            model.addRow(new Object[]{user.getUsername(), user.getPassword(), user.getRole()});
+        List<Object[]> users = adminCal.getAllUsers();
+        for (Object[] user : users) {
+            model.addRow(user);
         }
     }
 
     private void refreshRoomTable() {
         DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
         model.setRowCount(0);
-        List<RoomData> rooms = adminCal.getAllRooms();
-        for (RoomData room : rooms) {
-            model.addRow(new Object[]{room.getId(), room.getDesignation(), room.isLocked()});
+        List<Object[]> rooms = adminCal.getAllRooms();
+        for (Object[] room : rooms) {
+            model.addRow(room);
         }
     }
 

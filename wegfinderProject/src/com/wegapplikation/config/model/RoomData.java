@@ -8,7 +8,7 @@ public class RoomData {
     private int id;
     private String designation;
     private boolean locked;
-    private static final String FILE_PATH = "/wegfinderProject/room.txt";
+    private static final String FILE_PATH = "wegfinderProject/src/files/room.txt";
 
     public RoomData() {
     }

@@ -8,10 +8,9 @@ public class UserData {
     private String username;
     private String password;
     private String role;
-    private static final String FILE_PATH = "/wegfinderProject/user.txt";
+    private static final String FILE_PATH = "wegfinderProject/src/files/user.txt";
 
-    public UserData() {
-    }
+    public UserData() {}
 
     public UserData(String username, String password, String role) {
         this.username = username;
@@ -19,17 +18,9 @@ public class UserData {
         this.role = role;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getRole() {
-        return role;
-    }
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
+    public String getRole() { return role; }
 
     public boolean isUsernameTaken(String username) {
         List<UserData> users = getAllUsers();
@@ -69,20 +60,34 @@ public class UserData {
     public List<UserData> getAllUsers() {
         List<UserData> users = new ArrayList<>();
         File file = new File(FILE_PATH);
+        System.out.println("Lese user.txt von: " + file.getAbsolutePath());
         if (!file.exists()) {
+            System.out.println("user.txt existiert nicht!");
             return users;
         }
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
+            int lineNumber = 0;
             while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                System.out.println("Verarbeite Zeile " + lineNumber + ": " + line);
+                if (line.trim().isEmpty()) {
+                    System.out.println("Leere Zeile in Zeile " + lineNumber + ", überspringe.");
+                    continue;
+                }
                 String[] parts = line.split(",");
                 if (parts.length == 3) {
-                    users.add(new UserData(parts[0], parts[1], parts[2]));
+                    users.add(new UserData(parts[0].trim(), parts[1].trim(), parts[2].trim()));
+                    System.out.println("Nutzer hinzugefügt: " + parts[0]);
+                } else {
+                    System.out.println("Ungültiges Format in Zeile " + lineNumber + ": " + line);
                 }
             }
         } catch (IOException e) {
+            System.err.println("Fehler beim Lesen von user.txt: " + e.getMessage());
             e.printStackTrace();
         }
+        System.out.println("Geladene Nutzer: " + users.size());
         return users;
     }
 
@@ -93,6 +98,7 @@ public class UserData {
                 writer.newLine();
             }
         } catch (IOException e) {
+            System.err.println("Fehler beim Schreiben in user.txt: " + e.getMessage());
             e.printStackTrace();
         }
     }

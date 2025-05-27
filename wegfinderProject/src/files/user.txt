@@ -1,0 +1,3 @@
+admin,pass123,Admin
+testuser,test123,Mitarbeiter
+jason,password,Admin
