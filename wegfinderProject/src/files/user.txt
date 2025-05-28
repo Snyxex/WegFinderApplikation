@@ -1,3 +1,6 @@
 admin,pass123,Admin
 testuser,test123,Mitarbeiter
 jason,password,Admin
+phil,ldooddl,Admin
+llele,lelele,Mitarbeiter
+test1,test1,Admin

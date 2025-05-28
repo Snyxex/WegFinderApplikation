@@ -25,7 +25,7 @@ public class CustomKeyboard extends JFrame {
     private void initializeKeyboard() {
         setTitle("Virtuelle Tastatur");
         setLayout(new BorderLayout(5, 5));
-        setSize(925, 400);
+        setSize(945, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(BG_COLOR);
 

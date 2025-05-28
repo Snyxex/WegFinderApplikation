@@ -1,11 +1,14 @@
 package com.wegapplikation.config.view;
 
+import com.wegapplikation.config.CustomKeyboard;
 import com.wegapplikation.config.controller.AdminCal;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class AdminGUI extends JFrame {
@@ -20,9 +23,9 @@ public class AdminGUI extends JFrame {
     private JPanel contentPanel;
     private CardLayout cardLayout;
     private JButton homeButton, userManagementButton, roomManagementButton, helpButton;
-    private String loggedInUser = "jason"; // Standardwert, bis Login implementiert ist
+    private String loggedInUser = LoginGUI.textField.getText(); // Standardwert, bis Login implementiert ist
 
-    public AdminGUI() {
+    public void  AdminGUI() {
         adminCal = new AdminCal();
         initializeUI();
     }
@@ -169,6 +172,12 @@ public class AdminGUI extends JFrame {
         usernameField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 new EmptyBorder(5, 5, 5, 5)));
+                usernameField.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                       new  CustomKeyboard(usernameField);
+                    }
+                });
 
         JLabel passwordLabel = new JLabel("Passwort:");
         passwordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -177,6 +186,13 @@ public class AdminGUI extends JFrame {
         passwordField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 new EmptyBorder(5, 5, 5, 5)));
+
+                passwordField.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                       new  CustomKeyboard(passwordField);
+                    }
+                });
 
         JLabel roleLabel = new JLabel("Rolle:");
         roleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -254,7 +270,7 @@ public class AdminGUI extends JFrame {
                     refreshUserTable();
                     clearUserFields();
                 } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -279,7 +295,7 @@ public class AdminGUI extends JFrame {
                         refreshUserTable();
                         clearUserFields();
                     } catch (IllegalArgumentException ex) {
-                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -314,9 +330,13 @@ public class AdminGUI extends JFrame {
         userTable.getSelectionModel().addListSelectionListener(e -> {
             int selectedRow = userTable.getSelectedRow();
             if (selectedRow >= 0) {
-                usernameField.setText(userTable.getValueAt(selectedRow, 0).toString());
-                passwordField.setText(userTable.getValueAt(selectedRow, 1).toString());
-                roleComboBox.setSelectedItem(userTable.getValueAt(selectedRow, 2).toString());
+                String username = userTable.getValueAt(selectedRow, 0).toString();
+                Object[] user = adminCal.getUserByUsername(username);
+                if (user != null) {
+                    usernameField.setText((String) user[0]);
+                    passwordField.setText((String) user[1]); // Echtes Passwort
+                    roleComboBox.setSelectedItem((String) user[2]);
+                }
             }
         });
 
@@ -345,6 +365,13 @@ public class AdminGUI extends JFrame {
                 BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 new EmptyBorder(5, 5, 5, 5)));
 
+                roomIdField.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                       new  CustomKeyboard(roomIdField);
+                    }
+                });
+
         JLabel designationLabel = new JLabel("Bezeichnung:");
         designationLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         roomDesignationField = new JTextField(20);
@@ -352,6 +379,13 @@ public class AdminGUI extends JFrame {
         roomDesignationField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 new EmptyBorder(5, 5, 5, 5)));
+
+                roomDesignationField.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                       new  CustomKeyboard(roomDesignationField);
+                    }
+                });
 
         JLabel lockedLabel = new JLabel("Gesperrt:");
         lockedLabel.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -433,7 +467,7 @@ public class AdminGUI extends JFrame {
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(this, "Raum-ID muss eine gültige Zahl sein.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -462,7 +496,7 @@ public class AdminGUI extends JFrame {
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(this, "Raum-ID muss eine gültige Zahl sein.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     } catch (IllegalArgumentException ex) {
-                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
@@ -510,14 +544,52 @@ public class AdminGUI extends JFrame {
     private boolean promptUserPassword() {
         JPasswordField passwordField = new JPasswordField(20);
         JPanel panel = new JPanel();
+    
+        // MouseListener für die virtuelle Tastatur
+        passwordField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                CustomKeyboard keyboard = new CustomKeyboard(passwordField);
+                keyboard.setLocationRelativeTo(panel); // Positioniere die Tastatur relativ zum Panel
+                keyboard.setAlwaysOnTop(true); // Stelle sicher, dass die Tastatur immer im Vordergrund bleibt
+                keyboard.setVisible(true);
+                keyboard.toFront(); // Bringe die Tastatur in den Vordergrund
+                keyboard.requestFocus(); // Versuche, der Tastatur den Fokus zu geben
+            }
+        });
+    
         panel.add(new JLabel("Ihr Passwort eingeben:"));
         panel.add(passwordField);
-        int result = JOptionPane.showConfirmDialog(this, panel, "Benutzer-Authentifizierung", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (result == JOptionPane.OK_OPTION) {
+    
+        // Zeige den Dialog an
+        JDialog dialog = new JDialog(this, "Benutzer-Authentifizierung", true);
+        dialog.setLayout(new BorderLayout());
+        dialog.add(panel, BorderLayout.CENTER);
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Abbrechen");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+    
+        // Aktion für OK-Button
+        okButton.addActionListener(e -> {
             String enteredPassword = new String(passwordField.getPassword());
-            return adminCal.verifyPassword(loggedInUser, enteredPassword);
-        }
-        return false;
+            boolean valid = adminCal.verifyPassword(loggedInUser, enteredPassword);
+            System.out.println("Passwortprüfung für " + loggedInUser + ": " + (valid ? "Erfolgreich" : "Fehlgeschlagen"));
+            dialog.dispose(); // Schließe den Dialog
+        });
+    
+        // Aktion für Abbrechen-Button
+        cancelButton.addActionListener(e -> dialog.dispose());
+    
+        // Zeige den Dialog an und warte auf Schließen
+        dialog.pack();
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
+    
+        // Rückgabe basierend auf dem Ergebnis
+        return okButton.isEnabled() && !dialog.isVisible(); // Annahme: Wenn OK geklickt wurde, ist der Dialog geschlossen
     }
 
     private JButton createNavButton(String text) {
@@ -535,7 +607,6 @@ public class AdminGUI extends JFrame {
                     button.setBackground(new Color(46, 56, 67));
                 }
             }
-
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 if (button.getBackground().equals(new Color(46, 56, 67))) {
                     button.setBackground(new Color(26, 36, 47));
@@ -558,7 +629,6 @@ public class AdminGUI extends JFrame {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(bgColor.brighter());
             }
-
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 button.setBackground(bgColor);
             }
@@ -576,10 +646,15 @@ public class AdminGUI extends JFrame {
 
     private void refreshUserTable() {
         DefaultTableModel model = (DefaultTableModel) userTable.getModel();
-        model.setRowCount(0);
+        model.setRowCount(0); // Vorherige Zeilen löschen
         List<Object[]> users = adminCal.getAllUsers();
+        System.out.println("AdminGUI: Anzahl Nutzer für Tabelle: " + users.size());
         for (Object[] user : users) {
-            model.addRow(user);
+            String username = (String) user[0];
+            String password = (String) user[1]; // Bereits maskiert von AdminCal
+            String role = (String) user[2];
+            model.addRow(new Object[]{username, password, role});
+            System.out.println("AdminGUI: Zeile hinzugefügt: " + username + "," + password + "," + role);
         }
     }
 
@@ -604,7 +679,5 @@ public class AdminGUI extends JFrame {
         lockedCheckBox.setSelected(false);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new AdminGUI().setVisible(true));
-    }
+
 }

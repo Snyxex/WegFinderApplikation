@@ -6,15 +6,16 @@ import java.util.List;
 
 public class UserData {
     private String username;
-    private String password;
+    private String password; // Zurück zu Klartext
     private String role;
+
     private static final String FILE_PATH = "wegfinderProject/src/files/user.txt";
 
     public UserData() {}
 
     public UserData(String username, String password, String role) {
         this.username = username;
-        this.password = password;
+        this.password = password; // Klartext
         this.role = role;
     }
 

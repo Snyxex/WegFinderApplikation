@@ -40,9 +40,25 @@ public class AdminCal {
         List<UserData> users = userData.getAllUsers();
         List<Object[]> userArray = new ArrayList<>();
         for (UserData user : users) {
-            userArray.add(new Object[]{user.getUsername(), user.getPassword(), user.getRole()});
+            String password = user.getPassword();
+            // Maskiere das Passwort, wenn die Rolle "Admin" ist
+            if (user.getRole().equals("Admin")) {
+                password = "*****";
+            }
+            userArray.add(new Object[]{user.getUsername(), password, user.getRole()});
         }
         return userArray;
+    }
+
+    // Neue Methode, um die unmaskierten Daten eines Nutzers zu holen
+    public Object[] getUserByUsername(String username) {
+        List<UserData> users = userData.getAllUsers();
+        for (UserData user : users) {
+            if (user.getUsername().equals(username)) {
+                return new Object[]{user.getUsername(), user.getPassword(), user.getRole()};
+            }
+        }
+        return null; // Nutzer nicht gefunden
     }
 
     // Raumverwaltung
@@ -82,7 +98,6 @@ public class AdminCal {
         return roomArray;
     }
 
-    // Passwortprüfung
     public boolean verifyPassword(String username, String password) {
         return userData.verifyPassword(username, password);
     }
