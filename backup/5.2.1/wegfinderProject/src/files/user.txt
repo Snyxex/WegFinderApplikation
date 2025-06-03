@@ -1,0 +1,6 @@
+admin,pass123,Admin
+testuser,test12388,Mitarbeiter
+jason,password,Admin
+phil,ldooddl000,Admin
+test1,test1,Admin
+t999,0000,Admin
