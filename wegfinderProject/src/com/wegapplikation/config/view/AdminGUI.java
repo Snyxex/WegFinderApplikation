@@ -74,7 +74,7 @@ public class AdminGUI extends JFrame {
         sidebar.add(helpButton);
         sidebar.add(Box.createVerticalGlue());
 
-        JLabel versionLabel = new JLabel("v1.0.0");
+        JLabel versionLabel = new JLabel("v5.2.1");
         versionLabel.setForeground(new Color(150, 150, 150));
         versionLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         versionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -542,54 +542,53 @@ public class AdminGUI extends JFrame {
     }
 
     private boolean promptUserPassword() {
+        // Neues JFrame für die Passwortabfrage
+        JFrame frame = new JFrame("Benutzer-Authentifizierung");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        
+        // Passwortfeld
         JPasswordField passwordField = new JPasswordField(20);
-        JPanel panel = new JPanel();
-    
-        // MouseListener für die virtuelle Tastatur
         passwordField.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                CustomKeyboard keyboard = new CustomKeyboard(passwordField);
-                keyboard.setLocationRelativeTo(panel); // Positioniere die Tastatur relativ zum Panel
-                keyboard.setAlwaysOnTop(true); // Stelle sicher, dass die Tastatur immer im Vordergrund bleibt
-                keyboard.setVisible(true);
-                keyboard.toFront(); // Bringe die Tastatur in den Vordergrund
-                keyboard.requestFocus(); // Versuche, der Tastatur den Fokus zu geben
+                new CustomKeyboard(passwordField);
             }
         });
-    
+        
+        // Panel für die Eingabe
+        JPanel panel = new JPanel();
         panel.add(new JLabel("Ihr Passwort eingeben:"));
         panel.add(passwordField);
-    
-        // Zeige den Dialog an
-        JDialog dialog = new JDialog(this, "Benutzer-Authentifizierung", true);
-        dialog.setLayout(new BorderLayout());
-        dialog.add(panel, BorderLayout.CENTER);
+        frame.add(panel, BorderLayout.CENTER);
+        
+        // Button-Panel
+        JPanel buttonPanel = new JPanel();
         JButton okButton = new JButton("OK");
         JButton cancelButton = new JButton("Abbrechen");
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(okButton);
-        buttonPanel.add(cancelButton);
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
-    
+        
         // Aktion für OK-Button
         okButton.addActionListener(e -> {
             String enteredPassword = new String(passwordField.getPassword());
             boolean valid = adminCal.verifyPassword(loggedInUser, enteredPassword);
             System.out.println("Passwortprüfung für " + loggedInUser + ": " + (valid ? "Erfolgreich" : "Fehlgeschlagen"));
-            dialog.dispose(); // Schließe den Dialog
+            frame.dispose(); // Schließe das JFrame
         });
-    
+        
         // Aktion für Abbrechen-Button
-        cancelButton.addActionListener(e -> dialog.dispose());
-    
-        // Zeige den Dialog an und warte auf Schließen
-        dialog.pack();
-        dialog.setLocationRelativeTo(this);
-        dialog.setVisible(true);
-    
+        cancelButton.addActionListener(e -> frame.dispose());
+        
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+        
+        // JFrame-Einstellungen
+        frame.pack();
+        frame.setLocationRelativeTo(this);
+        frame.setVisible(true);
+        
         // Rückgabe basierend auf dem Ergebnis
-        return okButton.isEnabled() && !dialog.isVisible(); // Annahme: Wenn OK geklickt wurde, ist der Dialog geschlossen
+        return okButton.isEnabled(); // Annahme: Wenn OK geklickt wurde, ist der Dialog geschlossen
     }
 
     private JButton createNavButton(String text) {
