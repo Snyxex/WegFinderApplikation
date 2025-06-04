@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class App {
     private static ArrayList<Point> redPoints = new ArrayList<>(); // Liste zur Speicherung der roten Punkte
+    private static ArrayList<Point> visibleRedPoints = new ArrayList<>(); // Liste der aktuell sichtbaren roten Punkte
 
     public static void main(String[] args) {
         // Beispielaufruf der Methode
@@ -46,10 +47,10 @@ public class App {
                     }
                 }
 
-                // Zeichne die roten Punkte, wenn sie sichtbar sind
+                // Zeichne die sichtbaren roten Punkte
                 g.setColor(Color.RED);
-                for (Point point : redPoints) {
-                    g.fillOval(point.x - 5, point.y - 5, 10, 10); // Zeichne einen roten Punkt
+                for (Point point : visibleRedPoints) {
+                    g.fillOval(point.x - 5, point.y - 5, 10, 10); // Zeichne jeden sichtbaren roten Punkt
                 }
             }
         };
@@ -64,8 +65,21 @@ public class App {
                 System.out.println("Pixel-Koordinaten: (" + x + ", " + y + ")");
                 
                 // Überprüfen, ob der Klick in der Nähe eines roten Punktes war
-                if (isNearRedPoint(x, y)) {
-                    System.out.println("Roter Punkt sichtbar gemacht.");
+                Point clickedPoint = isNearRedPoint(x, y);
+                if (clickedPoint != null) {
+                    // Wenn der Punkt bereits sichtbar ist, entfernen wir ihn, andernfalls fügen wir ihn hinzu
+                    if (visibleRedPoints.contains(clickedPoint)) {
+                        visibleRedPoints.remove(clickedPoint);
+                        System.out.println("Roter Punkt entfernt.");
+                    } else {
+                        // Überprüfen, ob bereits 2 Punkte sichtbar sind
+                        if (visibleRedPoints.size() < 2) {
+                            visibleRedPoints.add(clickedPoint);
+                            System.out.println("Roter Punkt sichtbar gemacht.");
+                        } else {
+                            System.out.println("Maximal 2 Punkte können markiert werden.");
+                        }
+                    }
                     panel.repaint(); // Panel neu zeichnen
                 } else {
                     System.out.println("Klick außerhalb der roten Punkte.");
@@ -89,13 +103,13 @@ public class App {
         }
     }
 
-    private static boolean isNearRedPoint(int x, int y) {
+    private static Point isNearRedPoint(int x, int y) {
         for (Point point : redPoints) {
-            if (point.distance(x, y) <= 5) { // 10 Pixel Nähe
-                return true;
+            if (point.distance(x, y) <= 5) { // 5 Pixel Nähe
+                return point; // Gebe den Punkt zurück, wenn er in der Nähe ist
             }
         }
-        return false;
+        return null; // Gebe null zurück, wenn kein Punkt in der Nähe ist
     }
 
     public void imageReader() {
