@@ -22,7 +22,7 @@ public class AdminGUI extends JFrame {
     private JButton addRoomButton, updateRoomButton, deleteRoomButton, clearRoomButton;
     private JPanel contentPanel;
     private CardLayout cardLayout;
-    private JButton homeButton, userManagementButton, roomManagementButton, helpButton;
+    private JButton homeButton, userManagementButton, roomManagementButton, floorManagementButton,helpButton;
     private String loggedInUser = LoginGUI.textField.getText(); // Standardwert, bis Login implementiert ist
 
     public void  AdminGUI() {
@@ -63,6 +63,7 @@ public class AdminGUI extends JFrame {
         homeButton = createNavButton("Startseite");
         userManagementButton = createNavButton("Benutzerverwaltung");
         roomManagementButton = createNavButton("Raumverwaltung");
+        floorManagementButton = createNavButton("Etagenverwaltung");
         helpButton = createNavButton("Hilfe");
         userManagementButton.setBackground(new Color(46, 204, 113));
         sidebar.add(homeButton);
@@ -70,6 +71,8 @@ public class AdminGUI extends JFrame {
         sidebar.add(userManagementButton);
         sidebar.add(Box.createVerticalStrut(10));
         sidebar.add(roomManagementButton);
+        sidebar.add(Box.createVerticalStrut(10));
+        sidebar.add(floorManagementButton);
         sidebar.add(Box.createVerticalStrut(10));
         sidebar.add(helpButton);
         sidebar.add(Box.createVerticalGlue());
@@ -142,6 +145,11 @@ public class AdminGUI extends JFrame {
             setActiveButton(roomManagementButton);
             cardLayout.show(contentPanel, "Raumverwaltung");
             refreshRoomTable();
+        });
+        floorManagementButton.addActionListener(e -> {
+            setActiveButton(floorManagementButton);
+            cardLayout.show(contentPanel, "Etagenverwaltung");
+            refreshFloorTable();
         });
         helpButton.addActionListener(e -> {
             setActiveButton(helpButton);
@@ -540,6 +548,199 @@ public class AdminGUI extends JFrame {
 
         return panel;
     }
+    
+    private JPanel createFloorManagPanel(){
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(new Color(240, 242, 245));
+
+        // Eingabepanel
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBackground(Color.WHITE);
+        inputPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(15, 15, 15, 15)));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel usernameLabel = new JLabel("Benutzername:");
+        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        usernameField = new JTextField(20);
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 14));
+        usernameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 5, 5, 5)));
+                usernameField.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                       new  CustomKeyboard(usernameField);
+                    }
+                });
+
+        JLabel passwordLabel = new JLabel("Passwort:");
+        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordField = new JPasswordField(20);
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 5, 5, 5)));
+
+                passwordField.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                       new  CustomKeyboard(passwordField);
+                    }
+                });
+
+        JLabel roleLabel = new JLabel("Rolle:");
+        roleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        String[] roles = {"Admin", "Mitarbeiter"};
+        roleComboBox = new JComboBox<>(roles);
+        roleComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputPanel.add(usernameLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(usernameField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        inputPanel.add(passwordLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(passwordField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        inputPanel.add(roleLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(roleComboBox, gbc);
+
+        // Button-Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        buttonPanel.setBackground(new Color(240, 242, 245));
+        addUserButton = createStyledButton("Hinzufügen", new Color(46, 204, 113), "add.png");
+        updateUserButton = createStyledButton("Aktualisieren", new Color(52, 152, 219), "update.png");
+        deleteUserButton = createStyledButton("Löschen", new Color(231, 76, 60), "delete.png");
+        clearUserButton = createStyledButton("Zurücksetzen", new Color(149, 165, 166), "clear.png");
+        buttonPanel.add(addUserButton);
+        buttonPanel.add(updateUserButton);
+        buttonPanel.add(deleteUserButton);
+        buttonPanel.add(clearUserButton);
+
+        // Tabelle
+        String[] columns = {"Benutzername", "Passwort", "Rolle"};
+        DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        userTable = new JTable(tableModel);
+        userTable.setRowHeight(30);
+        userTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        userTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        userTable.getTableHeader().setBackground(new Color(26, 36, 47));
+        userTable.getTableHeader().setForeground(Color.WHITE);
+        userTable.setGridColor(new Color(200, 200, 200));
+        userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        userTable.setIntercellSpacing(new Dimension(10, 10));
+        refreshUserTable();
+        JScrollPane tableScrollPane = new JScrollPane(userTable);
+        tableScrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+
+        // User Management Layout
+        panel.add(inputPanel, BorderLayout.NORTH);
+        panel.add(tableScrollPane, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Button-Aktionen
+        addUserButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+            String role = (String) roleComboBox.getSelectedItem();
+            if (!username.isEmpty() && !password.isEmpty()) {
+                try {
+                    adminCal.addUser(username, password, role);
+                    System.out.println("Benutzer " + loggedInUser + " hat Benutzer hinzugefügt: " + username);
+                    refreshUserTable();
+                    clearUserFields();
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        updateUserButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                String oldUsername = userTable.getValueAt(selectedRow, 0).toString();
+                String username = usernameField.getText().trim();
+                String password = new String(passwordField.getPassword()).trim();
+                String role = (String) roleComboBox.getSelectedItem();
+                if (!username.isEmpty() && !password.isEmpty()) {
+                    try {
+                        adminCal.updateUser(oldUsername, username, password, role);
+                        System.out.println("Benutzer " + loggedInUser + " hat Benutzer aktualisiert: " + username);
+                        refreshUserTable();
+                        clearUserFields();
+                    } catch (IllegalArgumentException ex) {
+                        JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Benutzer zum Aktualisieren aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        deleteUserButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                String username = userTable.getValueAt(selectedRow, 0).toString();
+                int confirm = JOptionPane.showConfirmDialog(this, "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    adminCal.deleteUser(username);
+                    System.out.println("Benutzer " + loggedInUser + " hat Benutzer gelöscht: " + username);
+                    refreshUserTable();
+                    clearUserFields();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Benutzer zum Löschen aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        clearUserButton.addActionListener(e -> clearUserFields());
+
+        userTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                String username = userTable.getValueAt(selectedRow, 0).toString();
+                Object[] user = adminCal.getUserByUsername(username);
+                if (user != null) {
+                    usernameField.setText((String) user[0]);
+                    passwordField.setText((String) user[1]); // Echtes Passwort
+                    roleComboBox.setSelectedItem((String) user[2]);
+                }
+            }
+        });
+
+        return panel;
+    }
+
 
     private boolean promptUserPassword() {
         // Neues JFrame für die Passwortabfrage
@@ -639,6 +840,8 @@ public class AdminGUI extends JFrame {
         homeButton.setBackground(new Color(26, 36, 47));
         userManagementButton.setBackground(new Color(26, 36, 47));
         roomManagementButton.setBackground(new Color(26, 36, 47));
+        floorManagementButton.setBackground(new Color(26, 36, 47));
+        
         helpButton.setBackground(new Color(26, 36, 47));
         activeButton.setBackground(new Color(46, 204, 113));
     }
