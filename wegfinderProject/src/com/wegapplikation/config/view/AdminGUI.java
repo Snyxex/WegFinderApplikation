@@ -95,6 +95,9 @@ public class AdminGUI extends JFrame {
         // Room Management Panel
         contentPanel.add(createRoomManagementPanel(), "Raumverwaltung");
 
+        // Floor Management Panel
+        contentPanel.add(createFloorManagementPanel(), "Etagenverwaltung");
+
         // Home Panel
         JPanel homePanel = new JPanel(new BorderLayout());
         homePanel.setBackground(Color.WHITE);
@@ -549,10 +552,10 @@ public class AdminGUI extends JFrame {
         return panel;
     }
     
-    private JPanel createFloorManagPanel(){
+    private JPanel createFloorManagementPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBackground(new Color(240, 242, 245));
-
+    
         // Eingabepanel
         JPanel inputPanel = new JPanel(new GridBagLayout());
         inputPanel.setBackground(Color.WHITE);
@@ -562,111 +565,82 @@ public class AdminGUI extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        JLabel usernameLabel = new JLabel("Benutzername:");
-        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        usernameField = new JTextField(20);
-        usernameField.setFont(new Font("Arial", Font.PLAIN, 14));
-        usernameField.setBorder(BorderFactory.createCompoundBorder(
+    
+        JLabel idLabel = new JLabel("Flur-ID:");
+        idLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JTextField floorIdField = new JTextField(20);
+        floorIdField.setFont(new Font("Arial", Font.PLAIN, 14));
+        floorIdField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 new EmptyBorder(5, 5, 5, 5)));
-                usernameField.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                       new  CustomKeyboard(usernameField);
-                    }
-                });
-
-        JLabel passwordLabel = new JLabel("Passwort:");
-        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        passwordField = new JPasswordField(20);
-        passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
-        passwordField.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 200)),
-                new EmptyBorder(5, 5, 5, 5)));
-
-                passwordField.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                       new  CustomKeyboard(passwordField);
-                    }
-                });
-
-        JLabel roleLabel = new JLabel("Rolle:");
-        roleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
-        String[] roles = {"Admin", "Mitarbeiter"};
-        roleComboBox = new JComboBox<>(roles);
-        roleComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
-
+    
+        JLabel lockedLabel = new JLabel("Gesperrt:");
+        lockedLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JCheckBox lockedCheckBox = new JCheckBox();
+        lockedCheckBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        lockedCheckBox.setBackground(Color.WHITE);
+    
         gbc.gridx = 0;
         gbc.gridy = 0;
-        inputPanel.add(usernameLabel, gbc);
+        inputPanel.add(idLabel, gbc);
         gbc.gridx = 1;
-        inputPanel.add(usernameField, gbc);
+        inputPanel.add(floorIdField, gbc);
         gbc.gridx = 0;
         gbc.gridy = 1;
-        inputPanel.add(passwordLabel, gbc);
+        inputPanel.add(lockedLabel, gbc);
         gbc.gridx = 1;
-        inputPanel.add(passwordField, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        inputPanel.add(roleLabel, gbc);
-        gbc.gridx = 1;
-        inputPanel.add(roleComboBox, gbc);
-
+        inputPanel.add(lockedCheckBox, gbc);
+    
         // Button-Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBackground(new Color(240, 242, 245));
-        addUserButton = createStyledButton("Hinzufügen", new Color(46, 204, 113), "add.png");
-        updateUserButton = createStyledButton("Aktualisieren", new Color(52, 152, 219), "update.png");
-        deleteUserButton = createStyledButton("Löschen", new Color(231, 76, 60), "delete.png");
-        clearUserButton = createStyledButton("Zurücksetzen", new Color(149, 165, 166), "clear.png");
-        buttonPanel.add(addUserButton);
-        buttonPanel.add(updateUserButton);
-        buttonPanel.add(deleteUserButton);
-        buttonPanel.add(clearUserButton);
-
+        JButton addFloorButton = createStyledButton("Hinzufügen", new Color(46, 204, 113), "add.png");
+        JButton updateFloorButton = createStyledButton("Aktualisieren", new Color(52, 152, 219), "update.png");
+        JButton deleteFloorButton = createStyledButton("Löschen", new Color(231, 76, 60), "delete.png");
+        JButton clearFloorButton = createStyledButton("Zurücksetzen", new Color(149, 165, 166), "clear.png");
+        buttonPanel.add(addFloorButton);
+        buttonPanel.add(updateFloorButton);
+        buttonPanel.add(deleteFloorButton);
+        buttonPanel.add(clearFloorButton);
+    
         // Tabelle
-        String[] columns = {"Benutzername", "Passwort", "Rolle"};
+        String[] columns = {"ID", "Gesperrt"};
         DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        userTable = new JTable(tableModel);
-        userTable.setRowHeight(30);
-        userTable.setFont(new Font("Arial", Font.PLAIN, 14));
-        userTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
-        userTable.getTableHeader().setBackground(new Color(26, 36, 47));
-        userTable.getTableHeader().setForeground(Color.WHITE);
-        userTable.setGridColor(new Color(200, 200, 200));
-        userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        userTable.setIntercellSpacing(new Dimension(10, 10));
-        refreshUserTable();
-        JScrollPane tableScrollPane = new JScrollPane(userTable);
+        JTable floorTable = new JTable(tableModel);
+        floorTable.setRowHeight(30);
+        floorTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        floorTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        floorTable.getTableHeader().setBackground(new Color(26, 36, 47));
+        floorTable.getTableHeader().setForeground(Color.WHITE);
+        floorTable.setGridColor(new Color(200, 200, 200));
+        floorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        floorTable.setIntercellSpacing(new Dimension(10, 10));
+        refreshFloorTable(tableModel);
+        JScrollPane tableScrollPane = new JScrollPane(floorTable);
         tableScrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
-
-        // User Management Layout
+    
+        // Floor Management Layout
         panel.add(inputPanel, BorderLayout.NORTH);
         panel.add(tableScrollPane, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
-
+    
         // Button-Aktionen
-        addUserButton.addActionListener(e -> {
-            if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            String username = usernameField.getText().trim();
-            String password = new String(passwordField.getPassword()).trim();
-            String role = (String) roleComboBox.getSelectedItem();
-            if (!username.isEmpty() && !password.isEmpty()) {
+        addFloorButton.addActionListener(e -> {
+            String idStr = floorIdField.getText().trim();
+            boolean locked = lockedCheckBox.isSelected();
+            if (!idStr.isEmpty()) {
                 try {
-                    adminCal.addUser(username, password, role);
-                    System.out.println("Benutzer " + loggedInUser + " hat Benutzer hinzugefügt: " + username);
-                    refreshUserTable();
-                    clearUserFields();
+                    int id = Integer.parseInt(idStr);
+                    adminCal.addFloor(id, locked); // Hier die Bezeichnung weggelassen
+                    refreshFloorTable(tableModel);
+                    clearFloorFields(floorIdField, lockedCheckBox);
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Flur-ID muss eine gültige Zahl sein.", "Fehler", JOptionPane.ERROR_MESSAGE);
                 } catch (IllegalArgumentException ex) {
                     JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
@@ -674,24 +648,21 @@ public class AdminGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        updateUserButton.addActionListener(e -> {
-            if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int selectedRow = userTable.getSelectedRow();
+    
+        updateFloorButton.addActionListener(e -> {
+            int selectedRow = floorTable.getSelectedRow();
             if (selectedRow >= 0) {
-                String oldUsername = userTable.getValueAt(selectedRow, 0).toString();
-                String username = usernameField.getText().trim();
-                String password = new String(passwordField.getPassword()).trim();
-                String role = (String) roleComboBox.getSelectedItem();
-                if (!username.isEmpty() && !password.isEmpty()) {
+                int oldId = Integer.parseInt(floorTable.getValueAt(selectedRow, 0).toString());
+                String idStr = floorIdField.getText().trim();
+                boolean locked = lockedCheckBox.isSelected();
+                if (!idStr.isEmpty()) {
                     try {
-                        adminCal.updateUser(oldUsername, username, password, role);
-                        System.out.println("Benutzer " + loggedInUser + " hat Benutzer aktualisiert: " + username);
-                        refreshUserTable();
-                        clearUserFields();
+                        int newId = Integer.parseInt(idStr);
+                        adminCal.updateFloor(oldId, newId, locked); // Hier die Bezeichnung weggelassen
+                        refreshFloorTable(tableModel);
+                        clearFloorFields(floorIdField, lockedCheckBox);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Flur-ID muss eine gültige Zahl sein.", "Fehler", JOptionPane.ERROR_MESSAGE);
                     } catch (IllegalArgumentException ex) {
                         JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
                     }
@@ -699,48 +670,55 @@ public class AdminGUI extends JFrame {
                     JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Benutzer zum Aktualisieren aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Flur zum Aktualisieren aus", "Fehler", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        deleteUserButton.addActionListener(e -> {
-            if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int selectedRow = userTable.getSelectedRow();
+    
+        deleteFloorButton.addActionListener(e -> {
+            int selectedRow = floorTable.getSelectedRow();
             if (selectedRow >= 0) {
-                String username = userTable.getValueAt(selectedRow, 0).toString();
-                int confirm = JOptionPane.showConfirmDialog(this, "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION);
+                int id = Integer.parseInt(floorTable.getValueAt(selectedRow, 0).toString());
+                int confirm = JOptionPane.showConfirmDialog(this, "Sind Sie sicher, dass Sie diesen Flur löschen möchten?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
-                    adminCal.deleteUser(username);
-                    System.out.println("Benutzer " + loggedInUser + " hat Benutzer gelöscht: " + username);
-                    refreshUserTable();
-                    clearUserFields();
+                    adminCal.deleteFloor(id);
+                    refreshFloorTable(tableModel);
+                    clearFloorFields(floorIdField, lockedCheckBox);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Benutzer zum Löschen aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Flur zum Löschen aus", "Fehler", JOptionPane.ERROR_MESSAGE);
             }
         });
-
-        clearUserButton.addActionListener(e -> clearUserFields());
-
-        userTable.getSelectionModel().addListSelectionListener(e -> {
-            int selectedRow = userTable.getSelectedRow();
+    
+        clearFloorButton.addActionListener(e -> clearFloorFields(floorIdField, lockedCheckBox));
+    
+        floorTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = floorTable.getSelectedRow();
             if (selectedRow >= 0) {
-                String username = userTable.getValueAt(selectedRow, 0).toString();
-                Object[] user = adminCal.getUserByUsername(username);
-                if (user != null) {
-                    usernameField.setText((String) user[0]);
-                    passwordField.setText((String) user[1]); // Echtes Passwort
-                    roleComboBox.setSelectedItem((String) user[2]);
-                }
+                floorIdField.setText(floorTable.getValueAt(selectedRow, 0).toString());
+                lockedCheckBox.setSelected((Boolean) floorTable.getValueAt(selectedRow, 1));
             }
         });
-
+    
         return panel;
     }
-
+    
+    private void clearFloorFields(JTextField floorIdField, JCheckBox lockedCheckBox) {
+        floorIdField.setText("");
+        lockedCheckBox.setSelected(false);
+    }
+    private void refreshFloorTable(DefaultTableModel model) {
+        model.setRowCount(0); // Vorherige Zeilen löschen
+        List<Object[]> floors = adminCal.getAllFloors();
+        for (Object[] floor : floors) {
+            model.addRow(floor);
+        }
+    }
+    
+    private void clearFloorFields(JTextField floorIdField, JTextField floorDesignationField, JCheckBox lockedCheckBox) {
+        floorIdField.setText("");
+        floorDesignationField.setText("");
+        lockedCheckBox.setSelected(false);
+    }
 
     private boolean promptUserPassword() {
         // Neues JFrame für die Passwortabfrage
@@ -867,6 +845,10 @@ public class AdminGUI extends JFrame {
         for (Object[] room : rooms) {
             model.addRow(room);
         }
+    }
+
+    private void refreshFloorTable() {
+       
     }
 
     private void clearUserFields() {

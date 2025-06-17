@@ -1,5 +1,6 @@
 package com.wegapplikation.config.controller;
 
+import com.wegapplikation.config.model.FloorData;
 import com.wegapplikation.config.model.RoomData;
 import com.wegapplikation.config.model.UserData;
 
@@ -9,10 +10,12 @@ import java.util.List;
 public class AdminCal {
     private UserData userData;
     private RoomData roomData;
+    private FloorData floorData;
 
     public AdminCal() {
         userData = new UserData();
         roomData = new RoomData();
+        floorData = new FloorData(); // Initialisierung der FloorData
     }
 
     // Benutzerverwaltung
@@ -100,5 +103,27 @@ public class AdminCal {
 
     public boolean verifyPassword(String username, String password) {
         return userData.verifyPassword(username, password);
+    }
+
+    // Flurverwaltung
+    public void addFloor(int id, boolean locked) {
+        floorData.addFloor(id, locked);
+    }
+
+    public void updateFloor(int oldId, int newId, boolean locked) {
+        floorData.updateFloor(oldId, newId, locked);
+    }
+
+    public void deleteFloor(int id) {
+        floorData.deleteFloor(id);
+    }
+
+    public List<Object[]> getAllFloors() {
+        List<FloorData.Floor> floors = floorData.getAllFloors();
+        List<Object[]> floorArray = new ArrayList<>();
+        for (FloorData.Floor floor : floors) {
+            floorArray.add(new Object[]{floor.getId(), floor.isLocked()});
+        }
+        return floorArray;
     }
 }
