@@ -2,7 +2,7 @@ package com.wegapplikation.config.controller;
 
 import java.io.*;
 
-import javax.swing.SwingUtilities;
+
 
 import com.wegapplikation.config.view.AdminGUI;
 import com.wegapplikation.config.view.LoginGUI;

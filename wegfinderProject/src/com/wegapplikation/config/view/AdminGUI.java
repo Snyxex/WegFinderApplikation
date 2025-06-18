@@ -120,7 +120,8 @@ public class AdminGUI extends JFrame {
                 "1. Startseite: Übersicht über das Dashboard.\n" +
                 "2. Benutzerverwaltung: Hinzufügen, Aktualisieren oder Löschen von Benutzern mit Rollen (Admin oder Mitarbeiter).\n" +
                 "3. Raumverwaltung: Hinzufügen, Aktualisieren oder Löschen von Räumen mit Bezeichnung und Sperrstatus.\n" +
-                "4. Hilfe: Dieser Abschnitt bietet Anleitungen.\n\n" +
+                "4. Flurverwaltung: Hinzufügen, Aktualisieren oder Löschen von Fluren (Gängen) mit ID und Sperrstatus.\n" +
+                "5. Hilfe: Dieser Abschnitt bietet Anleitungen.\n\n" +
                 "Hinweis: Für Aktionen wie Hinzufügen, Aktualisieren oder Löschen ist Ihr Benutzerpasswort erforderlich.\n" +
                 "Für Unterstützung wenden Sie sich an den Administrator."
         );
@@ -152,7 +153,7 @@ public class AdminGUI extends JFrame {
         floorManagementButton.addActionListener(e -> {
             setActiveButton(floorManagementButton);
             cardLayout.show(contentPanel, "Etagenverwaltung");
-            refreshFloorTable();
+            refreshFloorTable(new DefaultTableModel());
         });
         helpButton.addActionListener(e -> {
             setActiveButton(helpButton);
@@ -631,6 +632,10 @@ public class AdminGUI extends JFrame {
     
         // Button-Aktionen
         addFloorButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             String idStr = floorIdField.getText().trim();
             boolean locked = lockedCheckBox.isSelected();
             if (!idStr.isEmpty()) {
@@ -650,6 +655,10 @@ public class AdminGUI extends JFrame {
         });
     
         updateFloorButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             int selectedRow = floorTable.getSelectedRow();
             if (selectedRow >= 0) {
                 int oldId = Integer.parseInt(floorTable.getValueAt(selectedRow, 0).toString());
@@ -675,6 +684,10 @@ public class AdminGUI extends JFrame {
         });
     
         deleteFloorButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             int selectedRow = floorTable.getSelectedRow();
             if (selectedRow >= 0) {
                 int id = Integer.parseInt(floorTable.getValueAt(selectedRow, 0).toString());
@@ -714,11 +727,6 @@ public class AdminGUI extends JFrame {
         }
     }
     
-    private void clearFloorFields(JTextField floorIdField, JTextField floorDesignationField, JCheckBox lockedCheckBox) {
-        floorIdField.setText("");
-        floorDesignationField.setText("");
-        lockedCheckBox.setSelected(false);
-    }
 
     private boolean promptUserPassword() {
         // Neues JFrame für die Passwortabfrage
@@ -847,9 +855,9 @@ public class AdminGUI extends JFrame {
         }
     }
 
-    private void refreshFloorTable() {
-       
-    }
+   
+    
+    
 
     private void clearUserFields() {
         usernameField.setText("");
@@ -862,6 +870,5 @@ public class AdminGUI extends JFrame {
         roomDesignationField.setText("");
         lockedCheckBox.setSelected(false);
     }
-
 
 }
