@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wegfinder Projekt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --midnight-blue: #191970;
+            --white: #FFFFFF;
+            --light-gray: #f4f4f4;
+            --dark-gray: #333;
+            --accent-blue: #007bff;
+            --accent-blue-dark: #0056b3;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--midnight-blue);
+            color: var(--white);
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(25, 25, 112, 0.8), rgba(25, 25, 112, 0.8)), url('https://via.placeholder.com/1500x800.png?text=Wegfinder+Background') no-repeat center center/cover;
+            color: var(--white);
+            text-align: center;
+            padding: 100px 20px;
+            margin-bottom: 30px;
+        }
+
+        .hero-section h2 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-section p {
+            font-size: 1.2em;
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+
+        .download-button {
+            display: inline-block;
+            background-color: var(--accent-blue);
+            color: var(--white);
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .download-button:hover {
+            background-color: var(--accent-blue-dark);
+            transform: translateY(-3px);
+        }
+
+        .features-section {
+            background-color: var(--white);
+            padding: 50px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .features-section h2 {
+            font-size: 2.5em;
+            color: var(--midnight-blue);
+            margin-bottom: 40px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .feature-item {
+            background-color: var(--light-gray);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-item h3 {
+            color: var(--accent-blue);
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            background-color: var(--dark-gray);
+            color: var(--white);
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9em;
+        }
+
+     
+        @media (max-width: 768px) {
+            .hero-section h2 {
+                font-size: 2.5em;
+            }
+            .hero-section p {
+                font-size: 1em;
+            }
+            .features-section h2 {
+                font-size: 2em;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Wegfinder Applikation</h1>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <div class="container">
+            <h2>Finden Sie Ihren Weg mit Leichtigkeit</h2>
+            <p>
+                Die Wegfinder Applikation ist Ihr ultimativer Begleiter, um sich in komplexen Umgebungen zurechtzufinden. 
+                Optimieren Sie Ihre Navigation und erreichen Sie Ihr Ziel effizienter als je zuvor. 
+                Ideal für Krankenhäuser.
+            </p>
+            <a href="/Website/files/wegfinderProject.zip" class="download-button" download>Jetzt Projekt herunterladen</a>
+        </div>
+    </section>
+
+    <section class="features-section">
+        <div class="container">
+            <h2>Warum unser Wegfinder?</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <h3>Intuitive Navigation</h3>
+                    <p>Einfache und benutzerfreundliche Oberfläche, die Sie mühelos zu Ihrem Ziel führt.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Effiziente Routenplanung</h3>
+                    <p>Berechnet die schnellsten und effizientesten Wege, um Zeit zu sparen.</p>
+                </div>
+                <div class="feature-item">
+                   <h3>Admin-Dashboard</h3>
+                   <p>Einstellungen für Nutzer, Räume und Flur, durch Login im MapGUI erreichbar.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Nutzer Management</h3>
+                    <p> Verwalte Nutzer Benutzerkonten, Name, Passwort und Rolle.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Raum Management</h3>
+                    <p> Verwalte Raum ID, Bezeichnung und ob es gesperrt ist.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Flur Management</h3>
+                    <p> Verwalte Flur ID und ob es gesperrt ist.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Wegfinder Applikation. Alle Rechte vorbehalten.</p>
+        </div>
+    </footer>
+</body>
+</html>
