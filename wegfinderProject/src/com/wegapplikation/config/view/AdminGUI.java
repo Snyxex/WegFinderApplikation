@@ -22,7 +22,7 @@ public class AdminGUI extends JFrame {
     private JButton addRoomButton, updateRoomButton, deleteRoomButton, clearRoomButton;
     private JPanel contentPanel;
     private CardLayout cardLayout;
-    private JButton homeButton, userManagementButton, roomManagementButton, floorManagementButton,helpButton;
+    private JButton homeButton, userManagementButton, roomManagementButton, floorManagementButton,helpButton,signOutButton;
     private String loggedInUser = LoginGUI.textField.getText(); // Standardwert, bis Login implementiert ist
 
     public void  AdminGUI() {
@@ -32,7 +32,7 @@ public class AdminGUI extends JFrame {
 
     private void initializeUI() {
         setTitle("Admin Dashboard");
-        setSize(900, 600);
+        setSize(1920, 1080);
         setMinimumSize(new Dimension(700, 500));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -63,8 +63,9 @@ public class AdminGUI extends JFrame {
         homeButton = createNavButton("Startseite");
         userManagementButton = createNavButton("Benutzerverwaltung");
         roomManagementButton = createNavButton("Raumverwaltung");
-        floorManagementButton = createNavButton("Etagenverwaltung");
+        floorManagementButton = createNavButton("Flurverwaltung");
         helpButton = createNavButton("Hilfe");
+        signOutButton = createNavButton("Abmelden");
         userManagementButton.setBackground(new Color(46, 204, 113));
         sidebar.add(homeButton);
         sidebar.add(Box.createVerticalStrut(10));
@@ -76,6 +77,8 @@ public class AdminGUI extends JFrame {
         sidebar.add(Box.createVerticalStrut(10));
         sidebar.add(helpButton);
         sidebar.add(Box.createVerticalGlue());
+        sidebar.add(signOutButton);
+        sidebar.add(Box.createVerticalStrut(10));
 
         JLabel versionLabel = new JLabel("v5.2.1");
         versionLabel.setForeground(new Color(150, 150, 150));
@@ -96,7 +99,7 @@ public class AdminGUI extends JFrame {
         contentPanel.add(createRoomManagementPanel(), "Raumverwaltung");
 
         // Floor Management Panel
-        contentPanel.add(createFloorManagementPanel(), "Etagenverwaltung");
+        contentPanel.add(createFloorManagementPanel(), "Flurverwaltung");
 
         // Home Panel
         JPanel homePanel = new JPanel(new BorderLayout());
@@ -152,12 +155,19 @@ public class AdminGUI extends JFrame {
         });
         floorManagementButton.addActionListener(e -> {
             setActiveButton(floorManagementButton);
-            cardLayout.show(contentPanel, "Etagenverwaltung");
+            cardLayout.show(contentPanel, "Flurverwaltung");
             refreshFloorTable(new DefaultTableModel());
         });
         helpButton.addActionListener(e -> {
             setActiveButton(helpButton);
             cardLayout.show(contentPanel, "Hilfe");
+        });
+
+        signOutButton.addActionListener(e -> {
+            setActiveButton(signOutButton);
+            cardLayout.show(contentPanel, "Abmelden");
+
+
         });
 
         add(mainPanel);
@@ -595,13 +605,10 @@ public class AdminGUI extends JFrame {
         // Button-Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBackground(new Color(240, 242, 245));
-        JButton addFloorButton = createStyledButton("Hinzufügen", new Color(46, 204, 113), "add.png");
         JButton updateFloorButton = createStyledButton("Aktualisieren", new Color(52, 152, 219), "update.png");
-        JButton deleteFloorButton = createStyledButton("Löschen", new Color(231, 76, 60), "delete.png");
         JButton clearFloorButton = createStyledButton("Zurücksetzen", new Color(149, 165, 166), "clear.png");
-        buttonPanel.add(addFloorButton);
+
         buttonPanel.add(updateFloorButton);
-        buttonPanel.add(deleteFloorButton);
         buttonPanel.add(clearFloorButton);
     
         // Tabelle
@@ -631,29 +638,6 @@ public class AdminGUI extends JFrame {
         panel.add(buttonPanel, BorderLayout.SOUTH);
     
         // Button-Aktionen
-        addFloorButton.addActionListener(e -> {
-            if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            String idStr = floorIdField.getText().trim();
-            boolean locked = lockedCheckBox.isSelected();
-            if (!idStr.isEmpty()) {
-                try {
-                    int id = Integer.parseInt(idStr);
-                    adminCal.addFloor(id, locked); // Hier die Bezeichnung weggelassen
-                    refreshFloorTable(tableModel);
-                    clearFloorFields(floorIdField, lockedCheckBox);
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Flur-ID muss eine gültige Zahl sein.", "Fehler", JOptionPane.ERROR_MESSAGE);
-                } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-    
         updateFloorButton.addActionListener(e -> {
             if (!promptUserPassword()) {
                 JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
@@ -683,24 +667,6 @@ public class AdminGUI extends JFrame {
             }
         });
     
-        deleteFloorButton.addActionListener(e -> {
-            if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int selectedRow = floorTable.getSelectedRow();
-            if (selectedRow >= 0) {
-                int id = Integer.parseInt(floorTable.getValueAt(selectedRow, 0).toString());
-                int confirm = JOptionPane.showConfirmDialog(this, "Sind Sie sicher, dass Sie diesen Flur löschen möchten?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    adminCal.deleteFloor(id);
-                    refreshFloorTable(tableModel);
-                    clearFloorFields(floorIdField, lockedCheckBox);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Flur zum Löschen aus", "Fehler", JOptionPane.ERROR_MESSAGE);
-            }
-        });
     
         clearFloorButton.addActionListener(e -> clearFloorFields(floorIdField, lockedCheckBox));
     
@@ -714,19 +680,7 @@ public class AdminGUI extends JFrame {
     
         return panel;
     }
-    
-    private void clearFloorFields(JTextField floorIdField, JCheckBox lockedCheckBox) {
-        floorIdField.setText("");
-        lockedCheckBox.setSelected(false);
-    }
-    private void refreshFloorTable(DefaultTableModel model) {
-        model.setRowCount(0); // Vorherige Zeilen löschen
-        List<Object[]> floors = adminCal.getAllFloors();
-        for (Object[] floor : floors) {
-            model.addRow(floor);
-        }
-    }
-    
+        
 
     private boolean promptUserPassword() {
         // Neues JFrame für die Passwortabfrage
@@ -855,8 +809,13 @@ public class AdminGUI extends JFrame {
         }
     }
 
-   
-    
+    private void refreshFloorTable(DefaultTableModel model) {
+        model.setRowCount(0); // Vorherige Zeilen löschen
+        List<Object[]> floors = adminCal.getAllFloors();
+        for (Object[] floor : floors) {
+            model.addRow(floor);
+        }
+    }
     
 
     private void clearUserFields() {
@@ -868,6 +827,11 @@ public class AdminGUI extends JFrame {
     private void clearRoomFields() {
         roomIdField.setText("");
         roomDesignationField.setText("");
+        lockedCheckBox.setSelected(false);
+    }
+
+    private void clearFloorFields(JTextField floorIdField, JCheckBox lockedCheckBox) {
+        floorIdField.setText("");
         lockedCheckBox.setSelected(false);
     }
 

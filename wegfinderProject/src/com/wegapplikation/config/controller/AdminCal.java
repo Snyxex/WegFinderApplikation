@@ -126,4 +126,10 @@ public class AdminCal {
         }
         return floorArray;
     }
+
+
+
+    public void LogoutTimer(){
+        
+    }
 }
