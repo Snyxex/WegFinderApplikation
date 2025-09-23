@@ -36,7 +36,9 @@ public class AdminCal {
     }
 
     public void deleteUser(String username) {
-        userData.deleteUser(username);
+        if(username != null && !username.isEmpty()) {
+            userData.deleteUser(username);
+        }
     }
 
     public List<Object[]> getAllUsers() {

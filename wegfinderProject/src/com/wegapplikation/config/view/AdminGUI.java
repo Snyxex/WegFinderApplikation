@@ -124,9 +124,7 @@ public class AdminGUI extends JFrame {
                 "2. Benutzerverwaltung: Hinzufügen, Aktualisieren oder Löschen von Benutzern mit Rollen (Admin oder Mitarbeiter).\n" +
                 "3. Raumverwaltung: Hinzufügen, Aktualisieren oder Löschen von Räumen mit Bezeichnung und Sperrstatus.\n" +
                 "4. Flurverwaltung: Hinzufügen, Aktualisieren oder Löschen von Fluren (Gängen) mit ID und Sperrstatus.\n" +
-                "5. Hilfe: Dieser Abschnitt bietet Anleitungen.\n\n" +
-                "Hinweis: Für Aktionen wie Hinzufügen, Aktualisieren oder Löschen ist Ihr Benutzerpasswort erforderlich.\n" +
-                "Für Unterstützung wenden Sie sich an den Administrator."
+                "5. Hilfe: Dieser Abschnitt bietet Anleitungen.\n\n"
         );
         helpText.setFont(new Font("Arial", Font.PLAIN, 14));
         helpText.setEditable(false);
@@ -335,16 +333,13 @@ public class AdminGUI extends JFrame {
             int selectedRow = userTable.getSelectedRow();
             if (selectedRow >= 0) {
                 String username = userTable.getValueAt(selectedRow, 0).toString();
-                int confirm = JOptionPane.showConfirmDialog(this, "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
+                
+              
                     adminCal.deleteUser(username);
                     System.out.println("Benutzer " + loggedInUser + " hat Benutzer gelöscht: " + username);
                     refreshUserTable();
                     clearUserFields();
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Benutzer zum Löschen aus", "Fehler", JOptionPane.ERROR_MESSAGE);
-            }
         });
 
         clearUserButton.addActionListener(e -> clearUserFields());
@@ -537,16 +532,13 @@ public class AdminGUI extends JFrame {
             if (selectedRow >= 0) {
                 int id = Integer.parseInt(roomTable.getValueAt(selectedRow, 0).toString());
                 String designation = roomTable.getValueAt(selectedRow, 1).toString();
-                int confirm = JOptionPane.showConfirmDialog(this, "Sind Sie sicher, dass Sie diesen Raum löschen möchten?", "Löschen bestätigen", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
+               
                     adminCal.deleteRoom(id);
                     System.out.println("Benutzer " + loggedInUser + " hat Raum gelöscht: " + designation);
                     refreshRoomTable();
                     clearRoomFields();
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Raum zum Löschen aus", "Fehler", JOptionPane.ERROR_MESSAGE);
-            }
+           
         });
 
         clearRoomButton.addActionListener(e -> clearRoomFields());

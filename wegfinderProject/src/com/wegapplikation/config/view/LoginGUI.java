@@ -114,7 +114,7 @@ public class LoginGUI {
         btnLogin.setBounds(212, 90, 116, 23);
         frmMitarbeiterLogin.getContentPane().add(btnLogin);
 
-        JButton btnBack = new JButton("Zur�ck");
+        JButton btnBack = new JButton("Zurück");
         btnBack.setBackground(new Color(215, 212, 205));
         btnBack.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
