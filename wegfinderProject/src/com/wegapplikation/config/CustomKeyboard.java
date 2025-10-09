@@ -1,41 +1,91 @@
 package com.wegapplikation.config;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent; // Wichtig: Für Kompatibilität mit JPasswordField und JTextField
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Eine virtuelle Tastatur-Implementierung unter Verwendung von Swing.
+ * Bietet eine grafische Tastaturoberfläche, die zur Eingabe von Text in ein 
+ * Ziel-JTextComponent (JTextField oder JPasswordField) verwendet werden kann.
+ */
 public class CustomKeyboard extends JFrame {
-    private JTextField targetField;
+    
+    /** Das ursprüngliche Zielfeld, in das der endgültige Text/Passwort übertragen wird. */
+    private JTextComponent targetField; 
+    
+    /** Das aktuell sichtbare und bearbeitete Feld (entweder displayField oder passwordField). */
+    private JTextComponent activeDisplayField;
+    
+    /** Flagge zur Verfolgung des CAPS-Zustands (true für Großbuchstaben). */
     private boolean isCapsLock = true;
+    
+    /** Das Standard-Textfeld für normale Eingaben (wird nur verwendet, wenn targetType != "password"). */
     private JTextField displayField;
+    
+    /** Das Passwortfeld für sensible Eingaben (wird nur verwendet, wenn targetType == "password"). */
+    private JPasswordField passwordField; 
 
     private JPanel keyboardContainer;
     private final String LETTERS_PANEL = "letters";
     private final String SYMBOLS_PANEL = "symbols";
     private final Color BG_COLOR = new Color(175, 189, 193);
 
+    /** Liste aller Buchstaben-Buttons, um den CAPS-Zustand leicht aktualisieren zu können. */
     private List<JButton> letterButtons = new ArrayList<>();
 
-    public CustomKeyboard(JTextField target) {
+    /**
+     * Konstruiert eine neue Instanz der virtuellen Tastatur.
+     *
+     * @param target Das JTextComponent (JTextField oder JPasswordField), das die endgültige Eingabe erhält.
+     * @param targetType Ein String, der den Eingabetyp angibt: "password" oder "normal".
+     */
+    public CustomKeyboard(JTextComponent target, String targetType) {
         this.targetField = target;
-        initializeKeyboard();
+        initializeKeyboard(targetType); 
+    }
+    
+    // Konkruktor für Abwärtskompatibilität, wenn der Typ nicht übergeben wird (defaults zu "normal")
+    public CustomKeyboard(JTextComponent target) {
+        this(target, "normal");
     }
 
-    private void initializeKeyboard() {
+    private void initializeKeyboard(String targetType) {
         setTitle("Virtuelle Tastatur");
         setLayout(new BorderLayout(5, 5));
         setSize(945, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(BG_COLOR);
 
-        displayField = new JTextField(targetField.getText());
-        displayField.setEditable(false);
-        displayField.setFont(new Font("Arial", Font.BOLD, 18));
-        displayField.setPreferredSize(new Dimension(700, 40));
-        displayField.setBackground(BG_COLOR);
-        add(displayField, BorderLayout.NORTH);
+        // 1. Initialen Text aus dem Zielfeld lesen
+        String initialText = "";
+        if (targetField instanceof JPasswordField) {
+            initialText = new String(((JPasswordField) targetField).getPassword());
+        } else if (targetField instanceof JTextField) {
+            initialText = ((JTextField) targetField).getText();
+        }
 
+        // 2. Anzeige-Feld basierend auf targetType erstellen und initialisieren
+        if (targetType != null && targetType.equalsIgnoreCase("password")){
+            passwordField = new JPasswordField(initialText);
+            passwordField.setEditable(false);
+            passwordField.setFont(new Font("Arial", Font.BOLD, 18));
+            passwordField.setPreferredSize(new Dimension(700, 40));
+            passwordField.setBackground(BG_COLOR);
+            add(passwordField, BorderLayout.NORTH);
+            activeDisplayField = passwordField; // Das aktive Feld setzen
+        } else {
+            displayField = new JTextField(initialText);
+            displayField.setEditable(false);
+            displayField.setFont(new Font("Arial", Font.BOLD, 18));
+            displayField.setPreferredSize(new Dimension(700, 40));
+            displayField.setBackground(BG_COLOR);
+            add(displayField, BorderLayout.NORTH);
+            activeDisplayField = displayField; // Das aktive Feld setzen
+        }
+        
         keyboardContainer = new JPanel(new CardLayout());
         keyboardContainer.setBackground(BG_COLOR);
 
@@ -49,7 +99,7 @@ public class CustomKeyboard extends JFrame {
         lettersPanel.add(createRow(new String[]{"Y","X","C","V","B","N","M","Ö","Ä"}, true));
         lettersPanel.add(createControlRow(true));
 
-        // Seite 2 – Sonderzeichen
+       
         JPanel symbolsPanel = new JPanel(new GridLayout(5, 1, 5, 5));
         symbolsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         symbolsPanel.setBackground(BG_COLOR);
@@ -67,6 +117,27 @@ public class CustomKeyboard extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+    
+    /** Liest den aktuellen Text aus dem aktiven Anzeigefeld. */
+    private String getActiveText() {
+        if (activeDisplayField instanceof JPasswordField) {
+            // JPasswordField gibt char[] zurück, in String umwandeln
+            return new String(((JPasswordField) activeDisplayField).getPassword());
+        } else if (activeDisplayField instanceof JTextField) {
+            return ((JTextField) activeDisplayField).getText();
+        }
+        return "";
+    }
+    
+    /** Setzt den Text im aktiven Anzeigefeld. */
+    private void setActiveText(String text) {
+        if (activeDisplayField instanceof JPasswordField) {
+            ((JPasswordField) activeDisplayField).setText(text);
+        } else if (activeDisplayField instanceof JTextField) {
+            ((JTextField) activeDisplayField).setText(text);
+        }
+    }
+
 
     private JPanel createRow(String[] keys, boolean isLetterRow) {
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
@@ -79,6 +150,7 @@ public class CustomKeyboard extends JFrame {
     }
 
     private JPanel createControlRow(boolean isLettersPanel) {
+
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         row.setBackground(BG_COLOR);
 
@@ -97,38 +169,39 @@ public class CustomKeyboard extends JFrame {
         }
         row.add(capsButton);
 
-        // Umschalten
+ 
         JButton toggle = new JButton(isLettersPanel ? "123" : "ABC");
         toggle.setPreferredSize(new Dimension(85, 50));
         toggle.setFont(new Font("Arial", Font.BOLD, 14));
         toggle.addActionListener(e -> switchKeyboardPanel(isLettersPanel ? SYMBOLS_PANEL : LETTERS_PANEL));
         row.add(toggle);
 
-        // Leertaste
+
         JButton space = new JButton("Leertaste");
         space.setPreferredSize(new Dimension(500, 50));
         space.setFont(new Font("Arial", Font.BOLD, 14));
-        space.addActionListener(e -> displayField.setText(displayField.getText() + " "));
+        space.addActionListener(e -> setActiveText(getActiveText() + " ")); 
         row.add(space);
 
-  // Backspace
-  JButton backspace = new JButton("<-");
-  backspace.setPreferredSize(new Dimension(85, 50));
-  backspace.setFont(new Font("Arial", Font.BOLD, 14));
-  backspace.addActionListener(e -> {
-      String text = displayField.getText();
-      if (!text.isEmpty()) {
-          displayField.setText(text.substring(0, text.length() - 1));
-      }
-  });
-  row.add(backspace);
 
-        // ENTER
+        JButton backspace = new JButton("<-");
+        backspace.setPreferredSize(new Dimension(85, 50));
+        backspace.setFont(new Font("Arial", Font.BOLD, 14));
+        backspace.addActionListener(e -> {
+            String text = getActiveText(); 
+            if (!text.isEmpty()) {
+                setActiveText(text.substring(0, text.length() - 1));
+            }
+        });
+        row.add(backspace);
+
+
         JButton enter = new JButton("ENTER");
         enter.setPreferredSize(new Dimension(120, 50));
         enter.setFont(new Font("Arial", Font.BOLD, 14));
         enter.addActionListener(e -> {
-            targetField.setText(displayField.getText());
+            // Text wird zurück ins ursprüngliche Zielfeld übertragen
+            targetField.setText(getActiveText()); 
             dispose();
         });
         row.add(enter);
@@ -137,6 +210,7 @@ public class CustomKeyboard extends JFrame {
     }
 
     private JButton createKeyButton(String key, boolean isLetter) {
+       
         JButton button = new JButton(key);
         button.setPreferredSize(new Dimension(85, 50));
         button.setFont(new Font("Arial", Font.BOLD, 14));
@@ -150,7 +224,7 @@ public class CustomKeyboard extends JFrame {
             } else if (!isCapsLock && isLetter) {
                 inputKey = key.toLowerCase();
             }
-            displayField.setText(displayField.getText() + inputKey);
+            setActiveText(getActiveText() + inputKey); 
         });
 
         if (isLetter) {
@@ -161,6 +235,7 @@ public class CustomKeyboard extends JFrame {
     }
 
     private void updateCapsState() {
+
         for (JButton button : letterButtons) {
             String text = button.getText();
             if (text.length() == 1 && Character.isLetter(text.charAt(0))) {
@@ -170,11 +245,13 @@ public class CustomKeyboard extends JFrame {
     }
 
     private void switchKeyboardPanel(String panelName) {
+
         CardLayout cl = (CardLayout) keyboardContainer.getLayout();
         cl.show(keyboardContainer, panelName);
     }
-
-    public void keyboard(JTextField textField) {
-        new CustomKeyboard(textField);
+    
+    /** Statische Methode zum Starten der Tastatur (nutzt den JTextComponent-Konstruktor). */
+    public static void keyboard(JTextComponent textField, String type) {
+        new CustomKeyboard(textField, type);
     }
 }
