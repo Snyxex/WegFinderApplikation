@@ -3,24 +3,34 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Wegfinder Projekt</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Wegfinder Projekt | Intuitive Indoor-Navigation für Krankenhäuser</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0TLNcQDjVm/E+VdYk0jL93r8C/GqN+H+2Cg/K0v51u+qDk5q2Cq5Nl+A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        /* **FARBPALETTE UND GRUNDLAGEN** */
         :root{
-            --midnight-blue:#191970;
-            --white:#fff;
-            --light-gray:#f4f4f4;
-            --dark-gray:#333;
-            --accent-blue:#007bff;
-            --accent-blue-dark:#0056b3;
-            --card-radius:10px;
+            --primary-dark: #1A242F; /* Header, Footer, wichtige Überschriften */
+            --primary-medium: #2B3A4F; /* Leichte dunkle Akzente, Hover-States */
+            --accent-blue: #007bff; /* Haupt-Akzentfarbe für CTAs, Links */
+            --accent-blue-dark: #0056b3; /* Dunkler für Hover */
+            --secondary-accent: #28a745; /* Zusätzliche Akzentfarbe (z.B. für Success/Download) */
+            --secondary-accent-dark: #1e7e34; /* Dunkler für Hover */
+            --white: #ffffff;
+            --off-white: #f8f9fa; /* Hintergrund für helle Sektionen */
+            --light-gray: #e9ecef; /* Leichte Trennung, dezente Hintergründe */
+            --text-dark: #343a40; /* Haupttextfarbe */
+            --text-muted: #6c757d; /* Sekundärer Text, Beschreibungen */
+            --border-color: #dee2e6; /* Dezente Ränder */
+            --card-radius: 12px;
+            --section-padding: 80px; /* Konsistenter Sektionsabstand */
+            --gap-md: 40px; /* Mittlerer Abstand */
         }
         *{box-sizing:border-box}
         body{
             font-family:"Roboto",sans-serif;
             margin:0;
-            background:var(--light-gray);
-            color:var(--dark-gray);
+            background:var(--off-white);
+            color:var(--text-dark);
             line-height:1.6;
             -webkit-font-smoothing:antialiased;
         }
@@ -39,8 +49,8 @@
             top:10px;
             width:auto;
             height:auto;
-            background:#000;
-            color:#fff;
+            background:var(--primary-dark);
+            color:var(--white);
             padding:8px 12px;
             border-radius:4px;
             z-index:1000;
@@ -48,267 +58,601 @@
 
         .container{max-width:1200px;margin:0 auto;padding:0 20px}
 
-        /* Sticky header */
+        /* **HEADER UND NAVIGATION** */
         header{
-            background:var(--midnight-blue);
+            background:var(--primary-dark);
             color:var(--white);
-            box-shadow:0 2px 5px rgba(0,0,0,.2);
+            box-shadow:0 2px 8px rgba(0,0,0,.3);
             position:sticky;
             top:0;
             z-index:1000;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
-        .nav{
+        .nav-content{
             display:flex;
             align-items:center;
             justify-content:space-between;
-            gap:16px;
-            padding:12px 20px;
+            padding:15px 20px;
         }
-        .brand{font-weight:700;font-size:1.25rem}
-        nav a{color:var(--white);text-decoration:none;margin-left:12px}
-        .cta{background:var(--accent-blue);color:var(--white);padding:8px 14px;border-radius:999px;font-weight:700;text-decoration:none;box-shadow:0 4px 6px rgba(0,0,0,.15)}
-        .cta:focus,.cta:hover{background:var(--accent-blue-dark)}
+        .brand{font-weight:900;font-size:1.6rem;letter-spacing:1px; color: var(--white);}
+        .main-nav a{
+            color:var(--white);
+            text-decoration:none;
+            margin-left:25px;
+            font-weight:400;
+            transition: color 0.3s ease-out, transform 0.2s ease-out;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        .main-nav a:hover{
+            color:var(--accent-blue);
+            transform: translateY(-2px);
+        }
+        /* Underline-Effekt für Navigation */
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            transition: width 0.3s ease-out;
+        }
+        .main-nav a:hover::after {
+            width: 100%;
+        }
 
+        /* **DOWNLOAD CTA** */
+        .cta-button{
+            background:var(--secondary-accent);
+            color:var(--white);
+            padding:12px 22px;
+            border-radius:50px;
+            font-weight:700;
+            text-decoration:none;
+            box-shadow:0 6px 15px rgba(40,167,69,.4);
+            transition: background 0.3s ease-out, transform 0.2s ease-out, box-shadow 0.3s ease-out;
+            font-size: 1rem;
+            display: inline-flex; /* Für Icon-Ausrichtung */
+            align-items: center;
+            gap: 8px; /* Abstand zwischen Text und Icon */
+        }
+        .cta-button i {
+            font-size: 1.1em; /* Icon-Größe anpassen */
+        }
+        .cta-button:focus,.cta-button:hover{background:var(--secondary-accent-dark);transform:translateY(-2px); box-shadow:0 8px 18px rgba(40,167,69,.6);}
+
+        /* Besonderer Stil für den Header-CTA */
+        .header-cta {
+            padding: 10px 18px; /* Etwas kleiner als im Hero */
+            font-size: 0.95rem;
+            margin-left: 30px; /* Mehr Abstand zur Navigation */
+            background: var(--secondary-accent); /* Eigene Hintergrundfarbe für Header-CTA */
+            box-shadow: 0 4px 10px rgba(40,167,69,.3);
+        }
+        .header-cta:hover {
+            box-shadow: 0 6px 12px rgba(40,167,69,.5);
+        }
+
+
+        /* **HERO SECTION** */
         .hero-section{
-            background:linear-gradient(rgba(25,25,112,.75),rgba(25,25,112,.5)), url('https://via.placeholder.com/1500x800.png?text=Wegfinder+Background') center/cover no-repeat;
+            background:linear-gradient(rgba(26,36,47,.9),rgba(26,36,47,.7)), url('https://via.placeholder.com/1800x900.png?text=Modernes+Krankenhaus+Foyer') center/cover no-repeat;
             color:var(--white);
             text-align:center;
-            padding:80px 20px;
+            padding:var(--section-padding) 20px 100px;
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .hero-inner{max-width:900px;margin:0 auto}
-        .hero-section h1{font-size:2.25rem;margin:0 0 12px}
-        .hero-section p{font-size:1.05rem;margin:0 0 20px;color:rgba(255,255,255,.92)}
-        .download-button{display:inline-block;background:var(--accent-blue);color:var(--white);padding:12px 22px;border-radius:50px;text-decoration:none;font-weight:700;box-shadow:0 6px 12px rgba(0,0,0,.18)}
-        .download-button:hover{background:var(--accent-blue-dark);transform:translateY(-3px)}
-
-        /* Slideshow styles */
-        .slideshow-section {
+        .hero-section h1{font-size:3rem;margin:0 0 20px;font-weight:900;line-height:1.2; letter-spacing: -0.5px;}
+        .hero-section p{font-size:1.3rem;margin:0 0 40px;color:rgba(255,255,255,.9);font-weight:300;}
+        .hero-section .cta-button{
+            padding:18px 35px;
+            font-size:1.2rem;
+        }
+        
+        /* **TRUST BAR** */
+        .trust-bar{
             background: var(--white);
-            padding: 40px 0;
-            margin-bottom: 30px;
+            padding: 25px 0;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+        .trust-bar p{
+            font-weight: 400;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .trust-bar .logos{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .trust-bar .logos img{
+            max-height: 35px;
+            opacity: 0.7;
+            filter: grayscale(80%);
+            transition: opacity 0.3s, filter 0.3s;
+        }
+        .trust-bar .logos img:hover{
+            opacity: 1;
+            filter: grayscale(0%);
         }
 
+        /* **ABOUT SECTION** */
+        .about-section {
+            padding: var(--section-padding) 0;
+            background: var(--light-gray);
+            margin-bottom: var(--gap-md);
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,.05);
+            text-align: center;
+        }
+        .about-section h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            font-weight: 900;
+        }
+        .about-section p {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+        }
+        .about-section .cta-button {
+            background: var(--accent-blue);
+            box-shadow: 0 6px 15px rgba(0,123,255,.3);
+        }
+        .about-section .cta-button:hover {
+            background: var(--accent-blue-dark);
+            box-shadow: 0 8px 18px rgba(0,123,255,.5);
+        }
+
+
+        /* **PRODUCT FEATURE ALTERNATING** */
+        .product-feature-alt {
+            padding: var(--section-padding) 0;
+            margin-bottom: var(--gap-md);
+            background: var(--white);
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,.08);
+        }
+        .feature-item-alt {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-md);
+            margin-bottom: 80px;
+            padding: 0 20px;
+        }
+        .feature-item-alt:last-child {
+            margin-bottom: 0;
+        }
+        .feature-item-alt:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .feature-text, .feature-media {
+            flex: 1;
+            min-width: 0;
+        }
+        .feature-media img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--card-radius);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+        }
+        .feature-text h3 {
+            font-size: 2.2rem;
+            color: var(--primary-dark);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 900;
+            line-height: 1.3;
+        }
+        .feature-text p {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+        .feature-text ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            color: var(--text-dark);
+        }
+        .feature-text ul li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+        .feature-text ul li::before {
+            content: '✅'; 
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--secondary-accent);
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+
+        /* **SLIDESHOW (WEITER VERBESSERT)** */
+        .slideshow-section {
+            background: var(--white);
+            padding: var(--section-padding) 0;
+            margin-bottom: var(--gap-md);
+            box-shadow: 0 4px 15px rgba(0,0,0,.08);
+            border-radius: var(--card-radius);
+        }
+        .slideshow-section h2 {
+            text-align:center; 
+            color: var(--primary-dark); 
+            margin-bottom: 50px; 
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
         .slideshow-container {
             max-width: 1000px;
             position: relative;
             margin: 0 auto;
             overflow: hidden;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: var(--card-radius);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Keyframes für sanftes Einblenden */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .slide {
             display: none;
             width: 100%;
         }
-
         .slide.active {
             display: block;
+            animation: fadeIn 0.8s ease-in-out;
         }
-
         .slide img {
             width: 100%;
-            height: 500px;
+            height: 550px; 
             object-fit: cover;
             display: block;
         }
-
         .slide-caption {
             position: absolute;
             bottom: 0;
-            width: 100%;
-            background: rgba(0,0,0,0.7);
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(26,36,47,0.9), rgba(26,36,47,0.0)); /* Dezenterer Gradient */
             color: var(--white);
-            padding: 15px;
+            padding: 30px 18px 10px; /* Mehr Padding unten, weniger oben */
             text-align: center;
+            font-size: 1.05rem; /* Etwas kleiner */
+            font-weight: 400; /* Leichter */
+            opacity: 0.9;
+            transition: opacity 0.3s ease-in-out;
         }
-
+        .slideshow-container:hover .slide-caption {
+            opacity: 1;
+        }
+        
+        /* Pfeil-Navigation */
         .prev, .next {
             cursor: pointer;
             position: absolute;
             top: 50%;
-            transform: translateY(-50%);
             width: auto;
-            padding: 16px;
+            padding: 18px;
+            margin-top: -30px;
             color: var(--white);
             font-weight: bold;
-            font-size: 18px;
+            font-size: 24px;
             transition: 0.3s ease;
             border-radius: 0 3px 3px 0;
             user-select: none;
-            background: rgba(0,0,0,0.4);
+            background: rgba(26,36,47,0.5);
             border: none;
+            z-index: 100;
         }
-
         .next {
             right: 0;
             border-radius: 3px 0 0 3px;
         }
-
         .prev:hover, .next:hover {
-            background: rgba(0,0,0,0.8);
+            background: var(--accent-blue);
         }
 
-        .dots-container {
+        /* Thumbnails */
+        .thumbnails-container {
             text-align: center;
-            padding: 15px 0;
+            padding: 20px 0 0;
         }
 
-        .dot {
+        .thumbnail {
             cursor: pointer;
-            height: 12px;
-            width: 12px;
-            margin: 0 5px;
-            background-color: #bbb;
-            border-radius: 50%;
+            height: 90px; /* Etwas größer */
+            width: 140px; /* Breiter */
+            margin: 0 7px; /* Mehr Abstand */
+            border: 3px solid rgba(0,0,0,0.1); /* Dezenter, heller Rahmen */
+            border-radius: 6px; /* Etwas runder */
             display: inline-block;
-            transition: background-color 0.3s ease;
-            border: none;
+            transition: border-color 0.3s, opacity 0.3s, transform 0.2s;
+            opacity: 0.7;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .dot.active, .dot:hover {
-            background-color: var(--accent-blue);
+        .thumbnail.active, .thumbnail:hover {
+            opacity: 1;
+            border-color: var(--accent-blue);
+            transform: translateY(-3px); /* Leichter Schwebe-Effekt */
+            box-shadow: 0 5px 15px rgba(0,123,255,.3);
         }
-
-        main{padding:36px 0}
-        .features-section,.team-section{
+        
+        /* **TEAM SECTION** */
+        .team-section{
             background:var(--white);
-            padding:40px 0;
-            margin-bottom:24px;
+            padding: var(--section-padding) 0;
+            margin-bottom: var(--gap-md);
             border-radius:var(--card-radius);
-            box-shadow:0 2px 6px rgba(0,0,0,.04)
+            box-shadow: 0 4px 15px rgba(0,0,0,.08);
         }
-
-        .features-section h2,.team-section h2{
-            color:var(--midnight-blue);
-            margin:0 0 18px;
-            font-size:1.6rem;
-            text-align:center
+        .team-section h2{
+            color:var(--primary-dark);
+            margin:0 0 25px;
+            font-size:2.5rem;
+            text-align:center;
+            font-weight: 900;
         }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            padding: 0 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-            align-items: start;
+        .team-section p{
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin:0 0 40px;
+            text-align: center;
         }
-
-        .feature-item{
-            background:var(--light-gray);
-            padding:20px;
-            border-radius:10px;
-            transition:transform .18s ease,box-shadow .18s ease;
-            display:flex;
-            flex-direction:column;
-            justify-content:flex-start;
-            min-height:180px;
-        }
-        
-        .feature-item:hover{
-            transform:translateY(-6px);
-            box-shadow:0 8px 18px rgba(0,0,0,.08)
-        }
-        
-        .feature-item h3{
-            color:var(--accent-blue);
-            margin:0 0 8px
-        }
-
-        /* Team */
         .team-grid{
             display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-            gap:18px;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:25px;
             padding:0 20px
         }
-        
         .team-member{
             background:var(--light-gray);
-            padding:18px;
-            border-radius:10px;
+            padding:25px;
+            border-radius:var(--card-radius);
             text-align:center;
             display:flex;
             flex-direction:column;
             align-items:center;
-            gap:8px
+            gap:10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
         }
-        
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.12);
+        }
         .avatar{
-            width:96px;
-            height:96px;
+            width:110px;
+            height:110px;
             border-radius:50%;
             overflow:hidden;
             background:#ddd;
-            flex:0 0 auto
+            flex:0 0 auto;
+            border: 3px solid var(--accent-blue);
         }
-        
         .avatar img{
             width:100%;
             height:100%;
             object-fit:cover;
             display:block
         }
-        
-        .member-name{font-weight:700}
-        .member-role{color:#555;font-size:.95rem}
-        .member-contact a{color:var(--accent-blue);text-decoration:none}
-        .member-links{display:flex;gap:8px;margin-top:6px}
+        .member-name{font-weight:700; font-size: 1.25rem; color: var(--primary-dark);}
+        .member-role{color:var(--text-muted);font-size:1rem;}
+        .member-contact a{color:var(--accent-blue);text-decoration:none; transition: color 0.3s;}
+        .member-contact a:hover{color:var(--accent-blue-dark);}
 
+        /* **KONTAKT SECTION** */
+        .contact-section {
+            margin:var(--section-padding) 0;
+            padding:50px;
+            background:var(--white);
+            border-radius:var(--card-radius);
+            box-shadow:0 4px 15px rgba(0,0,0,.08);
+            text-align: center;
+        }
+        .contact-section h3 {
+            margin:0 0 15px;
+            color:var(--primary-dark);
+            font-size: 2.2rem;
+            font-weight: 900;
+        }
+        .contact-section p {
+            margin:0 0 30px;
+            color:var(--text-dark);
+            font-size: 1.15rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+       
+        /* **FOOTER** */
         footer{
-            background:var(--dark-gray);
+            background:var(--primary-dark);
             color:var(--white);
-            padding:18px 0;
+            padding: 40px 0;
             font-size:.9rem;
             text-align:center;
-            border-radius:0
+            border-top: 5px solid var(--accent-blue);
+        }
+        footer div{
+            margin-bottom: 8px;
+        }
+        footer .legal-text {
+            font-size: .8rem;
+            color: rgba(255,255,255,0.7);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .feature-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .slide img {
-                height: 300px;
-            }
-            .prev, .next {
-                padding: 8px;
-                font-size: 16px;
-            }
-            .hero-section{padding:48px 16px}
-            .hero-section h1{font-size:1.6rem}
-            header .nav{padding:10px 16px}
-            .brand{font-size:1rem}
-            .feature-item{min-height:unset}
+        /* **RESPONSIVE DESIGN** */
+        /* Hamburger-Menü und Mobile CTA */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1100;
+        }
+        .menu-toggle div {
+            width: 100%;
+            height: 3px;
+            background: var(--white);
+            border-radius: 10px;
+            transition: all 0.3s linear;
+            transform-origin: 1px;
+        }
+        /* Mobile Overlay-Menü */
+        .mobile-nav-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26,36,47,0.95);
+            z-index: 1050;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .mobile-nav-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+        .mobile-nav-overlay a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 1.8rem;
+            margin: 15px 0;
+            padding: 10px 20px;
+            transition: color 0.3s;
+        }
+        .mobile-nav-overlay a:hover {
+            color: var(--accent-blue);
         }
 
-        @media (min-width: 769px) and (max-width: 991px) {
-            .feature-grid {
-                grid-template-columns: repeat(2, 1fr);
+        @media (max-width: 991px) {
+            .main-nav, header .nav-content .cta-button {
+                display: none;
+            }
+            .menu-toggle {
+                display: flex;
+            }
+            .hero-section h1{font-size:2.5rem;}
+            .hero-section p{font-size:1.1rem;}
+            .feature-item-alt {
+                flex-direction: column !important;
+                text-align: center;
+                margin-bottom: 50px;
+            }
+            .feature-media {
+                order: -1;
+            }
+            .feature-text h3 {font-size: 2rem;}
+            .feature-text p {font-size: 1.05rem;}
+            .feature-text ul li {text-align: left;}
+            .slideshow-section h2, .team-section h2, .contact-section h3, .about-section h2 {
+                font-size: 2rem;
+            }
+            .about-section p {font-size: 1.05rem;}
+            .slide img {height: 400px;}
+            .team-grid {gap: 15px;}
+            .team-member {padding: 20px;}
+            .avatar {width: 90px; height: 90px;}
+            .member-name {font-size: 1.1rem;}
+            .member-role {font-size: 0.9rem;}
+            .cta-mobile-fixed {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                text-align: center;
+                background: var(--primary-dark);
+                z-index: 999;
+                box-shadow: 0 -3px 15px rgba(0,0,0,0.4);
+                padding: 15px 0;
+            }
+            .cta-mobile-fixed .cta-button {
+                display: block;
+                width: 90%;
+                max-width: 400px;
+                margin: 0 auto;
+                padding: 12px 20px;
+                font-size: 1.1rem; /* Etwas größer für mobile Ansicht */
+                gap: 10px;
+            }
+            body {
+                padding-bottom: 80px; /* Platz für Sticky CTA */
             }
         }
-
-        @media (min-width: 992px) {
-            .feature-grid {
-                grid-template-columns: repeat(3, 1fr);
+        @media (max-width: 576px) {
+            .hero-section h1 {font-size: 1.8rem;}
+            .hero-section p {font-size: 1rem;}
+            .hero-section .cta-button {padding: 15px 25px; font-size: 1rem;}
+            .trust-bar .logos img {max-height: 25px; margin: 0 10px;}
+            .feature-item-alt {gap: 25px;}
+            .feature-text h3 {font-size: 1.7rem;}
+            .feature-text p {font-size: 0.95rem;}
+            .slideshow-section h2, .team-section h2, .contact-section h3, .about-section h2 {
+                font-size: 1.8rem;
             }
+            .about-section p {font-size: 0.95rem;}
+            .slide img {height: 280px;}
+            .slide-caption {font-size: 0.9rem; padding: 12px;}
+            .prev, .next {padding: 10px; font-size: 16px;}
+            .thumbnails-container {display: flex; justify-content: center; overflow-x: auto; padding: 10px 0;}
+            .thumbnail {height: 60px; width: 90px; margin: 0 3px; flex-shrink: 0;} /* Noch kleiner auf sehr kleinen Screens */
+            .contact-section {padding: 30px;}
+            .contact-section p {font-size: 1rem;}
+            .team-grid {grid-template-columns: 1fr;}
+            .team-member {gap: 10px;}
         }
 
         /* accessibility: prefers-reduced-motion */
         @media (prefers-reduced-motion:reduce){
-            .feature-item,.download-button,.cta,.slide{transition:none}
+            .cta-button,.slide,.thumbnail,.team-member,
+            .main-nav a, .main-nav a::after, .trust-bar .logos img,
+            .menu-toggle div, .mobile-nav-overlay {transition:none !important;}
+            .slide.active {animation: none !important;}
         }
 
         /* focus states */
-        a:focus,.dot:focus,.prev:focus,.next:focus{
-            outline:3px solid rgba(0,123,255,.25);
+        a:focus,.thumbnail:focus,.prev:focus,.next:focus,.menu-toggle:focus{
+            outline:3px solid var(--accent-blue);
             outline-offset:3px;
             border-radius:6px
+        }
+        .cta-button:focus {
+            outline-color: var(--secondary-accent);
         }
     </style>
 </head>
@@ -316,137 +660,171 @@
     <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
 
     <header>
-        <div class="container nav" role="banner" aria-label="Hauptnavigation">
+        <div class="container nav-content" role="banner" aria-label="Hauptnavigation">
             <div class="brand">Wegfinder</div>
-            <nav aria-label="Hauptmenü">
-                <a href="#features">Features</a>
-                <a href="#galerie">Galerie</a>
+            <nav class="main-nav" aria-label="Hauptmenü">
+                <a href="#about">Über Uns</a>
+                <a href="#features">Vorteile</a>
+                <a href="#galerie">Screenshots</a>
                 <a href="#team">Team</a>
-                <a href="#kontakt">Kontakt</a>
-                <a class="cta" href="./files/wegfinderProject.zip" download rel="noopener noreferrer">Download</a>
             </nav>
+            <a class="cta-button header-cta" href="./files/wegfinderProject.zip" download rel="noopener noreferrer">
+                <i class="fas fa-download"></i> App Download
+            </a>
+            <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-nav">
+                <div></div>
+                <div></div>
+                <div></div>
+            </button>
         </div>
     </header>
 
+    <div class="mobile-nav-overlay" id="mobile-nav">
+        <a href="#about">Über Uns</a>
+        <a href="#features">Vorteile</a>
+        <a href="#galerie">Screenshots</a>
+        <a href="#team">Team</a>
+        <a class="cta-button" href="./files/wegfinderProject.zip" download rel="noopener noreferrer">
+            <i class="fas fa-download"></i> App Download
+        </a>
+    </div>
+
     <section class="hero-section" aria-labelledby="hero-title">
         <div class="hero-inner container">
-            <h1 id="hero-title">Finden Sie Ihren Weg mit Leichtigkeit</h1>
-            <p>Die Wegfinder Applikation hilft Nutzern, sich in komplexen Gebäuden (z. B. Krankenhäusern) schnell zurechtzufinden — zuverlässig, barrierearm und effizient.</p>
-            <a class="download-button" href="./files/wegfinderProject.zip" download rel="noopener noreferrer" aria-label="Wegfinder App herunterladen">Jetzt herunterladen</a>
+            <h1 id="hero-title">Nie mehr verirren – die Indoor-Navigation für Ihr Krankenhaus.</h1>
+            <p>Die Wegfinder Applikation führt Patienten und Besucher zuverlässig und stressfrei zum Ziel. Sparen Sie Zeit, reduzieren Sie Stress und verbessern Sie die Servicequalität sofort.</p>
+            <a class="cta-button" href="./files/wegfinderProject.zip" download rel="noopener noreferrer" aria-label="Wegfinder App herunterladen">
+                <i class="fas fa-download"></i> Sofort Downloaden & Testen
+            </a>
         </div>
     </section>
 
-    <section id="galerie" class="slideshow-section" aria-label="Produktgalerie">
-        <div class="slideshow-container">
-            <div class="slide active">
-                <img src="images/product/screenshot1.jpg" alt="Dashboard Ansicht">
-                <div class="slide-caption">Dashboard mit Raumübersicht</div>
-            </div>
-            <div class="slide">
-                <img src="images/product/screenshot2.jpg" alt="Routenplanung">
-                <div class="slide-caption">Intelligente Routenplanung</div>
-            </div>
-            <div class="slide">
-                <img src="images/product/screenshot3.jpg" alt="Admin Interface">
-                <div class="slide-caption">Admin-Bereich für Raumverwaltung</div>
-            </div>
-
-            <button class="prev" aria-label="Vorheriges Bild">❮</button>
-            <button class="next" aria-label="Nächstes Bild">❯</button>
-        </div>
-        
-        <div class="dots-container" aria-hidden="true">
-            <button class="dot active" aria-label="Bild 1"></button>
-            <button class="dot" aria-label="Bild 2"></button>
-            <button class="dot" aria-label="Bild 3"></button>
-        </div>
-    </section>
+    
 
     <main id="main-content" class="container" role="main">
-        <section id="features" class="features-section" aria-labelledby="features-heading">
-            <h2 id="features-heading">Warum unser Wegfinder?</h2>
-            <div class="feature-grid" role="list">
-                <article class="feature-item" role="listitem" aria-label="Intuitive Navigation">
-                    <h3>Intuitive Navigation</h3>
-                    <p>Einfache, klare Benutzerführung — ideal für Patienten & Besucher.</p>
-                </article>
-                <article class="feature-item" role="listitem" aria-label="Effiziente Routenplanung">
-                    <h3>Effiziente Routenplanung</h3>
-                    <p>Optimierte Wege sparen Zeit und reduzieren Stress.</p>
-                </article>
-                <article class="feature-item" role="listitem" aria-label="Admin Dashboard">
-                    <h3>Admin-Dashboard</h3>
-                    <p>Verwalten Sie Räume, Flure und Nutzer komfortabel im MapGUI.</p>
-                </article>
-                <article class="feature-item" role="listitem" aria-label="Nutzer Management">
-                    <h3>Nutzer Management</h3>
-                    <p>Kontenverwaltung mit Rollen und Berechtigungen.</p>
-                </article>
-                <article class="feature-item" role="listitem" aria-label="Raum Management">
-                    <h3>Raum Management</h3>
-                    <p>Raum-IDs, Bezeichnungen und Sperrungen zentral verwalten.</p>
-                </article>
-                <article class="feature-item" role="listitem" aria-label="Flur Management">
-                    <h3>Flur Management</h3>
-                    <p>Flurstatus (frei/gesperrt) direkt aktualisieren.</p>
-                </article>
+        
+        <section id="about" class="about-section" aria-labelledby="about-heading">
+            <div class="container">
+                <h2 id="about-heading">Wegfinder: Ihre Lösung für intuitive Indoor-Navigation</h2>
+                <p>In komplexen Gebäuden wie Krankenhäusern und Gesundheitszentren ist die Orientierung oft eine Herausforderung. Lange Suchzeiten und frustrierte Besucher belasten Personal und Infrastruktur. Der Wegfinder bietet eine innovative, barrierefreie und effiziente Lösung, um dieses Problem nachhaltig zu lösen. Wir bringen Klarheit in Ihre Gänge.</p>
+                <a class="cta-button" href="#features" aria-label="Mehr über Wegfinder erfahren und Kontakt aufnehmen">Mehr erfahren</a>
+            </div>
+        </section>
+         
+        <section id="galerie" class="slideshow-section" aria-label="Produkt-Screenshots">
+            <div class="container">
+                <h2 style="text-align:center; color: var(--primary-dark); margin-bottom: 50px; font-size: 2.5rem; font-weight: 900;">Wegfinder in Aktion: App-Screenshots</h2>
+            </div>
+            <div class="slideshow-container">
+                <div class="slide active">
+                    <img src="images/product/screenshot1.jpg" alt="Dashboard Ansicht" loading="lazy">
+                    <div class="slide-caption">Dashboard mit Raumübersicht: Einfache Suche und Navigation</div>
+                </div>
+                <div class="slide">
+                    <img src="images/product/screenshot2.jpg" alt="Routenplanung" loading="lazy">
+                    <div class="slide-caption">Intelligente Routenplanung: Barrierefreie Wege durch Ihr Gebäude</div>
+                </div>
+                <div class="slide">
+                    <img src="images/product/screenshot3.jpg" alt="Admin Interface" loading="lazy">
+                    <div class="slide-caption">Admin-Bereich: Zentrale Verwaltung von Räumen und Berechtigungen</div>
+                </div>
+
+                <button class="prev" aria-label="Vorheriges Bild">❮</button>
+                <button class="next" aria-label="Nächstes Bild">❯</button>
+            </div>
+            
+            <div class="thumbnails-container">
+                <img class="thumbnail active" src="images/product/screenshot1.jpg" onclick="currentSlide(1)" alt="Miniaturansicht 1: Dashboard" aria-label="Gehe zu Bild 1" tabindex="0">
+                <img class="thumbnail" src="images/product/screenshot2.jpg" onclick="currentSlide(2)" alt="Miniaturansicht 2: Routenplanung" aria-label="Gehe zu Bild 2" tabindex="0">
+                <img class="thumbnail" src="images/product/screenshot3.jpg" onclick="currentSlide(3)" alt="Miniaturansicht 3: Admin-Bereich" aria-label="Gehe zu Bild 3" tabindex="0">
             </div>
         </section>
 
+        <section id="features" class="product-feature-alt" aria-labelledby="features-heading">
+            <h2 id="features-heading" style="text-align:center; color: var(--primary-dark); margin-bottom: 60px; font-size: 2.5rem; font-weight: 900;">Die größten Vorteile für Ihre Einrichtung</h2>
+            
+            <div class="container">
+                <article class="feature-item-alt" aria-label="Vorteil 1: Stressfreie Patientenführung">
+                    <div class="feature-text">
+                        <h3>Stressfreie Patientenführung</h3>
+                        <p>Dank unserer intuitiven und barrierefreien Routenplanung finden Ihre Patienten sofort den richtigen Raum. Dies reduziert Verwirrung, entlastet Ihr Empfangspersonal und sorgt für einen positiven ersten Eindruck.</p>
+                        <ul>
+                            <li>Einfache Zielsuche.</li>
+                            <li>Echtzeit-Anpassung bei Wegsperrungen.</li>
+                        </ul>
+                    </div>
+                    <div class="feature-media">
+                        <img src="https://via.placeholder.com/600x400.png?text=Mobile+App+Ansicht+Navigation" alt="Screenshot der App-Navigation" loading="lazy">
+                    </div>
+                </article>
+
+                <article class="feature-item-alt" aria-label="Vorteil 2: Zentrale Gebäudeverwaltung">
+                    <div class="feature-text">
+                        <h3>Gebäudemanagement in Echtzeit</h3>
+                        <p>Das leistungsstarke Admin-Dashboard ermöglicht es Ihnen, Räume, Flure und Nutzer zentral zu verwalten. Schalten Sie Bereiche schnell und einfach frei oder sperren Sie sie bei Renovierungen oder Notfällen.</p>
+                        <ul>
+                            <li>Komfortable Nutzerverwaltung mit detaillierten Berechtigungen.</li>
+                            <li>Direkte Karteneditierung.</li>
+                        </ul>
+                    </div>
+                    <div class="feature-media">
+                        <img src="https://via.placeholder.com/600x400.png?text=Admin+Dashboard+MapGUI" alt="Screenshot des Admin-Dashboards" loading="lazy">
+                    </div>
+                </article>
+
+            </div>
+        </section>
+        
         <section id="team" class="team-section" aria-labelledby="team-heading">
-            <h2 id="team-heading">Das Team</h2>
-            <p style="text-align:center;color:#555;margin:0 0 18px">Danke an alle Mitwirkenden.</p>
+            <h2 id="team-heading">Das Wegfinder Entwicklerteam</h2>
+            <p>Lernen Sie die Köpfe hinter der innovativen Wegfinder Applikation kennen.</p>
             <div class="team-grid" role="list">
-                <div class="team-member" role="listitem" aria-label="Projektleitung">
+                <div class="team-member" role="listitem" aria-label="Projektleitung Marius Reifer">
                     <div class="avatar" aria-hidden="false">
-                        <img src="./images/team/max.jpg" alt="Max Mustermann" loading="lazy" onerror="this.style.display='none'">
+                        <img src="./files//images/" alt="Marius Reifer" loading="lazy" onerror="this.style.display='none'">
                     </div>
-                    <div class="member-name">Max Mustermann</div>
+                    <div class="member-name">Marius Reiffer</div> 
                     <div class="member-role">Projektleitung</div>
-                    <div class="member-contact"><a href="mailto:max@beispiel.de">max@beispiel.de</a></div>
-                    <div class="member-links"><a href="https://github.com/max" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+                    <div class="member-contact"><a href="mailto:marius.reiffer@office365.bkhx.de">marius.reiffer@office365.bkhx.de</a></div>
                 </div>
 
-                <div class="team-member" role="listitem" aria-label="Lead Entwickler">
+                <div class="team-member" role="listitem" aria-label="Lead Entwickler Jason Janzen">
                     <div class="avatar">
-                        <img src="./images/team/anna.jpg" alt="Anna Beispiel" loading="lazy" onerror="this.style.display='none'">
+                        <img src="./files/images/" alt="Jason Janzen" loading="lazy" onerror="this.style.display='none'">
                     </div>
-                    <div class="member-name">Anna Beispiel</div>
+                    <div class="member-name">Jason Janzen</div>
                     <div class="member-role">Lead Entwickler</div>
-                    <div class="member-contact"><a href="mailto:anna@beispiel.de">anna@beispiel.de</a></div>
-                    <div class="member-links"><a href="https://github.com/anna" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+                    <div class="member-contact"><a href="mailto:jason.janzen@office365.bkhx.de">jason.janzen@office365.bkhx.de</a></div>
                 </div>
 
-                <div class="team-member" role="listitem" aria-label="Fullstack-Dev">
+                <div class="team-member" role="listitem" aria-label="Fullstack-Entwickler Kai Topp">
                     <div class="avatar">
-                        <img src="./images/team/lukas.jpg" alt="Lukas Entwickler" loading="lazy" onerror="this.style.display='none'">
+                        <img src="./files/images/" alt="Kai Topp" loading="lazy" onerror="this.style.display='none'">
                     </div>
-                    <div class="member-name">Lukas Entwickler</div>
-                    <div class="member-role">Fullstack-Dev</div>
-                    <div class="member-contact"><a href="mailto:lukas@beispiel.de">lukas@beispiel.de</a></div>
-                    <div class="member-links"><a href="https://github.com/lukas" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+                    <div class="member-name">Kai Topp</div>
+                    <div class="member-role">Fullstack-Entwickler</div>
+                    <div class="member-contact"><a href="mailto:Kai.Topp@office365.bkhx.de">Kai.Topp@office365.bkhx.de</a></div>
                 </div>
             </div>
         </section>
 
-        <section id="kontakt" aria-labelledby="kontakt-heading" style="margin:18px 0;padding:18px;background:#fff;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.03)">
-            <h3 id="kontakt-heading" style="margin:0 0 8px;color:var(--midnight-blue)">Kontakt</h3>
-            <p style="margin:0;color:#444">Fragen oder Feedback? Schreiben Sie an <a href="mailto:kontakt@wegfinder.example">kontakt@wegfinder.example</a>.</p>
-        </section>
+        
     </main>
+    
+ 
 
     <footer>
         <div class="container">
             <div style="margin-bottom:6px">&copy; 2025 Wegfinder Applikation | Projektteam</div>
-            <div style="font-size:.85rem;color:#ddd">Alle Rechte vorbehalten.</div>
+            <div class="legal-text">Alle Rechte vorbehalten. | <a href="#" style="color:rgba(255,255,255,0.7); text-decoration:none;">Impressum</a> | <a href="#" style="color:rgba(255,255,255,0.7); text-decoration:none;">Datenschutz</a></div>
         </div>
     </footer>
 
     <script>
-        // Slideshow Functionality
+        // Slideshow Functionality (Angepasst für Thumbnails)
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.dot');
+        const thumbnails = document.querySelectorAll('.thumbnail');
         const totalSlides = slides.length;
         let slideInterval;
 
@@ -455,28 +833,48 @@
             if (n < 0) slideIndex = totalSlides - 1;
 
             slides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
 
             slides[slideIndex].classList.add('active');
-            dots[slideIndex].classList.add('active');
+            thumbnails[slideIndex].classList.add('active');
         }
 
+        function currentSlide(n) {
+            stopSlideshow();
+            slideIndex = n - 1; // n ist 1-basiert, Index ist 0-basiert
+            showSlide(slideIndex);
+            startSlideshow();
+        }
+        window.currentSlide = currentSlide; // Global verfügbar machen für HTML onclick
+
         document.querySelector('.prev').addEventListener('click', () => {
+            stopSlideshow();
             showSlide(slideIndex -= 1);
+            startSlideshow();
         });
 
         document.querySelector('.next').addEventListener('click', () => {
+            stopSlideshow();
             showSlide(slideIndex += 1);
+            startSlideshow();
         });
 
-        dots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                slideIndex = index;
-                showSlide(slideIndex);
+        // Event Listener für Tastaturnavigation der Thumbnails
+        thumbnails.forEach((thumb, index) => {
+            thumb.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    currentSlide(index + 1);
+                } else if (e.key === 'ArrowRight' && index < totalSlides -1) {
+                    thumbnails[index + 1].focus();
+                } else if (e.key === 'ArrowLeft' && index > 0) {
+                    thumbnails[index - 1].focus();
+                }
             });
         });
 
         function startSlideshow() {
+            stopSlideshow();
             slideInterval = setInterval(() => {
                 showSlide(slideIndex += 1);
             }, 5000);
@@ -486,15 +884,19 @@
             clearInterval(slideInterval);
         }
 
-        document.querySelector('.slideshow-container').addEventListener('mouseenter', stopSlideshow);
-        document.querySelector('.slideshow-container').addEventListener('mouseleave', startSlideshow);
-
+        const slideshowContainer = document.querySelector('.slideshow-container');
+        if (slideshowContainer) {
+            slideshowContainer.addEventListener('mouseenter', stopSlideshow);
+            slideshowContainer.addEventListener('mouseleave', startSlideshow);
+        }
+       
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') showSlide(slideIndex -= 1);
-            if (e.key === 'ArrowRight') showSlide(slideIndex += 1);
+            if (e.key === 'ArrowLeft') { stopSlideshow(); showSlide(slideIndex -= 1); startSlideshow(); }
+            if (e.key === 'ArrowRight') { stopSlideshow(); showSlide(slideIndex += 1); startSlideshow(); }
         });
 
         // Start the slideshow
+        showSlide(0);
         startSlideshow();
 
         // Avatar fallback
@@ -504,6 +906,33 @@
                 if(!parent) return;
                 parent.innerHTML = '<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="96" height="96" fill="#ddd"/><text x="50%" y="54%" font-size="28" fill="#777" text-anchor="middle" font-family="Roboto,Arial,sans-serif">👤</text></svg>';
             });
+        });
+
+        // Hamburger-Menü Funktionalität
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileNavOverlay = document.getElementById('mobile-nav');
+        const mobileNavLinks = mobileNavOverlay.querySelectorAll('a');
+
+        function toggleMobileMenu() {
+            menuToggle.classList.toggle('active');
+            mobileNavOverlay.classList.toggle('active');
+            
+            const isExpanded = menuToggle.classList.contains('active');
+            menuToggle.setAttribute('aria-expanded', isExpanded);
+        }
+
+        menuToggle.addEventListener('click', toggleMobileMenu);
+
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (mobileNavOverlay.classList.contains('active')) {
+                    toggleMobileMenu();
+                }
+            });
+        });
+
+        menuToggle.addEventListener('click', function() {
+            this.classList.toggle('open');
         });
     </script>
 </body>
