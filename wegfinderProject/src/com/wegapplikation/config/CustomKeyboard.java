@@ -1,7 +1,7 @@
 package com.wegapplikation.config;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent; // Wichtig: Für Kompatibilität mit JPasswordField und JTextField
+import javax.swing.text.JTextComponent; 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,18 +16,12 @@ public class CustomKeyboard extends JFrame {
     /** Das ursprüngliche Zielfeld, in das der endgültige Text/Passwort übertragen wird. */
     private JTextComponent targetField; 
     
-    /** Das aktuell sichtbare und bearbeitete Feld (entweder displayField oder passwordField). */
+    /** Das aktuell sichtbare und bearbeitete Feld. */
     private JTextComponent activeDisplayField;
     
     /** Flagge zur Verfolgung des CAPS-Zustands (true für Großbuchstaben). */
     private boolean isCapsLock = true;
     
-    /** Das Standard-Textfeld für normale Eingaben (wird nur verwendet, wenn targetType != "password"). */
-    private JTextField displayField;
-    
-    /** Das Passwortfeld für sensible Eingaben (wird nur verwendet, wenn targetType == "password"). */
-    private JPasswordField passwordField; 
-
     private JPanel keyboardContainer;
     private final String LETTERS_PANEL = "letters";
     private final String SYMBOLS_PANEL = "symbols";
@@ -38,21 +32,17 @@ public class CustomKeyboard extends JFrame {
 
     /**
      * Konstruiert eine neue Instanz der virtuellen Tastatur.
+     * Der Typ des Zielfeldes (normal/passwort) wird automatisch erkannt.
      *
      * @param target Das JTextComponent (JTextField oder JPasswordField), das die endgültige Eingabe erhält.
-     * @param targetType Ein String, der den Eingabetyp angibt: "password" oder "normal".
      */
-    public CustomKeyboard(JTextComponent target, String targetType) {
-        this.targetField = target;
-        initializeKeyboard(targetType); 
-    }
-    
-    // Konkruktor für Abwärtskompatibilität, wenn der Typ nicht übergeben wird (defaults zu "normal")
     public CustomKeyboard(JTextComponent target) {
-        this(target, "normal");
+        this.targetField = target;
+        // Der Typ wird nun basierend auf der Klasse des target-Objekts bestimmt
+        initializeKeyboard(); 
     }
 
-    private void initializeKeyboard(String targetType) {
+    private void initializeKeyboard() {
         setTitle("Virtuelle Tastatur");
         setLayout(new BorderLayout(5, 5));
         setSize(945, 400);
@@ -61,15 +51,19 @@ public class CustomKeyboard extends JFrame {
 
         // 1. Initialen Text aus dem Zielfeld lesen
         String initialText = "";
-        if (targetField instanceof JPasswordField) {
+        // Automatische Erkennung des Feldtyps
+        boolean isPasswordField = (targetField instanceof JPasswordField);
+        
+        if (isPasswordField) {
+             // Achtung: getPassword() sollte idealerweise vermieden werden.
             initialText = new String(((JPasswordField) targetField).getPassword());
-        } else if (targetField instanceof JTextField) {
-            initialText = ((JTextField) targetField).getText();
+        } else {
+            initialText = targetField.getText();
         }
 
-        // 2. Anzeige-Feld basierend auf targetType erstellen und initialisieren
-        if (targetType != null && targetType.equalsIgnoreCase("password")){
-            passwordField = new JPasswordField(initialText);
+        // 2. Anzeige-Feld basierend auf dem erkannten Typ erstellen und initialisieren
+        if (isPasswordField){
+            JPasswordField passwordField = new JPasswordField(initialText);
             passwordField.setEditable(false);
             passwordField.setFont(new Font("Arial", Font.BOLD, 18));
             passwordField.setPreferredSize(new Dimension(700, 40));
@@ -77,7 +71,7 @@ public class CustomKeyboard extends JFrame {
             add(passwordField, BorderLayout.NORTH);
             activeDisplayField = passwordField; // Das aktive Feld setzen
         } else {
-            displayField = new JTextField(initialText);
+            JTextField displayField = new JTextField(initialText);
             displayField.setEditable(false);
             displayField.setFont(new Font("Arial", Font.BOLD, 18));
             displayField.setPreferredSize(new Dimension(700, 40));
@@ -99,7 +93,7 @@ public class CustomKeyboard extends JFrame {
         lettersPanel.add(createRow(new String[]{"Y","X","C","V","B","N","M","Ö","Ä"}, true));
         lettersPanel.add(createControlRow(true));
 
-       
+        
         JPanel symbolsPanel = new JPanel(new GridLayout(5, 1, 5, 5));
         symbolsPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         symbolsPanel.setBackground(BG_COLOR);
@@ -169,7 +163,7 @@ public class CustomKeyboard extends JFrame {
         }
         row.add(capsButton);
 
- 
+   
         JButton toggle = new JButton(isLettersPanel ? "123" : "ABC");
         toggle.setPreferredSize(new Dimension(85, 50));
         toggle.setFont(new Font("Arial", Font.BOLD, 14));
@@ -210,7 +204,7 @@ public class CustomKeyboard extends JFrame {
     }
 
     private JButton createKeyButton(String key, boolean isLetter) {
-       
+        
         JButton button = new JButton(key);
         button.setPreferredSize(new Dimension(85, 50));
         button.setFont(new Font("Arial", Font.BOLD, 14));
@@ -250,8 +244,10 @@ public class CustomKeyboard extends JFrame {
         cl.show(keyboardContainer, panelName);
     }
     
-    /** Statische Methode zum Starten der Tastatur (nutzt den JTextComponent-Konstruktor). */
-    public static void keyboard(JTextComponent textField, String type) {
-        new CustomKeyboard(textField, type);
+    /** * Statische Methode zum Starten der Tastatur.
+     * Alte Version: public static void keyboard(JTextComponent textField, String type)
+     */
+    public static void keyboard(JTextComponent textField) {
+        new CustomKeyboard(textField);
     }
 }

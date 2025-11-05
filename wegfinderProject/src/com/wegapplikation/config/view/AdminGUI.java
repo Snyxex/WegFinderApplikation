@@ -261,7 +261,7 @@ public class AdminGUI extends JFrame {
         userTable.setFont(new Font("Arial", Font.PLAIN, 14));
         userTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         userTable.getTableHeader().setBackground(new Color(26, 36, 47));
-        userTable.getTableHeader().setForeground(Color.WHITE);
+        userTable.getTableHeader().setForeground(Color.BLACK);
         userTable.setGridColor(new Color(200, 200, 200));
         userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         userTable.setIntercellSpacing(new Dimension(10, 10));
@@ -451,7 +451,7 @@ public class AdminGUI extends JFrame {
         roomTable.setFont(new Font("Arial", Font.PLAIN, 14));
         roomTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         roomTable.getTableHeader().setBackground(new Color(26, 36, 47));
-        roomTable.getTableHeader().setForeground(Color.WHITE);
+        roomTable.getTableHeader().setForeground(Color.BLACK);
         roomTable.setGridColor(new Color(200, 200, 200));
         roomTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         roomTable.setIntercellSpacing(new Dimension(10, 10));
@@ -616,7 +616,7 @@ public class AdminGUI extends JFrame {
         floorTable.setFont(new Font("Arial", Font.PLAIN, 14));
         floorTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         floorTable.getTableHeader().setBackground(new Color(26, 36, 47));
-        floorTable.getTableHeader().setForeground(Color.WHITE);
+        floorTable.getTableHeader().setForeground(Color.BLACK);
         floorTable.setGridColor(new Color(200, 200, 200));
         floorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         floorTable.setIntercellSpacing(new Dimension(10, 10));
@@ -727,7 +727,7 @@ public class AdminGUI extends JFrame {
     private JButton createNavButton(String text) {
         JButton button = new JButton(text);
         button.setBackground(new Color(26, 36, 47));
-        button.setForeground(Color.WHITE);
+        button.setForeground(Color.black);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));

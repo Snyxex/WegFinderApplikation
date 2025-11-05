@@ -1,4 +1,0 @@
-INDEX VERSION 1.134+/Users/jasonjanzen/Documents/GitHub/WegFinderApplikation/.metadata/.plugins/org.eclipse.jdt.core
-1619120880.index
-2326604633.index
-1865797976.index

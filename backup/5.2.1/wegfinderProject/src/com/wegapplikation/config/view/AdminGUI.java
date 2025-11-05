@@ -592,27 +592,17 @@ public class AdminGUI extends JFrame {
     }
 
     private JButton createNavButton(String text) {
-        JButton button = new JButton(text);
-        button.setBackground(new Color(26, 36, 47));
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 14));
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                if (button.getBackground().equals(new Color(26, 36, 47))) {
-                    button.setBackground(new Color(46, 56, 67));
-                }
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                if (button.getBackground().equals(new Color(46, 56, 67))) {
-                    button.setBackground(new Color(26, 36, 47));
-                }
-            }
-        });
-        return button;
+    JButton button = new JButton(text);
+    button.setAlignmentX(Component.CENTER_ALIGNMENT);
+    button.setMaximumSize(new Dimension(180, 40));
+    button.setPreferredSize(new Dimension(180, 40));
+    button.setFont(new Font("Arial", Font.BOLD, 14));
+    button.setBackground(new Color(26, 36, 47)); // Dunkler Hintergrund
+    button.setForeground(Color.WHITE); // <<< HIER: Textfarbe explizit auf Weiß setzen
+    button.setFocusPainted(false);
+    button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    button.setOpaque(true);
+    return button;
     }
 
     private JButton createStyledButton(String text, Color bgColor, String iconPath) {
