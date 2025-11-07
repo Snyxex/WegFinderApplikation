@@ -23,7 +23,7 @@ public class AdminGUI extends JFrame {
     private JPanel contentPanel;
     private CardLayout cardLayout;
     private JButton homeButton, userManagementButton, roomManagementButton, floorManagementButton,helpButton,signOutButton;
-    private String loggedInUser = LoginGUI.textField.getText(); // Standardwert, bis Login implementiert ist
+    private String loggedInUser = LoginGUI.textField.getText(); 
 
     public void  AdminGUI() {
         adminCal = new AdminCal();
@@ -164,7 +164,7 @@ public class AdminGUI extends JFrame {
         signOutButton.addActionListener(e -> {
             setActiveButton(signOutButton);
             cardLayout.show(contentPanel, "Abmelden");
-
+            loggedInUser = null;
 
         });
 
