@@ -50,11 +50,7 @@ public class RoomData {
                 .orElse("");
     }
 
-    public void addRoom(RoomData room) {
-        List<RoomData> rooms = getAllRooms();
-        rooms.add(room);
-        saveRooms(rooms);
-    }
+   
 
     public void updateRoom(int oldId, RoomData updatedRoom) {
         List<RoomData> rooms = getAllRooms();
@@ -67,11 +63,7 @@ public class RoomData {
         saveRooms(rooms);
     }
 
-    public void deleteRoom(int id) {
-        List<RoomData> rooms = getAllRooms();
-        rooms.removeIf(room -> room.getId() == id);
-        saveRooms(rooms);
-    }
+    
 
     public List<RoomData> getAllRooms() {
         List<RoomData> rooms = new ArrayList<>();

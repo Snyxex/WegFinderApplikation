@@ -67,32 +67,17 @@ public class AdminCal {
     }
 
     // Raumverwaltung
-    public void addRoom(int id, String designation, boolean locked) {
-        RoomData room = new RoomData(id, designation, locked);
-        if (roomData.isIdTaken(id)) {
-            throw new IllegalArgumentException("Raum-ID '" + id + "' ist bereits vergeben.");
-        }
-        if (roomData.isDesignationTaken(designation)) {
-            throw new IllegalArgumentException("Bezeichnung '" + designation + "' ist bereits vergeben.");
-        }
-        roomData.addRoom(room);
-    }
+    
 
     public void updateRoom(int oldId, int newId, String designation, boolean locked) {
         RoomData room = new RoomData(newId, designation, locked);
         if (oldId != newId && roomData.isIdTaken(newId)) {
             throw new IllegalArgumentException("Raum-ID '" + newId + "' ist bereits von einem anderen Raum vergeben.");
         }
-        if (!roomData.getDesignationById(oldId).equals(designation) && 
-            roomData.isDesignationTaken(designation)) {
-            throw new IllegalArgumentException("Bezeichnung '" + designation + "' ist bereits von einem anderen Raum vergeben.");
-        }
         roomData.updateRoom(oldId, room);
     }
 
-    public void deleteRoom(int id) {
-        roomData.deleteRoom(id);
-    }
+   
 
     public List<Object[]> getAllRooms() {
         List<RoomData> rooms = roomData.getAllRooms();

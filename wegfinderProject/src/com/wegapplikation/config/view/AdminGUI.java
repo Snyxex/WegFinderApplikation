@@ -19,7 +19,7 @@ public class AdminGUI extends JFrame {
     private JComboBox<String> roleComboBox;
     private JCheckBox lockedCheckBox;
     private JButton addUserButton, updateUserButton, deleteUserButton, clearUserButton;
-    private JButton addRoomButton, updateRoomButton, deleteRoomButton, clearRoomButton;
+    private JButton updateRoomButton, clearRoomButton;
     private JPanel contentPanel;
     private CardLayout cardLayout;
     private JButton homeButton, userManagementButton, roomManagementButton, floorManagementButton,helpButton,signOutButton;
@@ -429,13 +429,9 @@ public class AdminGUI extends JFrame {
         // Button-Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
         buttonPanel.setBackground(new Color(240, 242, 245));
-        addRoomButton = createStyledButton("Hinzufügen", new Color(46, 204, 113), "add.png");
         updateRoomButton = createStyledButton("Aktualisieren", new Color(52, 152, 219), "update.png");
-        deleteRoomButton = createStyledButton("Löschen", new Color(231, 76, 60), "delete.png");
         clearRoomButton = createStyledButton("Zurücksetzen", new Color(149, 165, 166), "clear.png");
-        buttonPanel.add(addRoomButton);
         buttonPanel.add(updateRoomButton);
-        buttonPanel.add(deleteRoomButton);
         buttonPanel.add(clearRoomButton);
 
         // Tabelle
@@ -463,33 +459,6 @@ public class AdminGUI extends JFrame {
         panel.add(inputPanel, BorderLayout.NORTH);
         panel.add(tableScrollPane, BorderLayout.CENTER);
         panel.add(buttonPanel, BorderLayout.SOUTH);
-
-        // Button-Aktionen
-        addRoomButton.addActionListener(e -> {
-            if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            String idStr = roomIdField.getText().trim();
-            String designation = roomDesignationField.getText().trim();
-            boolean locked = lockedCheckBox.isSelected();
-            if (!idStr.isEmpty() && !designation.isEmpty()) {
-                try {
-                    int id = Integer.parseInt(idStr);
-                    if (id <= 0) throw new IllegalArgumentException("Raum-ID muss eine positive Ganzzahl sein.");
-                    adminCal.addRoom(id, designation, locked);
-                    System.out.println("Benutzer " + loggedInUser + " hat Raum hinzugefügt: " + designation);
-                    refreshRoomTable();
-                    clearRoomFields();
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Raum-ID muss eine gültige Zahl sein.", "Fehler", JOptionPane.ERROR_MESSAGE);
-                } catch (IllegalArgumentException ex) {
-                    JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
-            }
-        });
 
         updateRoomButton.addActionListener(e -> {
             if (!promptUserPassword()) {
@@ -523,23 +492,7 @@ public class AdminGUI extends JFrame {
             }
         });
 
-        deleteRoomButton.addActionListener(e -> {
-            if (!promptUserPassword()) {
-                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            int selectedRow = roomTable.getSelectedRow();
-            if (selectedRow >= 0) {
-                int id = Integer.parseInt(roomTable.getValueAt(selectedRow, 0).toString());
-                String designation = roomTable.getValueAt(selectedRow, 1).toString();
-               
-                    adminCal.deleteRoom(id);
-                    System.out.println("Benutzer " + loggedInUser + " hat Raum gelöscht: " + designation);
-                    refreshRoomTable();
-                    clearRoomFields();
-                }
-           
-        });
+        
 
         clearRoomButton.addActionListener(e -> clearRoomFields());
 
