@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Wegfinder Projekt | Intuitive Indoor-Navigation für Krankenhäuser</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0TLNcQDjVm/E+VdYk0jL93r8C/GqN+H+2Cg/K0v51u+qDk5q2Cq5Nl+A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0TLNcQDjVm/E+VdYk0jL93r8C/GqN+H+2Cg/KqNl+A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* **FARBPALETTE UND GRUNDLAGEN** */
         :root{
@@ -119,6 +119,8 @@
             display: inline-flex; /* Für Icon-Ausrichtung */
             align-items: center;
             gap: 8px; /* Abstand zwischen Text und Icon */
+            border: none; /* Wichtig für Button-Elemente */
+            cursor: pointer;
         }
         .cta-button i {
             font-size: 1.1em; /* Icon-Größe anpassen */
@@ -287,7 +289,7 @@
             line-height: 1.5;
         }
 
-        /* **SLIDESHOW (WEITER VERBESSERT)** */
+        /* **SLIDESHOW** */
         .slideshow-section {
             background: var(--white);
             padding: var(--section-padding) 0;
@@ -311,7 +313,6 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
         
-        /* Keyframes für sanftes Einblenden */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -336,12 +337,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(26,36,47,0.9), rgba(26,36,47,0.0)); /* Dezenterer Gradient */
+            background: linear-gradient(to top, rgba(26,36,47,0.9), rgba(26,36,47,0.0)); 
             color: var(--white);
-            padding: 30px 18px 10px; /* Mehr Padding unten, weniger oben */
+            padding: 30px 18px 10px; 
             text-align: center;
-            font-size: 1.05rem; /* Etwas kleiner */
-            font-weight: 400; /* Leichter */
+            font-size: 1.05rem; 
+            font-weight: 400; 
             opacity: 0.9;
             transition: opacity 0.3s ease-in-out;
         }
@@ -349,7 +350,6 @@
             opacity: 1;
         }
         
-        /* Pfeil-Navigation */
         .prev, .next {
             cursor: pointer;
             position: absolute;
@@ -375,7 +375,6 @@
             background: var(--accent-blue);
         }
 
-        /* Thumbnails */
         .thumbnails-container {
             text-align: center;
             padding: 20px 0 0;
@@ -383,11 +382,11 @@
 
         .thumbnail {
             cursor: pointer;
-            height: 90px; /* Etwas größer */
-            width: 140px; /* Breiter */
-            margin: 0 7px; /* Mehr Abstand */
-            border: 3px solid rgba(0,0,0,0.1); /* Dezenter, heller Rahmen */
-            border-radius: 6px; /* Etwas runder */
+            height: 90px; 
+            width: 140px; 
+            margin: 0 7px; 
+            border: 3px solid rgba(0,0,0,0.1); 
+            border-radius: 6px; 
             display: inline-block;
             transition: border-color 0.3s, opacity 0.3s, transform 0.2s;
             opacity: 0.7;
@@ -398,7 +397,7 @@
         .thumbnail.active, .thumbnail:hover {
             opacity: 1;
             border-color: var(--accent-blue);
-            transform: translateY(-3px); /* Leichter Schwebe-Effekt */
+            transform: translateY(-3px); 
             box-shadow: 0 5px 15px rgba(0,123,255,.3);
         }
         
@@ -506,8 +505,87 @@
             color: rgba(255,255,255,0.7);
         }
 
+        /* **DOWNLOAD HUB SECTION (STATISCHE LISTE)** */
+        .download-hub {
+            padding: var(--section-padding) 0;
+            background: var(--light-gray);
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,.05);
+            margin-bottom: var(--section-padding);
+        }
+        .download-hub h2 {
+            text-align: center;
+            color: var(--primary-dark);
+            margin-bottom: 50px;
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
+        
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .download-item {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--card-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .download-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .download-item .icon-large {
+            font-size: 3rem;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+        }
+
+        .download-item h3 {
+            font-size: 1.25rem;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .download-item p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .download-item .cta-button {
+            /* Die CTA-Button Klasse wird verwendet, aber die Farbe angepasst für Dokumente */
+            background: var(--accent-blue);
+            box-shadow: 0 4px 10px rgba(0,123,255,.3);
+            width: 100%;
+            justify-content: center;
+        }
+        /* Override für die primäre ZIP, um sie hervorzuheben */
+        .download-item.primary-zip .cta-button {
+            background: var(--secondary-accent);
+            box-shadow: 0 6px 15px rgba(40,167,69,.4);
+        }
+        .download-item.primary-zip .cta-button:hover {
+            background: var(--secondary-accent-dark);
+        }
+        .download-item.primary-zip .icon-large {
+            color: var(--secondary-accent);
+        }
+
         /* **RESPONSIVE DESIGN** */
-        /* Hamburger-Menü und Mobile CTA */
+        /* Hamburger-Menü und Mobile CTA (Unverändert übernommen) */
         .menu-toggle {
             display: none;
             flex-direction: column;
@@ -580,7 +658,7 @@
             .feature-text h3 {font-size: 2rem;}
             .feature-text p {font-size: 1.05rem;}
             .feature-text ul li {text-align: left;}
-            .slideshow-section h2, .team-section h2, .contact-section h3, .about-section h2 {
+            .slideshow-section h2, .team-section h2, .contact-section h3, .about-section h2, .download-hub h2 {
                 font-size: 2rem;
             }
             .about-section p {font-size: 1.05rem;}
@@ -613,6 +691,13 @@
             body {
                 padding-bottom: 80px; /* Platz für Sticky CTA */
             }
+            /* Download Grid Anpassung für Mobile */
+            .download-grid {
+                grid-template-columns: 1fr;
+            }
+            .download-item {
+                margin-bottom: 0;
+            }
         }
         @media (max-width: 576px) {
             .hero-section h1 {font-size: 1.8rem;}
@@ -622,7 +707,7 @@
             .feature-item-alt {gap: 25px;}
             .feature-text h3 {font-size: 1.7rem;}
             .feature-text p {font-size: 0.95rem;}
-            .slideshow-section h2, .team-section h2, .contact-section h3, .about-section h2 {
+            .slideshow-section h2, .team-section h2, .contact-section h3, .about-section h2, .download-hub h2 {
                 font-size: 1.8rem;
             }
             .about-section p {font-size: 0.95rem;}
@@ -646,7 +731,7 @@
         }
 
         /* focus states */
-        a:focus,.thumbnail:focus,.prev:focus,.next:focus,.menu-toggle:focus{
+        a:focus,.thumbnail:focus,.prev:focus,.next:focus,.menu-toggle:focus,.download-item .cta-button:focus{
             outline:3px solid var(--accent-blue);
             outline-offset:3px;
             border-radius:6px
@@ -661,12 +746,13 @@
 
     <header>
         <div class="container nav-content" role="banner" aria-label="Hauptnavigation">
-            <div class="brand">Wegfinder</div>
+            <div class="brand">Разработчи</div>
             <nav class="main-nav" aria-label="Hauptmenü">
                 <a href="#about">Über Uns</a>
                 <a href="#features">Vorteile</a>
                 <a href="#galerie">Screenshots</a>
                 <a href="#team">Team</a>
+                <a href="#downloads">Downloads</a> 
             </nav>
             <a class="cta-button header-cta" href="./files/wegfinderProject.zip" download rel="noopener noreferrer">
                 <i class="fas fa-download"></i> App Download
@@ -684,6 +770,7 @@
         <a href="#features">Vorteile</a>
         <a href="#galerie">Screenshots</a>
         <a href="#team">Team</a>
+        <a href="#downloads">Downloads</a> 
         <a class="cta-button" href="./files/wegfinderProject.zip" download rel="noopener noreferrer">
             <i class="fas fa-download"></i> App Download
         </a>
@@ -698,8 +785,6 @@
             </a>
         </div>
     </section>
-
-    
 
     <main id="main-content" class="container" role="main">
         
@@ -781,10 +866,10 @@
             <div class="team-grid" role="list">
                 <div class="team-member" role="listitem" aria-label="Projektleitung Marius Reifer">
                     <div class="avatar" aria-hidden="false">
-                        <img src="./files//images/" alt="Marius Reifer" loading="lazy" onerror="this.style.display='none'">
+                        <img src="./files/images/" alt="Marius Reifer" loading="lazy" onerror="this.style.display='none'">
                     </div>
                     <div class="member-name">Marius Reiffer</div> 
-                    <div class="member-role">Dokumentationsmanager/Modellierungsexperte</div>
+                    <div class="member-role">Dokumentationsmanager/<br>Modellierungsexperte</div>
                     <div class="member-contact"><a href="mailto:marius.reiffer@office365.bkhx.de">marius.reiffer@office365.bkhx.de</a></div>
                 </div>
 
@@ -793,7 +878,7 @@
                         <img src="./files/images/" alt="Jason Janzen" loading="lazy" onerror="this.style.display='none'">
                     </div>
                     <div class="member-name">Jason Janzen</div>
-                    <div class="member-role">Projektleiter/Produktmanager</div>
+                    <div class="member-role">Projektleiter/ <br>Produktmanager</div>
                     <div class="member-contact"><a href="mailto:jason.janzen@office365.bkhx.de">jason.janzen@office365.bkhx.de</a></div>
                 </div>
 
@@ -802,14 +887,77 @@
                         <img src="./files/images/" alt="Kai Topp" loading="lazy" onerror="this.style.display='none'">
                     </div>
                     <div class="member-name">Kai Topp</div>
-                    <div class="member-role">Implementierungsmanager/Technologieexperte</div>
+                    <div class="member-role">Implementierungsmanager/<br>Technologieexperte</div>
                     <div class="member-contact"><a href="mailto:Kai.Topp@office365.bkhx.de">Kai.Topp@office365.bkhx.de</a></div>
                 </div>
             </div>
         </section>
-
         
-    </main>
+        <section id="downloads" class="download-hub" aria-labelledby="downloads-heading">
+            <div class="container">
+                <h2 id="downloads-heading">Download-Hub: Projektdateien & Applikationen</h2>
+
+                <div class="download-grid">
+                    
+                    <div class="download-item primary-zip">
+                        <div class="icon-large"><i class="fas fa-file-archive"></i></div>
+                        <h3>Projekt-Archiv (Full)</h3>
+                        <p>Enthält alle Source Codes, Assets und die komplette Dokumentation.</p>
+                        <a class="cta-button" href="./files/wegfinderProject_v1.0_Full.zip" download>
+                            <i class="fas fa-download"></i> ZIP Herunterladen 
+                        </a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="icon-large"><i class="fab fa-android"></i></div>
+                        <h3>Applikation (Android)</h3>
+                        <p>Installationsdatei für Android-Geräte (APK).</p>
+                        <a class="cta-button" href="./files/Wegfinder_App_Android.apk" download>
+                            <i class="fas fa-download"></i> APK Herunterladen 
+                        </a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="icon-large"><i class="fab fa-apple"></i></div>
+                        <h3>Applikation (iOS Beta)</h3>
+                        <p>Beta-Installationsdatei (.ipa) für Apple-Geräte.</p>
+                        <a class="cta-button" href="./files/Wegfinder_App_iOS_Beta.ipa" download>
+                            <i class="fas fa-download"></i> IPA Herunterladen 
+                        </a>
+                    </div>
+
+                    <div class="download-item">
+                        <div class="icon-large"><i class="fas fa-file-pdf"></i></div>
+                        <h3>Benutzerhandbuch</h3>
+                        <p>Detailliertes Handbuch zur Nutzung der Wegfinder App.</p>
+                        <a class="cta-button" href="./files/Wegfinder_Handbuch_v1.0.pdf" download>
+                            <i class="fas fa-download"></i> PDF Herunterladen 
+                        </a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="icon-large"><i class="fas fa-code"></i></div>
+                        <h3>Tech. Dokumentation</h3>
+                        <p>Interne Dokumentation zur Architektur und Implementierung.</p>
+                        <a class="cta-button" href="./files/Wegfinder_Technische_Dokumentation.zip" download>
+                            <i class="fas fa-download"></i> ZIP Herunterladen 
+                        </a>
+                    </div>
+                    
+                    <div class="download-item">
+                        <div class="icon-large"><i class="fas fa-file-alt"></i></div>
+                        <h3>API Spezifikation</h3>
+                        <p>Schnittstellenbeschreibung für die Anbindung externer Systeme.</p>
+                        <a class="cta-button" href="./files/Wegfinder_API_Spezifikation.pdf" download>
+                            <i class="fas fa-download"></i> PDF Herunterladen 
+                        </a>
+                    </div>
+
+                </div>
+                
+            </div>
+        </section>
+        </main>
     
  
 
@@ -819,9 +967,9 @@
             <div class="legal-text">Alle Rechte vorbehalten.</div>
         </div>
     </footer>
-
+    
     <script>
-        // Slideshow Functionality (Angepasst für Thumbnails)
+        // *** 1. SLIDESHOW FUNKTIONALITÄT ***
         let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
         const thumbnails = document.querySelectorAll('.thumbnail');
@@ -835,8 +983,12 @@
             slides.forEach(slide => slide.classList.remove('active'));
             thumbnails.forEach(thumb => thumb.classList.remove('active'));
 
-            slides[slideIndex].classList.add('active');
-            thumbnails[slideIndex].classList.add('active');
+            if (slides[slideIndex]) {
+                slides[slideIndex].classList.add('active');
+            }
+            if (thumbnails[slideIndex]) {
+                thumbnails[slideIndex].classList.add('active');
+            }
         }
 
         function currentSlide(n) {
@@ -847,25 +999,29 @@
         }
         window.currentSlide = currentSlide; // Global verfügbar machen für HTML onclick
 
-        document.querySelector('.prev').addEventListener('click', () => {
-            stopSlideshow();
-            showSlide(slideIndex -= 1);
-            startSlideshow();
-        });
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+        if (prevButton) {
+            prevButton.addEventListener('click', () => {
+                stopSlideshow();
+                showSlide(slideIndex -= 1);
+                startSlideshow();
+            });
+        }
+        if (nextButton) {
+            nextButton.addEventListener('click', () => {
+                stopSlideshow();
+                showSlide(slideIndex += 1);
+                startSlideshow();
+            });
+        }
 
-        document.querySelector('.next').addEventListener('click', () => {
-            stopSlideshow();
-            showSlide(slideIndex += 1);
-            startSlideshow();
-        });
-
-        // Event Listener für Tastaturnavigation der Thumbnails
         thumbnails.forEach((thumb, index) => {
             thumb.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     currentSlide(index + 1);
-                } else if (e.key === 'ArrowRight' && index < totalSlides -1) {
+                } else if (e.key === 'ArrowRight' && index < totalSlides - 1) {
                     thumbnails[index + 1].focus();
                 } else if (e.key === 'ArrowLeft' && index > 0) {
                     thumbnails[index - 1].focus();
@@ -891,37 +1047,36 @@
         }
        
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') { stopSlideshow(); showSlide(slideIndex -= 1); startSlideshow(); }
-            if (e.key === 'ArrowRight') { stopSlideshow(); showSlide(slideIndex += 1); startSlideshow(); }
+            if (e.key === 'ArrowLeft' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') { 
+                stopSlideshow(); showSlide(slideIndex -= 1); startSlideshow(); 
+            }
+            if (e.key === 'ArrowRight' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') { 
+                stopSlideshow(); showSlide(slideIndex += 1); startSlideshow(); 
+            }
         });
 
-        // Start the slideshow
-        showSlide(0);
-        startSlideshow();
-
-        // Avatar fallback
-        document.querySelectorAll('.avatar img').forEach(img => {
-            img.addEventListener('error', e => {
-                const parent = e.target.closest('.avatar');
-                if(!parent) return;
-                parent.innerHTML = '<svg width="96" height="96" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="96" height="96" fill="#ddd"/><text x="50%" y="54%" font-size="28" fill="#777" text-anchor="middle" font-family="Roboto,Arial,sans-serif">👤</text></svg>';
-            });
-        });
-
-        // Hamburger-Menü Funktionalität
-        const menuToggle = document.querySelector('.menu-toggle');
-        const mobileNavOverlay = document.getElementById('mobile-nav');
-        const mobileNavLinks = mobileNavOverlay.querySelectorAll('a');
-
-        function toggleMobileMenu() {
-            menuToggle.classList.toggle('active');
-            mobileNavOverlay.classList.toggle('active');
-            
-            const isExpanded = menuToggle.classList.contains('active');
-            menuToggle.setAttribute('aria-expanded', isExpanded);
+        // Start the slideshow (Initialisierung)
+        if (slides.length > 0) {
+            showSlide(0);
+            startSlideshow();
         }
 
-        menuToggle.addEventListener('click', toggleMobileMenu);
+        // *** 2. MOBILE NAV LOGIK (Unverändert übernommen) ***
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mobileNavOverlay = document.getElementById('mobile-nav');
+        const mobileNavLinks = mobileNavOverlay ? mobileNavOverlay.querySelectorAll('a') : [];
+
+        function toggleMobileMenu() {
+            menuToggle.classList.toggle('open'); 
+            mobileNavOverlay.classList.toggle('active');
+            
+            const isExpanded = mobileNavOverlay.classList.contains('active');
+            menuToggle.setAttribute('aria-expanded', isExpanded);
+        }
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', toggleMobileMenu);
+        }
 
         mobileNavLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -931,8 +1086,15 @@
             });
         });
 
-        menuToggle.addEventListener('click', function() {
-            this.classList.toggle('open');
+        // *** 3. AVATAR FALLBACK (Unverändert übernommen) ***
+        document.querySelectorAll('.avatar img').forEach(img => {
+            img.addEventListener('error', e => {
+                const parent = e.target.closest('.avatar');
+                if(!parent) return;
+                // Avatar-Größen (110x110px) aus CSS verwendet
+                parent.innerHTML = '<svg width="110" height="110" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="110" height="110" fill="#ddd"/><text x="50%" y="54%" font-size="36" fill="#777" text-anchor="middle" font-family="Roboto,Arial,sans-serif">👤</text></svg>';
+                parent.style.border = '3px solid #6c757d'; // Dezenterer Border bei Fehler
+            });
         });
     </script>
 </body>

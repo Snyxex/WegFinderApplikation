@@ -1,77 +1,87 @@
 package com.wegapplikation.config.controller;
 
 import java.io.*;
-import java.util.Arrays; // Wichtig für den sicheren Passwortvergleich
+import java.util.Arrays; // Important for secure password comparison
 
 import com.wegapplikation.config.view.AdminGUI;
 import com.wegapplikation.config.view.LoginGUI;
 
+/**
+ * The {@code LoginCal} class handles the core logic for user authentication
+ * by comparing the provided login credentials against user data stored in a file.
+ */
 public class LoginCal {
-    
-    // Flagge, um zu verfolgen, ob ein Login erfolgreich war
-    private static boolean loginSuccessful = false; 
 
+    // Flag to track whether a login was successful
+    private static boolean loginSuccessful = false;
+
+    /**
+     * Executes the login process. It retrieves the username and password from the
+     * {@code LoginGUI}, reads user data from a file, and attempts to verify the
+     * credentials. If successful, it opens the {@code AdminGUI}.
+     */
     public static void cal() {
-        // Eingaben aus der GUI abrufen
+        // Get inputs from the GUI
         String inputUsername = LoginGUI.textField.getText();
         char[] inputPassword = LoginGUI.passwordField.getPassword();
-        loginSuccessful = false; // Zurücksetzen vor dem Start
-        
+        loginSuccessful = false; // Reset before starting
+
+        // Use try-with-resources to ensure the BufferedReader is closed
         try (BufferedReader reader = new BufferedReader(new FileReader("wegfinderProject/src/files/user.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                
+
                 String[] parts = line.split(",");
                 if (parts.length == 3) {
                     String fileUsername = parts[0].trim();
-                    String filePasswordString = parts[1].trim(); // Passwort aus der Datei (String)
+                    String filePasswordString = parts[1].trim(); // Password from the file (String)
                     String fileRole = parts[2].trim();
-                    
-                    // 1. Benutzername prüfen
+
+                    // 1. Check Username
                     if (fileUsername.equals(inputUsername)) {
-                        
-                        // 2. Passwort sicher prüfen (Konvertiert Dateipasswort-String zu char[])
+
+                        // 2. Securely check the password (Convert file password String to char[])
                         char[] filePasswordChars = filePasswordString.toCharArray();
-                        
-                        // Sichere Überprüfung mit Arrays.equals()
+
+                        // Secure comparison using Arrays.equals()
                         if (Arrays.equals(inputPassword, filePasswordChars)) {
-                            
-                            // *** LOGIN ERFOLGREICH ***
-                            System.out.println("Angemeldet als " + fileRole);
-                            
-                            AdminGUI adminGUI = new AdminGUI(); 
+
+                            // *** LOGIN SUCCESSFUL ***
+                            System.out.println("Logged in as " + fileRole);
+
+                            AdminGUI adminGUI = new AdminGUI();
                             adminGUI.AdminGUI();
-                            adminGUI.setVisible(true); 
-                            
+                            adminGUI.setVisible(true);
+
                             LoginGUI.Errormsg.setVisible(false);
                             LoginGUI.frmMitarbeiterLogin.dispose();
                             loginSuccessful = true;
-                            
-                            // Wichtig: Passwort-Arrays löschen
+
+                            // Important: Clear password arrays for security
                             Arrays.fill(inputPassword, '0');
-                            Arrays.fill(filePasswordChars, '0'); 
-                            
-                            break; // Verlassen der Schleife nach erfolgreichem Login
+                            Arrays.fill(filePasswordChars, '0');
+
+                            break; // Exit the loop after successful login
                         }
-                        
-                        // Wichtig: Passwort-Array löschen, auch wenn es nicht erfolgreich war
+
+                        // Important: Clear the file password array, even if the comparison was unsuccessful
                         Arrays.fill(filePasswordChars, '0');
                     }
                 }
             }
-            
-            // Wenn die Schleife durchgelaufen ist und kein Erfolg vorliegt
+
+            // If the loop finished and no success occurred
             if (!loginSuccessful) {
                  LoginGUI.Errormsg.setVisible(true);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Optionale Meldung, wenn die Datei nicht gefunden wird
-            LoginGUI.Errormsg.setText("Fehler: Benutzerdatei nicht gefunden!");
+            // Optional message if the file is not found
+            LoginGUI.Errormsg.setText("Error: User file not found!");
             LoginGUI.Errormsg.setVisible(true);
         } finally {
-            // Wichtig: Eingabepasswort am Ende immer löschen
+            // Important: Always clear the input password at the end
             Arrays.fill(inputPassword, '0');
         }
     }
