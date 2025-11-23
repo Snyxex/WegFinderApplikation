@@ -18,6 +18,7 @@ public class MapGUI {
                 try {
                     MapGUI window = new MapGUI();
                     window.frame.setVisible(true);
+                    window.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

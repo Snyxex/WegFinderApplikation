@@ -776,7 +776,6 @@ public class AdminGUI extends JFrame {
     private JButton createStyledButton(String text, Color color, String iconName) {
         JButton button = new JButton(text);
         button.setBackground(color);
-        button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 14));
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));

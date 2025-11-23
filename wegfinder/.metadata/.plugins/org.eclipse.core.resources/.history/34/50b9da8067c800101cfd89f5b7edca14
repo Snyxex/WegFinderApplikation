@@ -1,0 +1,217 @@
+package com.wegapplikation.config.view;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
+
+import com.wegapplikation.config.controller.RouteCal;
+
+public class MapGUI {
+
+    public JFrame frame;
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    MapGUI window = new MapGUI();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public MapGUI() {
+        initialize();
+    }
+
+    private void initialize() {
+        frame = new JFrame();
+        frame.setResizable(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setBounds(100, 100, 1940, 1060);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.getContentPane().setLayout(null);
+
+        // Panel f�r RouteCal
+        RouteCal panel = new RouteCal();	
+		panel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		panel.setBackground(SystemColor.activeCaption);
+		panel.setBounds(557, 157, 819, 603);
+		frame.getContentPane().add(panel);
+        
+        // Button "Wegfindung Starten"
+        JButton btnNewButton_1 = new JButton("Wegfindung Starten");
+        btnNewButton_1.setForeground(SystemColor.textHighlightText);
+        btnNewButton_1.setBackground(SystemColor.textHighlight);
+        btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        btnNewButton_1.setBounds(881, 861, 162, 33);
+        frame.getContentPane().add(btnNewButton_1);
+        
+        // "Von"-Textfeld
+        JFormattedTextField formattedTextField = new JFormattedTextField();
+        formattedTextField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        formattedTextField.setBackground(SystemColor.inactiveCaptionBorder);
+        formattedTextField.setHorizontalAlignment(SwingConstants.CENTER);
+        formattedTextField.setBounds(845, 809, 113, 41);
+        frame.getContentPane().add(formattedTextField);
+
+        // "Nach"-Textfeld
+        JFormattedTextField formattedTextField_1 = new JFormattedTextField();
+        formattedTextField_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        formattedTextField_1.setBackground(SystemColor.inactiveCaptionBorder);
+        formattedTextField_1.setHorizontalAlignment(SwingConstants.CENTER);
+        formattedTextField_1.setBounds(968, 809, 113, 41);
+        frame.getContentPane().add(formattedTextField_1);
+
+        // "Von" Label
+        JLabel lblNewLabel = new JLabel("Von");
+        lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel.setBounds(845, 784, 113, 14);
+        frame.getContentPane().add(lblNewLabel);
+
+        // "Nach" Label
+        JLabel lblNewLabel_1 = new JLabel("Nach");
+        lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel_1.setBounds(968, 784, 113, 14);
+        frame.getContentPane().add(lblNewLabel_1);
+
+        // Der Button, um das Zahleneingabefenster zu �ffnen
+        JButton btnNewButton_1_1_1 = new JButton("\u263C");
+        btnNewButton_1_1_1.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		EventQueue.invokeLater(new Runnable() {
+        	        public void run() {
+        	            try {
+        	                // Erstelle eine Instanz von LoginGUI und zeige das Fenster
+        	                LoginGUI window = new LoginGUI();
+        	                frame.dispose();
+        	                window.frmMitarbeiterLogin.setVisible(true);
+        	            } catch (Exception e) {
+        	                e.printStackTrace();
+        	            }
+        	        }
+        	    });
+        	}
+        });
+        btnNewButton_1_1_1.setForeground(SystemColor.textHighlightText);
+        btnNewButton_1_1_1.setFont(new Font("Segoe UI Symbol", Font.BOLD, 13));
+        btnNewButton_1_1_1.setBackground(SystemColor.textHighlight);
+        btnNewButton_1_1_1.setBounds(10, 814, 45, 33);
+        frame.getContentPane().add(btnNewButton_1_1_1);
+
+        // Text-Pane mit Hinweisen
+        JTextPane textPane = new JTextPane();
+        textPane.setEditable(false);
+        textPane.setText("Geben Sie im Feld �Von� ein, von wo Sie die Wegf�hrung starten m�chten. Geben Sie im Feld �Nach� ein, wohin Sie gelangen wollen. Dr�cken Sie danach �Wegfindung starten�, um die Wegf�hrung anzeigen zu lassen.");
+        textPane.setBackground(SystemColor.info);
+        textPane.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        textPane.setBounds(1259, 809, 475, 71);
+        frame.getContentPane().add(textPane);
+
+        // Klick-Listener f�r das "Von"-Textfeld
+        formattedTextField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showNumericKeypad(formattedTextField); // Tastatur f�r "Von" anzeigen
+            }
+        });
+
+        // Klick-Listener f�r das "Nach"-Textfeld
+        formattedTextField_1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showNumericKeypad(formattedTextField_1); // Tastatur f�r "Nach" anzeigen
+            }
+        });
+    }
+
+    // Methode, um das Zahleneingabefenster anzuzeigen
+    private void showNumericKeypad(JFormattedTextField targetTextField) {
+        // Neues Dialogfenster f�r die Zahlentastatur
+        JDialog keypadDialog = new JDialog(frame, "Zahleneingabe", true);
+        keypadDialog.setSize(300, 400);
+        keypadDialog.setLocationRelativeTo(frame);
+        keypadDialog.getContentPane().setLayout(new BorderLayout());
+
+        // Eingabefeld im Dialog
+        JTextField inputField = new JTextField();
+        inputField.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        inputField.setHorizontalAlignment(SwingConstants.CENTER);
+        inputField.setEditable(false);
+        keypadDialog.getContentPane().add(inputField, BorderLayout.NORTH);
+
+        // Panel f�r die Zahlentasten
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(4, 3, 5, 5));
+        keypadDialog.getContentPane().add(buttonPanel, BorderLayout.CENTER);
+
+        // Zahlentasten (1-9)
+        for (int i = 1; i <= 9; i++) {
+            JButton btn = new JButton(String.valueOf(i));
+            btn.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            btn.setForeground(SystemColor.textHighlightText);
+            btn.setBackground(SystemColor.textHighlight);
+            btn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {                   
+                        if (inputField.getText().length() < 4) {
+                            inputField.setText(inputField.getText() + btn.getText());
+                        }
+                    }
+                });
+            buttonPanel.add(btn);
+        }
+
+        // "0" Button
+        JButton btn0 = new JButton("0");
+        btn0.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        btn0.setForeground(SystemColor.textHighlightText);
+        btn0.setBackground(SystemColor.textHighlight);
+        btn0.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	if (inputField.getText().length() < 4) {
+                    inputField.setText(inputField.getText() + "0");
+                }
+            }
+        });
+        buttonPanel.add(btn0);
+
+        // L�schen Button
+        JButton btnClear = new JButton("L�schen");
+        btnClear.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        btnClear.setForeground(SystemColor.textHighlightText);
+        btnClear.setBackground(SystemColor.textHighlight);
+        btnClear.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String text = inputField.getText();
+                if (text.length() > 0) {
+                    inputField.setText(text.substring(0, text.length() - 1));
+                }
+            }
+        });
+        buttonPanel.add(btnClear);
+
+        // Best�tigen Button
+        JButton btnOk = new JButton("OK");
+        btnOk.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        btnOk.setForeground(SystemColor.textHighlightText);
+        btnOk.setBackground(SystemColor.textHighlight);
+        btnOk.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Eingabe �bernehmen und Dialog schlie�en
+                targetTextField.setText(inputField.getText());
+                keypadDialog.dispose();
+            }
+        });
+        buttonPanel.add(btnOk);
+
+        // Dialog sichtbar machen
+        keypadDialog.setVisible(true);
+    }
+}
