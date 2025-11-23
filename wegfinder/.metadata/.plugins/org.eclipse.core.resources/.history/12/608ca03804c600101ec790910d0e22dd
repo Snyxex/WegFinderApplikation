@@ -1,0 +1,137 @@
+
+package com.wegapplikation.config.view;
+
+
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import com.wegapplikation.config.controller.RouteCal;
+
+//import main.PixelPanel;
+
+public class MapGUI {
+
+	public JPanel panel;
+	public static int markin = 0;
+	public static int selectpoints = 1;
+	
+	public static void main(String[] args) {
+	
+		RouteCal map = new RouteCal();									/** Creation of the PixelPanel alias the mappanel*/
+	
+		
+		JButton startmarkin = new JButton();
+		JButton placeStaEnd = new JButton();
+		JButton calbutton = new JButton();
+		JButton finmarkin = new JButton();
+		
+		calbutton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				map.createRoute();
+			}
+			});
+		
+		
+		JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(1400, 700);
+        
+        frame.add(map);														/** Inserts the Panel onto*/ 
+        frame.add(calbutton);
+        frame.add(startmarkin);
+        frame.add(placeStaEnd);
+        frame.add(finmarkin);
+        frame.setLayout(new FlowLayout());
+        map.setPreferredSize(new Dimension(900, 700));
+		calbutton.setPreferredSize(new Dimension(200, 80));
+		startmarkin.setPreferredSize(new Dimension(200, 80));
+		placeStaEnd.setPreferredSize(new Dimension(200, 80));
+		finmarkin.setPreferredSize(new Dimension(200, 80));
+		
+		finmarkin.setText("finmarkin");
+		startmarkin.setText("startmarkin");
+		placeStaEnd.setText("placecal");
+		calbutton.setText("Route erzeugen");
+		
+		finmarkin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	map.closepath();
+            	markin = 0;
+            	selectpoints = 1;
+            }
+		});
+		
+		startmarkin.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(markin == 0) {
+					markin = 1;	
+					selectpoints = 0;
+				}
+				else if(markin == 1) {
+					markin = 0;	
+					selectpoints = 1;
+				}
+			}
+		});
+		
+        frame.setVisible(true);
+	
+        map.addMouseListener(new java.awt.event.MouseAdapter() {
+			
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				if(markin != 1 && selectpoints == 1)
+				{
+				int x = e.getX();
+				int y = e.getY();
+				//map.findredpoint(x, y);
+					}
+				}
+			
+			public void mousePressed(java.awt.event.MouseEvent e) {
+				map.mouseheld = true;
+			}
+			public void mouseReleased(java.awt.event.MouseEvent e) {
+				map.mouseheld = false;
+			}
+			
+		});
+        
+     
+        
+        map.addMouseMotionListener(new java.awt.event.MouseMotionListener() {
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if(markin == 1 && selectpoints != 1)
+				{
+				int x = e.getX();
+				int y = e.getY();
+				map.markpath(x, y);
+				}
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent arg0) {
+			}
+        	
+        });
+        
+        
+        
+        
+	}
+}
