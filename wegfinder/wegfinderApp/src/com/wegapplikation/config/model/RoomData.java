@@ -14,6 +14,8 @@ public class RoomData {
     private int id;
     private String designation;
     private boolean locked;
+    private int y;
+    private int x;
     private static final String FILE_PATH = "files/room.txt";
 
     /**
@@ -30,7 +32,17 @@ public class RoomData {
      * @param id The unique identifier of the room.
      * @param designation The descriptive name or label of the room.
      * @param locked The lock status of the room (true if locked, false otherwise).
+     * @param y The y Position on the Map
+     * @param x The x Position on the Map
      */
+    public RoomData(int id, String designation, boolean locked, int y, int x) {
+        this.id = id;
+        this.designation = designation;
+        this.locked = locked;
+        this.y = y;
+        this.x = x;
+    }
+    
     public RoomData(int id, String designation, boolean locked) {
         this.id = id;
         this.designation = designation;
@@ -62,6 +74,25 @@ public class RoomData {
      */
     public boolean isLocked() {
         return locked;
+    }
+    
+    
+    /**
+     * Gets the unique identifier of the room.
+     *
+     * @return The y Position.
+     */
+    public int getY() {
+        return y;
+    }
+    
+    /**
+     * Gets the unique identifier of the room.
+     *
+     * @return The x Position.
+     */
+    public int getX() {
+        return x;
     }
 
     /**
@@ -135,12 +166,14 @@ public class RoomData {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 3) {
+                if (parts.length == 5) {
                     try {
                         int id = Integer.parseInt(parts[0].trim());
                         String designation = parts[1].trim();
                         boolean locked = Boolean.parseBoolean(parts[2].trim());
-                        rooms.add(new RoomData(id, designation, locked));
+                        int y = Integer.parseInt(parts[3].trim());
+                        int x =	Integer.parseInt(parts[4].trim());
+                        rooms.add(new RoomData(id, designation, locked, y, x));
                     } catch (NumberFormatException e) {
                         System.err.println("Error parsing room data: " + line);
                     }
@@ -161,7 +194,7 @@ public class RoomData {
     private void saveRooms(List<RoomData> rooms) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
             for (RoomData room : rooms) {
-                writer.write(room.getId() + "," + room.getDesignation() + "," + room.isLocked());
+                writer.write(room.getId() + "," + room.getDesignation() + "," + room.isLocked()+ "," + room.getY() + "," + room.getX());
                 writer.newLine();
             }
         } catch (IOException e) {

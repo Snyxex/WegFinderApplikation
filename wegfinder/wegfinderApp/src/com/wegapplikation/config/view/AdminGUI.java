@@ -180,6 +180,7 @@ public class AdminGUI extends JFrame {
             MapGUI MapGUI = new MapGUI();
             MapGUI.frame.setVisible(true);
             dispose();
+           
       
         });
 

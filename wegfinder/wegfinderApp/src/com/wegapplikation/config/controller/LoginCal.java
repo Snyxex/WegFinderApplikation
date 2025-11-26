@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.Arrays; // Important for secure password comparison
 
 import com.wegapplikation.config.view.AdminGUI;
+import com.wegapplikation.config.view.EmployeeGUI;
 import com.wegapplikation.config.view.LoginGUI;
 
 /**
@@ -55,7 +56,8 @@ public class LoginCal {
                             	
                             } else if(fileRole.equals("Mitarbeiter")) {
                             	
-                            	//mitarbeiter mapgui
+                            	EmployeeGUI employeeGUI = new EmployeeGUI();
+                            	employeeGUI.frame.setVisible(true);
                             }
 
                            
