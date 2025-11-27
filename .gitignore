@@ -1,20 +1,19 @@
 
-.gitignore:
-
-```gitignore
-# Eclipse workspace/project files
 /.metadata/
-/**/.metadata/
-/**/.log
-/**/.lock
+**/.metadata/
+**/.log
+**/.lock
 **/.mylyn
 /.project
 /.classpath
 /.settings/
-/bin/
+
+# project specific
+/wegfinderApp/bin/
+/wegfinderApp/files/
 /files/
 
-# Java
+# Java / build artifacts
 *.class
 *.jar
 *.war
@@ -33,12 +32,11 @@ Thumbs.db
 
 # Gradle/Maven
 .gradle/
-build/
-.mvn/
+/.mvn/
 dependency-reduced-pom.xml
 
 # Logs
 *.log
 
-# Other
+# temporary
 *.tmp
