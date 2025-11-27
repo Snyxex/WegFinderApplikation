@@ -379,10 +379,9 @@ public class AdminGUI extends JFrame {
     	            }
     	        });
     	    
-    	         JPanel panel = new JPanel();
-    	         panel.add(Routepanel);
+    	         
     	 
-    	return panel;
+    	return Routepanel;
     }
     /**
      * Creates the User Management panel, including input fields, buttons, and a table
