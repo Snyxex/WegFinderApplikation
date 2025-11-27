@@ -1,0 +1,44 @@
+
+.gitignore:
+
+```gitignore
+# Eclipse workspace/project files
+/.metadata/
+/**/.metadata/
+/**/.log
+/**/.lock
+**/.mylyn
+/.project
+/.classpath
+/.settings/
+/bin/
+/files/
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+/out/
+target/
+build/
+
+# IDEs
+/.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Gradle/Maven
+.gradle/
+build/
+.mvn/
+dependency-reduced-pom.xml
+
+# Logs
+*.log
+
+# Other
+*.tmp
