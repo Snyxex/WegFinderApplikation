@@ -1,4 +1,4 @@
-1001,Lager,false,277,275
+1001,Lager,false,284,275
 1002,Abstellkammer,false,264,275
 1003,Schaltschrank,false,250,275
 1004,Serverraum,false,235,275
@@ -120,7 +120,6 @@
 3019,Schaltschrank,false,503,485
 3020,Büro,false,539,496
 3021,Büro,false,503,501
-3022,Büro,false,,503,520
 3023,Büro,false,503,501
 3024,Lager,false,538,545
 3025,WC,false,538,560

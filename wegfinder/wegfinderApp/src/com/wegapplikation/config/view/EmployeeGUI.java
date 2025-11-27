@@ -41,11 +41,12 @@ public class EmployeeGUI {
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximizes the frame
         frame.setBounds(100, 100, 1940, 1060);
         // Prevents closing the application by default (DO_NOTHING_ON_CLOSE is used)
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); 
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
         frame.getContentPane().setLayout(null);
 
         // Panel for RouteCal (Map visualization and pathfinding logic)
         panel = new RouteCal();	
+        panel.loggedin = true;
 		panel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		panel.setBackground(SystemColor.activeCaption);
 		panel.setBounds(557, 157, 819, 603);

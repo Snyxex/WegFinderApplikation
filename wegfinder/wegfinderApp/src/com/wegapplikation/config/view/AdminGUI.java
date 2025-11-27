@@ -35,12 +35,13 @@ public class AdminGUI extends JFrame {
     private CardLayout cardLayout;
     private JButton homeButton, userManagementButton, roomManagementButton, floorManagementButton, helpButton, signOutButton;
     private String loggedInUser = LoginGUI.textField.getText();
-    public RouteCal Routepanel;
+    private RouteCal Routepanel;
+
     /**
      * Constructs an {@code AdminGUI}.
      * Initializes the controller and sets up the user interface.
      */
-    public void AdminGUI() {
+    public AdminGUI() {
         adminCal = new AdminCal();
         initializeUI();
     }
@@ -56,6 +57,11 @@ public class AdminGUI extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        //RouteCal initialize
+     
+        this.Routepanel = new RouteCal(); 
+        this.Routepanel.loggedin = true; 
+        
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
@@ -113,7 +119,7 @@ public class AdminGUI extends JFrame {
         contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         // Add Panels to CardLayout (using German names as keys)
-        contentPanel.add(mapGUIPanel(), "Startseite");
+        
         contentPanel.add(createUserManagementPanel(), "Benutzerverwaltung");
         contentPanel.add(createRoomManagementPanel(), "Raumverwaltung");
         contentPanel.add(createFloorManagementPanel(), "Flurverwaltung");
@@ -147,6 +153,8 @@ public class AdminGUI extends JFrame {
         homeButton.addActionListener(e -> {
             setActiveButton(homeButton);
             cardLayout.show(contentPanel, "Startseite");
+            
+            mapGUIPanel().setVisible(true);
         });
         userManagementButton.addActionListener(e -> {
             setActiveButton(userManagementButton);
@@ -183,17 +191,21 @@ public class AdminGUI extends JFrame {
         add(mainPanel);
     }
 
-    private JPanel mapGUIPanel() {
+    private JDialog mapGUIPanel() {
     	
-    	
-        
+    
+    	JDialog panel = new JDialog();
+        panel.setBackground(new Color(240, 242, 245));
+        panel.setSize(1920,1080);
+        panel.setLayout(null);
 
     	        // Panel for RouteCal (Map visualization and pathfinding logic)
     	        Routepanel = new RouteCal();	
     	        Routepanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
     	        Routepanel.setBackground(SystemColor.activeCaption);
     	        Routepanel.setBounds(557, 157, 819, 603);
-    			
+    	
+    	        panel.add(Routepanel);
     	        
     	        // Button "Wegfindung Starten" (Start Pathfinding)
     	        JButton btnNewButton_1 = new JButton("Wegfindung Starten");
@@ -204,13 +216,17 @@ public class AdminGUI extends JFrame {
     	 
     	        
     	        // Listener to start the route calculation when the button is clicked
-    	        btnNewButton_1.addMouseListener(new MouseAdapter() {
-    	        	 public void mouseClicked(MouseEvent e) {
-    	        	    Routepanel.createRoute(); // Calls the controller method to calculate and draw the route
-    	        	 }
+    	    
+    	        btnNewButton_1.addActionListener(new ActionListener() {
+    	            @Override
+    	            public void actionPerformed(ActionEvent e) {
+    	                if(Routepanel != null ) {
+    	                	Routepanel.createRoute(); 
+    	                }
+    	            }
     	        });
     	        
-    	        Routepanel.add(btnNewButton_1);
+    	        panel.add(btnNewButton_1);
     	        
     	        
     	        // Mouse listener for the map panel (RouteCal) to handle touch/click events
@@ -218,6 +234,7 @@ public class AdminGUI extends JFrame {
     				
     				public void mousePressed(java.awt.event.MouseEvent e) {
     					Routepanel.mouseheld = true;
+    					((JComponent) e.getSource()).getParent().dispatchEvent(e);
     				}
     				
     				/**
@@ -320,7 +337,7 @@ public class AdminGUI extends JFrame {
     	        formattedTextField.setBackground(SystemColor.inactiveCaptionBorder);
     	        formattedTextField.setHorizontalAlignment(SwingConstants.CENTER);
     	        formattedTextField.setBounds(845, 809, 113, 41);
-    	        Routepanel.add(formattedTextField);
+    	        panel.add(formattedTextField);
 
     	        // "Nach" (To) Text Field for destination point
     	        JFormattedTextField formattedTextField_1 = new JFormattedTextField();
@@ -328,14 +345,14 @@ public class AdminGUI extends JFrame {
     	        formattedTextField_1.setBackground(SystemColor.inactiveCaptionBorder);
     	        formattedTextField_1.setHorizontalAlignment(SwingConstants.CENTER);
     	        formattedTextField_1.setBounds(968, 809, 113, 41);
-    	        Routepanel.add(formattedTextField_1);
+    	        panel.add(formattedTextField_1);
     	        
     	        // "Von" (From) Label
     	        JLabel lblNewLabel = new JLabel("Von");
     	        lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     	        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	        lblNewLabel.setBounds(845, 784, 113, 14);
-    	        Routepanel.add(lblNewLabel);
+    	        panel.add(lblNewLabel);
     	        Routepanel.vonField = formattedTextField;
 
     	        // "Nach" (To) Label
@@ -343,7 +360,7 @@ public class AdminGUI extends JFrame {
     	        lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     	        lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
     	        lblNewLabel_1.setBounds(968, 784, 113, 14);
-    	        Routepanel.add(lblNewLabel_1);
+    	        panel.add(lblNewLabel_1);
     	        Routepanel.nachField = formattedTextField_1;
 
     	        
@@ -356,11 +373,24 @@ public class AdminGUI extends JFrame {
     	        textPane.setText("Geben Sie im Feld \"Von\" ein, von wo Sie die Wegführung starten möchten. Geben Sie im Feld \"Nach\" ein, wohin Sie gelangen wollen. Drücken Sie danach \"Wegfindung starten\", um die Wegführung anzeigen zu lassen.");
     	        textPane.setBackground(SystemColor.info);
     	        textPane.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-    	        textPane.setBounds(359, 809, 475, 71);
-    	        Routepanel.add(textPane);
+    	        textPane.setBounds(309, 809, 475, 71);
+    	        panel.add(textPane);
     	        
     	        
+    	       
+    	        JButton bSetmark = new JButton("Markieren"); // Korrektur des Tippfehlers
+                bSetmark.setForeground(SystemColor.textHighlightText);
+                bSetmark.setFont(new Font("Segoe UI Symbol", Font.BOLD, 13));
+                bSetmark.setBackground(SystemColor.textHighlight);
+                bSetmark.setBounds(10, 11, 45, 33);
+    	        panel.add(bSetmark);
     	        
+    	        // Logout button listener (currently empty/incomplete in provided code)
+    	        bSetmark.addActionListener(new ActionListener() {
+    	        	public void actionPerformed(ActionEvent e) {
+    	        		Routepanel.ismarkin = true;
+    	        	};
+    	        });
     	        
 
     	        // Click listener for the "Von" (From) text field to display the numeric keypad
@@ -378,11 +408,12 @@ public class AdminGUI extends JFrame {
     	                showNumericKeypad(formattedTextField_1); // Show keypad for "To" field
     	            }
     	        });
-    	    
-    	         
-    	 
-    	return Routepanel;
-    }
+    	        
+				return panel;
+			
+    	  
+    	       
+  }
     /**
      * Creates the User Management panel, including input fields, buttons, and a table
      * for managing users (add, update, delete).
@@ -391,6 +422,7 @@ public class AdminGUI extends JFrame {
     private JPanel createUserManagementPanel() {
         JPanel panel = new JPanel(new BorderLayout(10, 10));
         panel.setBackground(new Color(240, 242, 245));
+       
 
         // Input Panel
         JPanel inputPanel = new JPanel(new GridBagLayout());

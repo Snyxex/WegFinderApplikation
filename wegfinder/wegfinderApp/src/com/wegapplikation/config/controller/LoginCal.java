@@ -52,7 +52,6 @@ public class LoginCal {
                             System.out.println("Logged in as " + fileRole);
                             if(fileRole.equals("Admin")) {
                             	AdminGUI adminGUI = new AdminGUI();
-                            	adminGUI.AdminGUI();
                             	adminGUI.setVisible(true);
                             	
                             } else if(fileRole.equals("Mitarbeiter")) {
@@ -62,8 +61,7 @@ public class LoginCal {
                             }
 
                            
-                            RouteCal RouteCal = new RouteCal();
-                            RouteCal.loggedin = true;
+                           
                             LoginGUI.Errormsg.setVisible(false);
                             LoginGUI.frmMitarbeiterLogin.dispose();
                             loginSuccessful = true;

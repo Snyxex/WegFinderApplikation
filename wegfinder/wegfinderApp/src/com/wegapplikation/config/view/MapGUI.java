@@ -280,8 +280,7 @@ public class MapGUI {
         // New dialog window for the numeric keypad
         JDialog keypadDialog = new JDialog(frame, "Zahleneingabe", true); // Numeric Input
         keypadDialog.setSize(300, 400);
-        keypadDialog.setLocationRelativeTo(frame);
-        keypadDialog.getContentPane().setLayout(new BorderLayout());
+
 
         // Input field in the dialog
         JTextField inputField = new JTextField();
