@@ -111,7 +111,7 @@ public class MapGUI {
 					JDialog pathdialog = new JDialog();
 		            pathdialog.setSize(500, 140);
 		            pathdialog.setLayout(new BorderLayout());
-
+                    pathdialog.setAlwaysOnTop(true);
 		            pathdialog.add(new JLabel("Bitte geben sie einen Start- und einen Endraum an")); // Please enter a start and end room
 
 		            JPanel buttonPanel = new JPanel();

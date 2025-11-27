@@ -94,7 +94,7 @@ public class EmployeeGUI {
 					JDialog pathdialog = new JDialog();
 		            pathdialog.setSize(500, 140);
 		            pathdialog.getContentPane().setLayout(new BorderLayout());
-
+                    pathdialog.setAlwaysOnTop(true);
 		            // Text (in German): "Please enter a start and end room" (Contextually, this text seems misplaced for this dialog)
 		            pathdialog.getContentPane().add(new JLabel("Bitte geben Sie einen Start- und einen Endraum an"));
 
