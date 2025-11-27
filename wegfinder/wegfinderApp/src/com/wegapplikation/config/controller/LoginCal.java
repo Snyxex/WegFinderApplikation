@@ -6,6 +6,7 @@ import java.util.Arrays; // Important for secure password comparison
 import com.wegapplikation.config.view.AdminGUI;
 import com.wegapplikation.config.view.EmployeeGUI;
 import com.wegapplikation.config.view.LoginGUI;
+import com.wegapplikation.config.controller.RouteCal;
 
 /**
  * The {@code LoginCal} class handles the core logic for user authentication
@@ -61,7 +62,8 @@ public class LoginCal {
                             }
 
                            
-
+                            RouteCal RouteCal = new RouteCal();
+                            RouteCal.loggedin = true;
                             LoginGUI.Errormsg.setVisible(false);
                             LoginGUI.frmMitarbeiterLogin.dispose();
                             loginSuccessful = true;

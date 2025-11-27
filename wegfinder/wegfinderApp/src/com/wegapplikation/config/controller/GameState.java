@@ -4,93 +4,78 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * The {@code GameState} class represents the current state of the pathfinding or
- * "Cat and Mouse" game within the application. It stores the map data,
- * the start and end positions, and the direction of the last move.
+ * "Game" logic within the application. It stores the map data (pixel array),
+ * the **Start** and **End** positions, and the direction of the last move.
  * This class is designed to be immutable, where methods that modify the state
- * (like moving the cat) return a new {@code GameState} object.
+ * (like moving the current position) return a new {@code GameState} object.
  */
 public class GameState {
 
 	  private final int[][] pixelArray;
-	  /** Start and End positions: (mx, my) is the Mouse/End position, (cx, cy) is the Cat/Current position. **/
-	  private final int mx, my, cx, cy; 
-	  /** Direction of the last move (of the 'cat' or current point). **/
+	  /** End and Start/Current positions: (ex, ey) is the **E**nd position, (sx, sy) is the **S**tart/Current position. **/
+	  private final int ex, ey, sx, sy; 
+	  /** Direction of the last move made by the current point ('cat' in previous versions). **/
 	  private Direction catDir = null; 
 
 	  /**
-	   * Initializes a new GameState object for a new route, setting all coordinates to 0.
+	   * Initializes a new GameState object for a new route, setting the map data
+	   * and all coordinates to 0.
 	   *
 	   * @param pixelArray The 2D array representing the map or grid structure.
 	   */
 	  public GameState(int[][] pixelArray) { 
 	    this.pixelArray = pixelArray;
-	    this.mx = 0;
-	    this.my = 0;
-	    this.cx = 0;
-	    this.cy = 0;	  
+	    this.ex = 0;
+	    this.ey = 0;
+	    this.sx = 0;
+	    this.sy = 0;	  
 	  }
 
 	  /**
 	   * Initializes a GameState with specified positions and direction.
 	   * This is the primary constructor used to create new states based on existing ones.
 	   * * @param pixelArray The map data.
-	   * @param mx The x-coordinate of the mouse/target/end position.
-	   * @param my The y-coordinate of the mouse/target/end position.
-	   * @param cx The x-coordinate of the cat/current position.
-	   * @param cy The y-coordinate of the cat/current position.
-	   * @param catDir The direction of the last move made by the cat/current position.
+	   * @param ex The x-coordinate of the **E**nd position.
+	   * @param ey The y-coordinate of the **E**nd position.
+	   * @param sx The x-coordinate of the **S**tart/Current position.
+	   * @param sy The y-coordinate of the **S**tart/Current position.
+	   * @param catDir The direction of the last move made by the current position.
 	   */
-	  public GameState(int[][] pixelArray, int mx, int my, int cx, int cy, Direction catDir) { 	
+	  public GameState(int[][] pixelArray, int ex, int ey, int sx, int sy, Direction catDir) { 	
 	    this.pixelArray = pixelArray;
-	    this.mx = mx;
-	    this.my = my;
-	    this.cx = cx;
-	    this.cy = cy;
+	    this.ex = ex;
+	    this.ey = ey;
+	    this.sx = sx;
+	    this.sy = sy;
 	    this.catDir = catDir;
-	  }
-
-	  /**
-	   * Returns a new {@code GameState} object with hardcoded default start (cat) and end (mouse) positions.
-	   *
-	   * @return A new {@code GameState} instance with initial coordinates set.
-	   */
-	 public GameState withCatMousePositions() {
-	    // Position cat on any even field (Note: Actual coordinates are hardcoded values)
-		 int mx = 69; // Mouse X (Target X)
-		 int my = 302; // Mouse Y (Target Y)
-		 int cx = 162; // Cat X (Current X)
-		 int cy = 325; // Cat Y (Current Y)
-	    return new GameState(this.pixelArray, mx, my, cx, cy, null);
-	  }
+	  }	
 	 
 	 /**
-	  * Returns a new {@code GameState} object with specified start and end positions.
-	  *
-	  * @param mx The x-coordinate of the mouse/target/end position.
-	  * @param my The y-coordinate of the mouse/target/end position.
-	  * @param cx The x-coordinate of the cat/current position.
-	  * @param cy The y-coordinate of the cat/current position.
+	  * Returns a new immutable {@code GameState} object with specified start (sx, sy) and end (ex, ey) positions.
+	  * * @param ex The x-coordinate of the End position.
+	  * @param ey The y-coordinate of the End position.
+	  * @param sx The x-coordinate of the Start/Current position.
+	  * @param sy The y-coordinate of the Start/Current position.
 	  * @return A new {@code GameState} instance with the provided coordinates.
 	  */
-	 public GameState withCatMousePositions2(int mx, int my, int cx, int cy) {
-		    // Position cat on any even field (The comment is likely a leftover from a different implementation)
-			  return new GameState(this.pixelArray, mx, my, cx, cy, null);
+	 public GameState withStartEnd(int ex, int ey, int sx, int sy) {			
+			  return new GameState(this.pixelArray, ex, ey, sx, sy, null);
 		  }
 	 
 	  /**
-	   * Returns a new {@code GameState} representing a move of the "Cat" (current position)
-	   * in the specified direction. The mouse/end position remains unchanged.
+	   * Returns a new {@code GameState} representing a move of the current position (sx, sy)
+	   * in the specified direction. The end position (ex, ey) remains unchanged.
 	   *
-	   * @param dir The {@code Direction} to move the current position (cx, cy).
-	   * @return A new {@code GameState} with updated (cx, cy) coordinates and the new direction.
+	   * @param dir The {@code Direction} to move the current position (sx, sy).
+	   * @return A new {@code GameState} with updated (sx, sy) coordinates and the new direction.
 	   */
 	  public GameState withMoveCat(Direction dir) {
 	    return new GameState(
 	        this.pixelArray, 
-	        this.mx, 
-	        this.my, 
-	        this.cx + dir.getDx(), // New Cat X
-	        this.cy + dir.getDy(), // New Cat Y
+	        this.ex, 
+	        this.ey, 
+	        this.sx + dir.getDx(), // New Start/Current X
+	        this.sy + dir.getDy(), // New Start/Current Y
 	        dir);
 	  }
 
@@ -103,39 +88,39 @@ public class GameState {
 	  }
 
 	  /**
-	   * Gets the x-coordinate of the mouse/target/end position.
-	   * @return The x-coordinate (mx).
+	   * Gets the x-coordinate of the **E**nd position.
+	   * @return The x-coordinate (ex).
 	   */
-	  public int getMx() {
-	    return mx;
+	  public int getex() {
+	    return ex;
 	  }
 
 	  /**
-	   * Gets the y-coordinate of the mouse/target/end position.
-	   * @return The y-coordinate (my).
+	   * Gets the y-coordinate of the **E**nd position.
+	   * @return The y-coordinate (ey).
 	   */
-	  public int getMy() {
-	    return my;
+	  public int getey() {
+	    return ey;
 	  }
 
 	  /**
-	   * Gets the x-coordinate of the cat/current position.
-	   * @return The x-coordinate (cx).
+	   * Gets the x-coordinate of the **S**tart/Current position.
+	   * @return The x-coordinate (sx).
 	   */
-	  public int getCx() {
-	    return cx;
+	  public int getsx() {
+	    return sx;
 	  }
 
 	  /**
-	   * Gets the y-coordinate of the cat/current position.
-	   * @return The y-coordinate (cy).
+	   * Gets the y-coordinate of the **S**tart/Current position.
+	   * @return The y-coordinate (sy).
 	   */
-	  public int getCy() {
-	    return cy;
+	  public int getsy() {
+	    return sy;
 	  }
 
 	  /**
-	   * Gets the direction of the last move made by the cat/current position.
+	   * Gets the direction of the last move made by the current position.
 	   * @return The last move direction, or {@code null} if no move has been made.
 	   */
 	  public Direction getCatDir() {
@@ -143,11 +128,11 @@ public class GameState {
 	  }
 
 	  /**
-	   * Checks if the cat (current position) has reached the mouse (target/end position).
-	   * @return {@code true} if the current x and y coordinates match the target x and y coordinates, {@code false} otherwise.
+	   * Checks if the Start/Current position (sx, sy) has reached the End position (ex, ey).
+	   * @return {@code true} if the current coordinates match the target coordinates, {@code false} otherwise.
 	   */
-	  public boolean hasCatEatenMouse() {		
-	    return cx == mx && cy == my;
+	  public boolean isStarttheEnd() {		
+	    return sx == ex && sy == ey;
 	  }
 
 	}
