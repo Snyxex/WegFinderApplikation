@@ -1,7 +1,4 @@
 
-.gitignore:
-
-```gitignore
 # Eclipse workspace/project files
 /.metadata/
 /**/.metadata/
