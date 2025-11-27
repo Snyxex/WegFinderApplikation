@@ -1,0 +1,1184 @@
+package com.wegapplikation.config.view;
+
+import com.wegapplikation.config.CustomKeyboard;
+import com.wegapplikation.config.controller.AdminCal;
+import com.wegapplikation.config.controller.RouteCal;
+
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
+
+/**
+ * The {@code AdminGUI} class represents the main frame for the Admin Dashboard.
+ * It provides the graphical user interface for managing users, rooms, and floors
+ * through various panels accessed via a sidebar navigation.
+ * It extends {@link JFrame}.
+ */
+public class AdminGUI extends JFrame {
+    private AdminCal adminCal;
+    private JTable userTable, roomTable;
+    private JTextField usernameField, roomIdField, roomDesignationField;
+    private JPasswordField passwordField;
+    private JComboBox<String> roleComboBox;
+    private JCheckBox lockedCheckBox;
+    private JButton addUserButton, updateUserButton, deleteUserButton, clearUserButton;
+    private JButton updateRoomButton, clearRoomButton;
+    private JPanel contentPanel;
+    private CardLayout cardLayout;
+    private JButton homeButton, userManagementButton, roomManagementButton, floorManagementButton, helpButton, signOutButton;
+    private String loggedInUser = LoginGUI.textField.getText();
+    private RouteCal Routepanel;
+
+    /**
+     * Constructs an {@code AdminGUI}.
+     * Initializes the controller and sets up the user interface.
+     */
+    public AdminGUI() {
+        adminCal = new AdminCal();
+        initializeUI();
+    }
+
+    /**
+     * Initializes the main components and layout of the Admin Dashboard UI.
+     * Sets up the frame properties, sidebar navigation, and content panels using CardLayout.
+     */
+    private void initializeUI() {
+        setTitle("Admin Dashboard");
+        setSize(1920, 1080);
+        setMinimumSize(new Dimension(700, 500));
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        //RouteCal initialize
+     
+        this.Routepanel = new RouteCal(); 
+        this.Routepanel.loggedin = true; 
+        
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(240, 242, 245));
+
+        // Sidebar
+        JPanel sidebar = new JPanel();
+        sidebar.setBackground(new Color(26, 36, 47));
+        sidebar.setPreferredSize(new Dimension(200, 0));
+        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
+        sidebar.setBorder(new EmptyBorder(20, 10, 20, 10));
+
+        JLabel logoLabel = new JLabel("Admin Dashboard");
+        logoLabel.setForeground(Color.WHITE);
+        logoLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebar.add(logoLabel);
+        sidebar.add(Box.createVerticalStrut(30));
+
+        // Navigation Buttons (German names preserved for mapping to content panels)
+        homeButton = createNavButton("Startseite");
+        userManagementButton = createNavButton("Benutzerverwaltung");
+        roomManagementButton = createNavButton("Raumverwaltung");
+        floorManagementButton = createNavButton("Flurverwaltung");
+        helpButton = createNavButton("Hilfe");
+        signOutButton = createNavButton("Abmelden");
+        userManagementButton.setBackground(new Color(46, 204, 113));
+        sidebar.add(homeButton);
+        sidebar.add(Box.createVerticalStrut(10));
+        sidebar.add(userManagementButton);
+        sidebar.add(Box.createVerticalStrut(10));
+        sidebar.add(roomManagementButton);
+        sidebar.add(Box.createVerticalStrut(10));
+        sidebar.add(floorManagementButton);
+        sidebar.add(Box.createVerticalStrut(10));
+        sidebar.add(helpButton);
+        sidebar.add(Box.createVerticalGlue());
+        sidebar.add(signOutButton);
+        sidebar.add(Box.createVerticalStrut(10));
+
+        JLabel versionLabel = new JLabel("v5.2.5");
+        versionLabel.setForeground(new Color(150, 150, 150));
+        versionLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        versionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sidebar.add(versionLabel);
+
+        // Content Panel with CardLayout
+        cardLayout = new CardLayout();
+        contentPanel = new JPanel(cardLayout);
+        contentPanel.setBackground(new Color(240, 242, 245));
+        contentPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+
+        // Add Panels to CardLayout (using German names as keys)
+        
+        contentPanel.add(createUserManagementPanel(), "Benutzerverwaltung");
+        contentPanel.add(createRoomManagementPanel(), "Raumverwaltung");
+        contentPanel.add(createFloorManagementPanel(), "Flurverwaltung");
+              
+
+        // Help Panel
+        JPanel helpPanel = new JPanel(new BorderLayout());
+        helpPanel.setBackground(Color.WHITE);
+        helpPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(20, 20, 20, 20)));
+        JTextArea helpText = new JTextArea(
+                "Admin-Dashboard-Hilfe\n\n" + // Help text in German
+                        "1. Startseite: Übersicht über das Dashboard.\n" +
+                        "2. Benutzerverwaltung: Hinzufügen, Aktualisieren oder Löschen von Benutzern mit Rollen (Admin oder Mitarbeiter).\n" +
+                        "3. Raumverwaltung: Aktualisieren von Räumen mit Bezeichnung und Sperrstatus.\n" +
+                        "4. Flurverwaltung: Aktualisieren von Fluren (Gängen) mit ID und Sperrstatus.\n" +
+                        "5. Hilfe: Dieser Abschnitt bietet Anleitungen.\n\n"
+        );
+        helpText.setFont(new Font("Arial", Font.PLAIN, 14));
+        helpText.setEditable(false);
+        helpText.setBackground(Color.WHITE);
+        helpPanel.add(new JScrollPane(helpText), BorderLayout.CENTER);
+        contentPanel.add(helpPanel, "Hilfe");
+
+        // Assemble Layout
+        mainPanel.add(sidebar, BorderLayout.WEST);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+        // Navigation Actions
+        homeButton.addActionListener(e -> {
+            setActiveButton(homeButton);
+            cardLayout.show(contentPanel, "Startseite");
+            
+            mapGUIPanel().setVisible(true);
+        });
+        userManagementButton.addActionListener(e -> {
+            setActiveButton(userManagementButton);
+            cardLayout.show(contentPanel, "Benutzerverwaltung");
+            refreshUserTable();
+        });
+        roomManagementButton.addActionListener(e -> {
+            setActiveButton(roomManagementButton);
+            cardLayout.show(contentPanel, "Raumverwaltung");
+            refreshRoomTable();
+        });
+        floorManagementButton.addActionListener(e -> {
+            setActiveButton(floorManagementButton);
+            cardLayout.show(contentPanel, "Flurverwaltung");
+            refreshFloorTable(new DefaultTableModel());
+        });
+        helpButton.addActionListener(e -> {
+            setActiveButton(helpButton);
+            cardLayout.show(contentPanel, "Hilfe");
+        });
+
+        signOutButton.addActionListener(e -> {
+            setActiveButton(signOutButton);
+            cardLayout.show(contentPanel, "Abmelden"); 
+            loggedInUser = null;
+            
+            MapGUI MapGUI = new MapGUI();
+            MapGUI.frame.setVisible(true);
+            dispose();
+           
+      
+        });
+
+        add(mainPanel);
+    }
+
+    private JDialog mapGUIPanel() {
+    	
+    
+    	JDialog panel = new JDialog();
+        panel.setBackground(new Color(240, 242, 245));
+        panel.setSize(1920,1080);
+        panel.setLayout(null);
+ 
+    	        // Panel for RouteCal (Map visualization and pathfinding logic)
+    	        Routepanel = new RouteCal();	
+    	        Routepanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+    	        Routepanel.setBackground(SystemColor.activeCaption);
+    	        Routepanel.setBounds(557, 157, 819, 603);
+    	        
+    	
+    	        panel.add(Routepanel);
+    	        
+    	        // Button "Wegfindung Starten" (Start Pathfinding)
+    	        JButton btnNewButton_1 = new JButton("Wegfindung Starten");
+    	        btnNewButton_1.setBackground(SystemColor.textHighlight);
+    	        btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    	        btnNewButton_1.setBounds(881, 861, 162, 33);
+    	 
+    	        
+    	        // Listener to start the route calculation when the button is clicked
+    	    
+    	        btnNewButton_1.addActionListener(new ActionListener() {
+    	            @Override
+    	            public void actionPerformed(ActionEvent e) {
+    	                if(Routepanel != null ) {
+    	                	Routepanel.createRoute(); 
+    	                }
+    	            }
+    	        });
+    	        
+    	        panel.add(btnNewButton_1);
+    	        
+    	        
+    	        // Mouse listener for the map panel (RouteCal) to handle touch/click events
+    	        Routepanel.addMouseListener(new java.awt.event.MouseAdapter() {
+    				
+    				public void mousePressed(java.awt.event.MouseEvent e) {
+    					Routepanel.mouseheld = true;
+    					((JComponent) e.getSource()).getParent().dispatchEvent(e);
+    				}
+    				
+    				/**
+    				 * Handles the mouse release event on the map panel.
+    				 * If a path (corridor/room) has been marked for modification 
+    				 * (only applicable in employee/admin mode), a dialog for 
+    				 * opening or closing the path is displayed.
+    				 * @param e The mouse event.
+    				 */
+    				public void mouseReleased(java.awt.event.MouseEvent e) {
+    					Routepanel.mouseheld = false;
+    					
+    					// Check if a path (cmarkedpath or omarkedpath) has been marked 
+    					// and the marking process is active (ismarkin).
+    					if((Routepanel.cmarkedpath != null || Routepanel.omarkedpath != null) && Routepanel.ismarkin == true) {			
+    						
+    						JDialog pathdialog = new JDialog();
+    			            pathdialog.setSize(500, 140);
+    			            pathdialog.getContentPane().setLayout(new BorderLayout());
+    			            pathdialog.setAlwaysOnTop(true);
+    			            panel.setAlwaysOnTop(false);
+
+    			            // Text (in German): "Please enter a start and end room" (Contextually, this text seems misplaced for this dialog)
+    			            pathdialog.getContentPane().add(new JLabel("Bitte geben Sie einen Start- und einen Endraum an"));
+
+    			            JPanel buttonPanel = new JPanel();
+    			            buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+
+    			            JButton btnnochange = new JButton("X");
+    			            JButton btnopenpath = new JButton("Weg öffnen"); 
+    			            JButton btnclosepath = new JButton("Weg schließen"); 
+
+    			            // Action listener for 'X' button (No Change)
+    			            btnnochange.addActionListener(new ActionListener() {
+    			            	public void actionPerformed(ActionEvent arg0) {
+    			            		Routepanel.clearMarkedPaths(); // Clears the marked path state
+    			            		
+    			            	}
+    			            });
+    			            // Action listener for 'Weg öffnen' (Open Path)
+    			            btnopenpath.addActionListener(new ActionListener() {
+    			            	public void actionPerformed(ActionEvent arg0) {
+    			            		Routepanel.openPath(); // Marks the path as open/passable
+    			            	}
+    			            });
+    			            // Action listener for 'Weg schließen' (Close Path)
+    			            btnclosepath.addActionListener(new ActionListener() {
+    			            	public void actionPerformed(ActionEvent arg0) {
+    			            		Routepanel.closePath(); // Marks the path as closed/impassable
+    			            	}
+    			            });
+    			            
+    			            // Dispose the dialog after any button is clicked
+    			            btnnochange.addActionListener(event -> pathdialog.dispose());
+    			            btnopenpath.addActionListener(event -> pathdialog.dispose());
+    			            btnclosepath.addActionListener(event -> pathdialog.dispose());
+    			            
+    			            
+    			            
+    			            buttonPanel.add(btnnochange);
+    			            buttonPanel.add(btnclosepath);
+    			            buttonPanel.add(btnopenpath);
+
+    			            pathdialog.getContentPane().add(buttonPanel, BorderLayout.CENTER);
+
+    			            // Center the popup dialog on the screen and make it modal
+    			            pathdialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+    			            pathdialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    			            pathdialog.setLocationRelativeTo(Routepanel);
+
+    			            pathdialog.setVisible(true);
+    					}
+    				}
+    			});
+    	        
+    	        // Mouse motion listener for the map panel (RouteCal) to handle path marking via dragging
+    	        Routepanel.addMouseMotionListener(new java.awt.event.MouseMotionListener() {
+
+    				/**
+    				 * Called when the mouse button is pressed and the mouse is dragged.
+    				 * Used for drawing/marking a path segment for modification (if ismarkin is true).
+    				 */
+    				@Override
+    				public void mouseDragged(MouseEvent e) {
+    					if(Routepanel.ismarkin)
+    					{
+    					int x = e.getX();
+    					int y = e.getY();
+    					Routepanel.markpath(x, y);
+    					}
+    				}
+
+    				@Override
+    				public void mouseMoved(MouseEvent arg0) {
+    				}
+    	        	
+    	        });
+    	        
+    	        // "Von" (From) Text Field for starting point
+    	        JFormattedTextField formattedTextField = new JFormattedTextField();
+    	        formattedTextField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    	        formattedTextField.setBackground(SystemColor.inactiveCaptionBorder);
+    	        formattedTextField.setHorizontalAlignment(SwingConstants.CENTER);
+    	        formattedTextField.setBounds(845, 809, 113, 41);
+    	        panel.add(formattedTextField);
+    	       
+
+    	        // "Nach" (To) Text Field for destination point
+    	        JFormattedTextField formattedTextField_1 = new JFormattedTextField();
+    	        formattedTextField_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    	        formattedTextField_1.setBackground(SystemColor.inactiveCaptionBorder);
+    	        formattedTextField_1.setHorizontalAlignment(SwingConstants.CENTER);
+    	        formattedTextField_1.setBounds(968, 809, 113, 41);
+    	        panel.add(formattedTextField_1);
+    	        
+    	        // "Von" (From) Label
+    	        JLabel lblNewLabel = new JLabel("Von");
+    	        lblNewLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    	        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    	        lblNewLabel.setBounds(845, 784, 113, 14);
+    	        panel.add(lblNewLabel);
+    	        lblNewLabel.setText("5000");
+    	        Routepanel.vonField = formattedTextField;
+
+    	        // "Nach" (To) Label
+    	        JLabel lblNewLabel_1 = new JLabel("Nach");
+    	        lblNewLabel_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    	        lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+    	        lblNewLabel_1.setBounds(968, 784, 113, 14);
+    	        panel.add(lblNewLabel_1);
+    	        Routepanel.nachField = formattedTextField_1;
+
+    	        
+
+    	        
+    	        // Text Panel with instructions/help (in German)
+    	        JTextPane textPane = new JTextPane();
+    	        textPane.setEditable(false);
+    	        // Korrektur der Umlaute
+    	        textPane.setText("Geben Sie im Feld \"Von\" ein, von wo Sie die Wegführung starten möchten. Geben Sie im Feld \"Nach\" ein, wohin Sie gelangen wollen. Drücken Sie danach \"Wegfindung starten\", um die Wegführung anzeigen zu lassen.");
+    	        textPane.setBackground(SystemColor.info);
+    	        textPane.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+    	        textPane.setBounds(309, 809, 475, 71);
+    	        panel.add(textPane);
+    	        
+    	        
+    	       
+    	        JButton bSetmark = new JButton("Markieren"); 
+                bSetmark.setFont(new Font("Segoe UI Symbol", Font.BOLD, 13));
+                bSetmark.setBackground(SystemColor.textHighlight);
+                bSetmark.setBounds(10, 11, 160, 33);
+    	        panel.add(bSetmark);
+    	        
+    	        // activate marking for blocking floors or rooms
+    	        bSetmark.addActionListener(new ActionListener() {
+    	        	public void actionPerformed(ActionEvent e) {
+    	        		Routepanel.ismarkin = true;
+    	        	};
+    	        });
+    	        JButton bBack = new JButton("Zurück"); 
+    	        bBack.setFont(new Font("Segoe UI Symbol", Font.BOLD, 13));
+    	        bBack.setBackground(SystemColor.textHighlight);
+    	        bBack.setBounds(10, 50, 160, 33);
+    	        panel.add(bBack);
+    	        
+    	        // activate marking for blocking floors or rooms
+    	        bBack.addActionListener(new ActionListener() {
+    	        	public void actionPerformed(ActionEvent e) {
+    	        		panel.dispose();
+    	        	};
+    	        });
+    	        
+
+    	        // Click listener for the "Von" (From) text field to display the numeric keypad
+    	        formattedTextField.addMouseListener(new MouseAdapter() {
+    	            @Override
+    	            public void mouseClicked(MouseEvent e) {
+    	                showNumericKeypad(formattedTextField); // Show keypad for "From" field
+    	            }
+    	        });
+
+    	        // Click listener for the "Nach" (To) text field to display the numeric keypad
+    	        formattedTextField_1.addMouseListener(new MouseAdapter() {
+    	            @Override
+    	            public void mouseClicked(MouseEvent e) {
+    	                showNumericKeypad(formattedTextField_1); // Show keypad for "To" field
+    	            }
+    	        });
+    	        
+				return panel;
+			
+    	  
+    	       
+  }
+    /**
+     * Creates the User Management panel, including input fields, buttons, and a table
+     * for managing users (add, update, delete).
+     * @return A {@link JPanel} configured for user management.
+     */
+    private JPanel createUserManagementPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(new Color(240, 242, 245));
+       
+
+        // Input Panel
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBackground(Color.WHITE);
+        inputPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(15, 15, 15, 15)));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel usernameLabel = new JLabel("Benutzername:");
+        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        usernameField = new JTextField(20);
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 14));
+        usernameField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 5, 5, 5)));
+        usernameField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new CustomKeyboard(usernameField);
+            }
+        });
+
+        JLabel passwordLabel = new JLabel("Passwort:");
+        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordField = new JPasswordField(20);
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 5, 5, 5)));
+
+        passwordField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new CustomKeyboard(passwordField);
+            }
+        });
+
+        JLabel roleLabel = new JLabel("Rolle:");
+        roleLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        String[] roles = {"Admin", "Mitarbeiter"};
+        roleComboBox = new JComboBox<>(roles);
+        roleComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputPanel.add(usernameLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(usernameField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        inputPanel.add(passwordLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(passwordField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        inputPanel.add(roleLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(roleComboBox, gbc);
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        buttonPanel.setBackground(new Color(240, 242, 245));
+        addUserButton = createStyledButton("Hinzufügen", new Color(46, 204, 113), "add.png");
+        updateUserButton = createStyledButton("Aktualisieren", new Color(52, 152, 219), "update.png");
+        deleteUserButton = createStyledButton("Löschen", new Color(231, 76, 60), "delete.png");
+        clearUserButton = createStyledButton("Zurücksetzen", new Color(149, 165, 166), "clear.png");
+        buttonPanel.add(addUserButton);
+        buttonPanel.add(updateUserButton);
+        buttonPanel.add(deleteUserButton);
+        buttonPanel.add(clearUserButton);
+
+        // Table
+        String[] columns = {"Benutzername", "Passwort", "Rolle"}; // Column names in German
+        DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        userTable = new JTable(tableModel);
+        userTable.setRowHeight(30);
+        userTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        userTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        userTable.getTableHeader().setBackground(new Color(26, 36, 47));
+        userTable.getTableHeader().setForeground(Color.BLACK);
+        userTable.setGridColor(new Color(200, 200, 200));
+        userTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        userTable.setIntercellSpacing(new Dimension(10, 10));
+        refreshUserTable();
+        JScrollPane tableScrollPane = new JScrollPane(userTable);
+        tableScrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+
+        // User Management Layout
+        panel.add(inputPanel, BorderLayout.NORTH);
+        panel.add(tableScrollPane, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Button Actions
+        addUserButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String username = usernameField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
+            String role = (String) roleComboBox.getSelectedItem();
+            if (!username.isEmpty() && !password.isEmpty()) {
+                try {
+                    adminCal.addUser(username, password, role);
+                    System.out.println("Benutzer " + loggedInUser + " hat Benutzer hinzugefügt: " + username);
+                    refreshUserTable();
+                    clearUserFields();
+                } catch (IllegalArgumentException ex) {
+                    JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        updateUserButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                String oldUsername = userTable.getValueAt(selectedRow, 0).toString();
+                String username = usernameField.getText().trim();
+                String password = new String(passwordField.getPassword()).trim();
+                String role = (String) roleComboBox.getSelectedItem();
+                if (!username.isEmpty() && !password.isEmpty()) {
+                    try {
+                        adminCal.updateUser(oldUsername, username, password, role);
+                        System.out.println("Benutzer " + loggedInUser + " hat Benutzer aktualisiert: " + username);
+                        refreshUserTable();
+                        clearUserFields();
+                    } catch (IllegalArgumentException ex) {
+                        JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Benutzer zum Aktualisieren aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        deleteUserButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                String username = userTable.getValueAt(selectedRow, 0).toString();
+
+
+                adminCal.deleteUser(username);
+                System.out.println("Benutzer " + loggedInUser + " hat Benutzer gelöscht: " + username);
+                refreshUserTable();
+                clearUserFields();
+            }
+        });
+
+        clearUserButton.addActionListener(e -> clearUserFields());
+
+        userTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = userTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                String username = userTable.getValueAt(selectedRow, 0).toString();
+                Object[] user = adminCal.getUserByUsername(username);
+                if (user != null) {
+                    usernameField.setText((String) user[0]);
+                    passwordField.setText((String) user[1]); // Real password
+                    roleComboBox.setSelectedItem((String) user[2]);
+                }
+            }
+        });
+
+        return panel;
+    }
+
+    /**
+     * Creates the Room Management panel, including input fields, buttons, and a table
+     * for managing room details (update designation and locked status).
+     * @return A {@link JPanel} configured for room management.
+     */
+    private JPanel createRoomManagementPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(new Color(240, 242, 245));
+
+        // Input Panel
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBackground(Color.WHITE);
+        inputPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(15, 15, 15, 15)));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel idLabel = new JLabel("Raum-ID:");
+        idLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        roomIdField = new JTextField(20);
+        roomIdField.setFont(new Font("Arial", Font.PLAIN, 14));
+        roomIdField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 5, 5, 5)));
+
+        roomIdField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new CustomKeyboard(roomIdField);
+            }
+        });
+
+        JLabel designationLabel = new JLabel("Bezeichnung:");
+        designationLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        roomDesignationField = new JTextField(20);
+        roomDesignationField.setFont(new Font("Arial", Font.PLAIN, 14));
+        roomDesignationField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 5, 5, 5)));
+
+        roomDesignationField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new CustomKeyboard(roomDesignationField);
+            }
+        });
+
+        JLabel lockedLabel = new JLabel("Gesperrt:");
+        lockedLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        lockedCheckBox = new JCheckBox();
+        lockedCheckBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        lockedCheckBox.setBackground(Color.WHITE);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputPanel.add(idLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(roomIdField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        inputPanel.add(designationLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(roomDesignationField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        inputPanel.add(lockedLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(lockedCheckBox, gbc);
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        buttonPanel.setBackground(new Color(240, 242, 245));
+        updateRoomButton = createStyledButton("Aktualisieren", new Color(52, 152, 219), "update.png");
+        clearRoomButton = createStyledButton("Zurücksetzen", new Color(149, 165, 166), "clear.png");
+        buttonPanel.add(updateRoomButton);
+        buttonPanel.add(clearRoomButton);
+
+        // Table
+        String[] columns = {"ID", "Bezeichnung", "Gesperrt"}; // Column names in German
+        DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        roomTable = new JTable(tableModel);
+        roomTable.setRowHeight(30);
+        roomTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        roomTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        roomTable.getTableHeader().setBackground(new Color(26, 36, 47));
+        roomTable.getTableHeader().setForeground(Color.BLACK);
+        roomTable.setGridColor(new Color(200, 200, 200));
+        roomTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        roomTable.setIntercellSpacing(new Dimension(10, 10));
+        refreshRoomTable();
+        JScrollPane tableScrollPane = new JScrollPane(roomTable);
+        tableScrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+
+        // Room Management Layout
+        panel.add(inputPanel, BorderLayout.NORTH);
+        panel.add(tableScrollPane, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        updateRoomButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int selectedRow = roomTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                int oldId = Integer.parseInt(roomTable.getValueAt(selectedRow, 0).toString());
+                String idStr = roomIdField.getText().trim();
+                String designation = roomDesignationField.getText().trim();
+                boolean locked = lockedCheckBox.isSelected();
+                if (!idStr.isEmpty() && !designation.isEmpty()) {
+                    try {
+                        int newId = Integer.parseInt(idStr);
+                        if (newId <= 0) throw new IllegalArgumentException("Raum-ID muss eine positive Ganzzahl sein.");
+                        adminCal.updateRoom(oldId, newId, designation, locked);
+                        System.out.println("Benutzer " + loggedInUser + " hat Raum aktualisiert: " + designation);
+                        refreshRoomTable();
+                        clearRoomFields();
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Raum-ID muss eine gültige Zahl sein.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    } catch (IllegalArgumentException ex) {
+                        JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Raum zum Aktualisieren aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+
+        clearRoomButton.addActionListener(e -> clearRoomFields());
+
+        roomTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = roomTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                roomIdField.setText(roomTable.getValueAt(selectedRow, 0).toString());
+                roomDesignationField.setText(roomTable.getValueAt(selectedRow, 1).toString());
+                lockedCheckBox.setSelected((Boolean) roomTable.getValueAt(selectedRow, 2));
+            }
+        });
+
+        return panel;
+    }
+
+    /**
+     * Creates the Floor Management panel, including input fields, buttons, and a table
+     * for managing floor details (update ID and locked status).
+     * @return A {@link JPanel} configured for floor management.
+     */
+    private JPanel createFloorManagementPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(new Color(240, 242, 245));
+
+        // Input Panel
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        inputPanel.setBackground(Color.WHITE);
+        inputPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(15, 15, 15, 15)));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel idLabel = new JLabel("Flur-ID:");
+        idLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JTextField floorIdField = new JTextField(20);
+        floorIdField.setFont(new Font("Arial", Font.PLAIN, 14));
+        floorIdField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 5, 5, 5)));
+
+        JLabel lockedLabel = new JLabel("Gesperrt:");
+        lockedLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JCheckBox lockedCheckBox = new JCheckBox();
+        lockedCheckBox.setFont(new Font("Arial", Font.PLAIN, 14));
+        lockedCheckBox.setBackground(Color.WHITE);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        inputPanel.add(idLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(floorIdField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        inputPanel.add(lockedLabel, gbc);
+        gbc.gridx = 1;
+        inputPanel.add(lockedCheckBox, gbc);
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        buttonPanel.setBackground(new Color(240, 242, 245));
+        JButton updateFloorButton = createStyledButton("Aktualisieren", new Color(52, 152, 219), "update.png");
+        JButton clearFloorButton = createStyledButton("Zurücksetzen", new Color(149, 165, 166), "clear.png");
+
+        buttonPanel.add(updateFloorButton);
+        buttonPanel.add(clearFloorButton);
+
+        // Table
+        String[] columns = {"ID", "Gesperrt"}; // Column names in German
+        DefaultTableModel tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        JTable floorTable = new JTable(tableModel);
+        floorTable.setRowHeight(30);
+        floorTable.setFont(new Font("Arial", Font.PLAIN, 14));
+        floorTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        floorTable.getTableHeader().setBackground(new Color(26, 36, 47));
+        floorTable.getTableHeader().setForeground(Color.BLACK);
+        floorTable.setGridColor(new Color(200, 200, 200));
+        floorTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        floorTable.setIntercellSpacing(new Dimension(10, 10));
+        refreshFloorTable(tableModel);
+        JScrollPane tableScrollPane = new JScrollPane(floorTable);
+        tableScrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+
+        // Floor Management Layout
+        panel.add(inputPanel, BorderLayout.NORTH);
+        panel.add(tableScrollPane, BorderLayout.CENTER);
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Button Actions
+        updateFloorButton.addActionListener(e -> {
+            if (!promptUserPassword()) {
+                JOptionPane.showMessageDialog(this, "Falsches Benutzerpasswort.", "Authentifizierung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int selectedRow = floorTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                int oldId = Integer.parseInt(floorTable.getValueAt(selectedRow, 0).toString());
+                String idStr = floorIdField.getText().trim();
+                boolean locked = lockedCheckBox.isSelected();
+                if (!idStr.isEmpty()) {
+                    try {
+                        int newId = Integer.parseInt(idStr);
+                        adminCal.updateFloor(oldId, newId, locked);
+                        refreshFloorTable(tableModel);
+                        clearFloorFields(floorIdField, lockedCheckBox);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Flur-ID muss eine gültige Zahl sein.", "Fehler", JOptionPane.ERROR_MESSAGE);
+                    } catch (IllegalArgumentException ex) {
+                        JOptionPane.showMessageDialog(this, "Fehler: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Bitte füllen Sie alle Felder aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Bitte wählen Sie einen Flur zum Aktualisieren aus", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+
+        clearFloorButton.addActionListener(e -> clearFloorFields(floorIdField, lockedCheckBox));
+
+        floorTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = floorTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                floorIdField.setText(floorTable.getValueAt(selectedRow, 0).toString());
+                lockedCheckBox.setSelected((Boolean) floorTable.getValueAt(selectedRow, 1));
+            }
+        });
+
+        return panel;
+    }
+
+
+    /**
+     * Prompts the user for their password in a separate dialog for authentication
+     * before sensitive operations.
+     * @return {@code true} if the user's password is successfully verified, {@code false} otherwise.
+     */
+    private boolean promptUserPassword() {
+        // New JFrame for password query
+        JFrame frame = new JFrame("Benutzer-Authentifizierung"); // Dialog title in German
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        // Password field
+        JPasswordField passwordField = new JPasswordField(20);
+        passwordField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                new CustomKeyboard(passwordField);
+            }
+        });
+
+        // Panel for input
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Ihr Passwort eingeben:")); // Label in German
+        panel.add(passwordField);
+        frame.add(panel, BorderLayout.CENTER);
+
+        // Button Panel
+        JPanel buttonPanel = new JPanel();
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Abbrechen"); // Cancel in German
+
+        // Action for OK button
+        okButton.addActionListener(e -> {
+            String enteredPassword = new String(passwordField.getPassword());
+            boolean valid = adminCal.verifyPassword(loggedInUser, enteredPassword);
+            System.out.println("Passwortprüfung für " + loggedInUser + ": " + (valid ? "Erfolgreich" : "Fehlgeschlagen"));
+            // Note: The original logic here immediately disposes the frame without
+            // waiting for a return value, making the return value of the *promptUserPassword*
+            // method effectively useless based on the original implementation (okButton.isEnabled()).
+            // The actual validation check should set a flag or use a modal dialog.
+            frame.dispose(); // Close the JFrame
+        });
+
+        // Action for Cancel button
+        cancelButton.addActionListener(e -> frame.dispose());
+
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        // JFrame settings
+        frame.pack();
+        frame.setLocationRelativeTo(this);
+        frame.setVisible(true);
+
+        // Return based on the result
+        return okButton.isEnabled(); // Placeholder: assumes button state determines return, which is incorrect for a modal-like input. Needs refactoring for proper authentication flow.
+    }
+
+    /**
+     * Creates a standardized navigation button for the sidebar.
+     * @param text The text label for the button.
+     * @return A styled {@link JButton}.
+     */
+    private JButton createNavButton(String text) {
+        JButton button = new JButton(text);
+        button.setBackground(new Color(26, 36, 47));
+        button.setForeground(Color.black); // Original code used Color.black here despite setting foreground to Color.WHITE for the logo, which might be a typo. Sticking to Color.black as written.
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                if (button.getBackground().equals(new Color(26, 36, 47))) {
+                    button.setBackground(new Color(46, 56, 67));
+                }
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (button.getBackground().equals(new Color(46, 56, 67))) {
+                    button.setBackground(new Color(26, 36, 47));
+                }
+            }
+        });
+        return button;
+    }
+
+    // --- Helper Methods (Assumed based on usage) ---
+
+    /**
+     * Sets the specified navigation button as active, highlighting it.
+     * Resets the background of all other navigation buttons.
+     * @param activeButton The button to set as active.
+     */
+    private void setActiveButton(JButton activeButton) {
+        // Reset all buttons to default color
+        homeButton.setBackground(new Color(26, 36, 47));
+        userManagementButton.setBackground(new Color(26, 36, 47));
+        roomManagementButton.setBackground(new Color(26, 36, 47));
+        floorManagementButton.setBackground(new Color(26, 36, 47));
+        helpButton.setBackground(new Color(26, 36, 47));
+        // SignOut button usually remains default color
+
+        // Set the active button's color
+        if (activeButton != signOutButton) {
+            activeButton.setBackground(new Color(46, 204, 113));
+        }
+    }
+
+    /**
+     * Creates a stylized button for actions.
+     * @param text The button text.
+     * @param color The background color.
+     * @param iconName The name of the icon file (image loading is omitted in original code, but method kept for structure).
+     * @return A styled {@link JButton}.
+     */
+    private JButton createStyledButton(String text, Color color, String iconName) {
+        JButton button = new JButton(text);
+        button.setBackground(color);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        // Image logic would go here, e.g., button.setIcon(new ImageIcon(getClass().getResource("/images/" + iconName)));
+        return button;
+    }
+
+    /**
+     * Refreshes the user table with the latest data from the controller.
+     */
+    private void refreshUserTable() {
+        DefaultTableModel model = (DefaultTableModel) userTable.getModel();
+        model.setRowCount(0); // Clear existing data
+        List<Object[]> users = adminCal.getAllUsers();
+        for (Object[] user : users) {
+            // Note: The password (user[1]) is displayed here, which is generally bad practice.
+            // It should ideally be masked or omitted in a real application.
+            model.addRow(user);
+        }
+    }
+
+    /**
+     * Clears the input fields for user management.
+     */
+    private void clearUserFields() {
+        usernameField.setText("");
+        passwordField.setText("");
+        roleComboBox.setSelectedIndex(0);
+        userTable.clearSelection();
+    }
+
+    /**
+     * Refreshes the room table with the latest data from the controller.
+     */
+    private void refreshRoomTable() {
+        DefaultTableModel model = (DefaultTableModel) roomTable.getModel();
+        model.setRowCount(0); // Clear existing data
+        List<Object[]> rooms = adminCal.getAllRooms();
+        for (Object[] room : rooms) {
+            model.addRow(room);
+        }
+    }
+
+    /**
+     * Clears the input fields for room management.
+     */
+    private void clearRoomFields() {
+        roomIdField.setText("");
+        roomDesignationField.setText("");
+        lockedCheckBox.setSelected(false);
+        roomTable.clearSelection();
+    }
+
+    /**
+     * Refreshes the floor table with the latest data from the controller.
+     * @param tableModel The {@link DefaultTableModel} for the floor table.
+     */
+    private void refreshFloorTable(DefaultTableModel tableModel) {
+        tableModel.setRowCount(0); // Clear existing data
+        List<Object[]> floors = adminCal.getAllFloors();
+        for (Object[] floor : floors) {
+            tableModel.addRow(floor);
+        }
+    }
+
+    /**
+     * Clears the input fields for floor management.
+     * @param floorIdField The text field for the floor ID.
+     * @param lockedCheckBox The checkbox for the locked status.
+     */
+    private void clearFloorFields(JTextField floorIdField, JCheckBox lockedCheckBox) {
+        floorIdField.setText("");
+        lockedCheckBox.setSelected(false);
+        // Note: The floorTable is a local variable in createFloorManagementPanel and is not accessible here
+        // The original code only cleared the input fields.
+    }
+    
+   private void showNumericKeypad(JFormattedTextField targetTextField) {
+	   JFrame frame = new JFrame();
+       // New modal dialog window for the numeric keypad
+       JDialog keypadDialog = new JDialog(frame, "Zahleneingabe", true); // "Numeric Input"
+       keypadDialog.setSize(300, 400);
+       keypadDialog.setLocationRelativeTo(frame);
+       keypadDialog.getContentPane().setLayout(new BorderLayout());
+
+       // Input field in the dialog (read-only, displays what is being typed)
+       JTextField inputField = new JTextField();
+       inputField.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+       inputField.setHorizontalAlignment(SwingConstants.CENTER);
+       inputField.setEditable(false);
+       keypadDialog.getContentPane().add(inputField, BorderLayout.NORTH);
+
+       // Panel for the number buttons
+       JPanel buttonPanel = new JPanel();
+       buttonPanel.setLayout(new GridLayout(4, 3, 5, 5));
+       keypadDialog.getContentPane().add(buttonPanel, BorderLayout.CENTER);
+
+       // Number buttons (1-9)
+       for (int i = 1; i <= 9; i++) {
+           JButton btn = new JButton(String.valueOf(i));
+           btn.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+           btn.setBackground(SystemColor.textHighlight);
+           btn.addActionListener(new ActionListener() {
+               public void actionPerformed(ActionEvent e) {
+                   // Limit input length to 4 characters
+                   if (inputField.getText().length() < 4) {
+                       inputField.setText(inputField.getText() + btn.getText());
+                   }
+               }
+           });
+           buttonPanel.add(btn);
+       }
+
+       // "0" Button
+       JButton btn0 = new JButton("0");
+       btn0.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+     
+       btn0.setBackground(SystemColor.textHighlight);
+       btn0.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+           	if (inputField.getText().length() < 4) {
+                   inputField.setText(inputField.getText() + "0");
+               }
+           }
+       });
+       buttonPanel.add(btn0);
+
+       // Clear Button (Text in German: "Löschen")
+       JButton btnClear = new JButton("Löschen"); 
+       btnClear.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+      
+       btnClear.setBackground(SystemColor.textHighlight);
+       btnClear.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               // Deletes the last character from the input field
+               String text = inputField.getText();
+               if (text.length() > 0) {
+                   inputField.setText(text.substring(0, text.length() - 1));
+               }
+           }
+       });
+       buttonPanel.add(btnClear);
+
+       // Confirm Button (Text in German: "OK")
+       JButton btnOk = new JButton("OK");
+       btnOk.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+       btnOk.setBackground(SystemColor.textHighlight);
+       btnOk.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               // Apply the entered value to the target field and close the dialog
+               Routepanel.addPoint(inputField.getText(), targetTextField); // Calls a method in RouteCal to handle point logic
+               keypadDialog.dispose();
+           }
+       });
+       buttonPanel.add(btnOk);
+
+       // Make the dialog visible
+       keypadDialog.setVisible(true);
+   }
+
+}

@@ -210,7 +210,6 @@ public class AdminGUI extends JFrame {
     	        
     	        // Button "Wegfindung Starten" (Start Pathfinding)
     	        JButton btnNewButton_1 = new JButton("Wegfindung Starten");
-    	        btnNewButton_1.setForeground(SystemColor.textHighlightText);
     	        btnNewButton_1.setBackground(SystemColor.textHighlight);
     	        btnNewButton_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));
     	        btnNewButton_1.setBounds(881, 861, 162, 33);
@@ -341,6 +340,9 @@ public class AdminGUI extends JFrame {
     	        formattedTextField.setHorizontalAlignment(SwingConstants.CENTER);
     	        formattedTextField.setBounds(845, 809, 113, 41);
     	        panel.add(formattedTextField);
+    	        if(formattedTextField.equals(null)) {
+    	        	formattedTextField.setValue("5000");
+    	        }
 
     	        // "Nach" (To) Text Field for destination point
     	        JFormattedTextField formattedTextField_1 = new JFormattedTextField();
@@ -382,7 +384,6 @@ public class AdminGUI extends JFrame {
     	        
     	       
     	        JButton bSetmark = new JButton("Markieren"); 
-                bSetmark.setForeground(SystemColor.textHighlightText);
                 bSetmark.setFont(new Font("Segoe UI Symbol", Font.BOLD, 13));
                 bSetmark.setBackground(SystemColor.textHighlight);
                 bSetmark.setBounds(10, 11, 160, 33);
@@ -392,6 +393,18 @@ public class AdminGUI extends JFrame {
     	        bSetmark.addActionListener(new ActionListener() {
     	        	public void actionPerformed(ActionEvent e) {
     	        		Routepanel.ismarkin = true;
+    	        	};
+    	        });
+    	        JButton bBack = new JButton("Zurück"); 
+    	        bBack.setFont(new Font("Segoe UI Symbol", Font.BOLD, 13));
+    	        bBack.setBackground(SystemColor.textHighlight);
+    	        bBack.setBounds(10, 50, 160, 33);
+    	        panel.add(bBack);
+    	        
+    	        // activate marking for blocking floors or rooms
+    	        bBack.addActionListener(new ActionListener() {
+    	        	public void actionPerformed(ActionEvent e) {
+    	        		panel.dispose();
     	        	};
     	        });
     	        
@@ -1110,7 +1123,6 @@ public class AdminGUI extends JFrame {
        for (int i = 1; i <= 9; i++) {
            JButton btn = new JButton(String.valueOf(i));
            btn.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-           btn.setForeground(SystemColor.textHighlightText);
            btn.setBackground(SystemColor.textHighlight);
            btn.addActionListener(new ActionListener() {
                public void actionPerformed(ActionEvent e) {
@@ -1126,7 +1138,7 @@ public class AdminGUI extends JFrame {
        // "0" Button
        JButton btn0 = new JButton("0");
        btn0.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-       btn0.setForeground(SystemColor.textHighlightText);
+     
        btn0.setBackground(SystemColor.textHighlight);
        btn0.addActionListener(new ActionListener() {
            public void actionPerformed(ActionEvent e) {
@@ -1140,7 +1152,7 @@ public class AdminGUI extends JFrame {
        // Clear Button (Text in German: "Löschen")
        JButton btnClear = new JButton("Löschen"); 
        btnClear.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-       btnClear.setForeground(SystemColor.textHighlightText);
+      
        btnClear.setBackground(SystemColor.textHighlight);
        btnClear.addActionListener(new ActionListener() {
            public void actionPerformed(ActionEvent e) {
@@ -1156,7 +1168,6 @@ public class AdminGUI extends JFrame {
        // Confirm Button (Text in German: "OK")
        JButton btnOk = new JButton("OK");
        btnOk.setFont(new Font("Segoe UI", Font.PLAIN, 18));
-       btnOk.setForeground(SystemColor.textHighlightText);
        btnOk.setBackground(SystemColor.textHighlight);
        btnOk.addActionListener(new ActionListener() {
            public void actionPerformed(ActionEvent e) {

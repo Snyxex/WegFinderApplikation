@@ -192,7 +192,10 @@ public class MapGUI {
         formattedTextField.setHorizontalAlignment(SwingConstants.CENTER);
         formattedTextField.setBounds(845, 809, 113, 41);
         frame.getContentPane().add(formattedTextField);
-
+        if(formattedTextField.equals(null)) {
+        	formattedTextField.setValue("5000");
+        }
+        
         // "Nach" (To) Text field
         JFormattedTextField formattedTextField_1 = new JFormattedTextField();
         formattedTextField_1.setFont(new Font("Segoe UI", Font.PLAIN, 14));

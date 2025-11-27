@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"Alle Packages","u":"allpackages-index.html"},{"l":"com.wegapplikation.config"},{"l":"com.wegapplikation.config.controller"},{"l":"com.wegapplikation.config.model"},{"l":"com.wegapplikation.config.view"}];updateSearchResults();

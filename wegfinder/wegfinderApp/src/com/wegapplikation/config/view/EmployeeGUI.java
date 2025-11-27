@@ -178,6 +178,9 @@ public class EmployeeGUI {
         formattedTextField.setHorizontalAlignment(SwingConstants.CENTER);
         formattedTextField.setBounds(845, 809, 113, 41);
         frame.getContentPane().add(formattedTextField);
+        if(formattedTextField.equals(null)) {
+        	formattedTextField.setValue("5000");
+        }
 
         // "Nach" (To) Text Field for destination point
         JFormattedTextField formattedTextField_1 = new JFormattedTextField();
