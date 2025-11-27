@@ -1,4 +1,8 @@
 
+<<<<<<< HEAD
+=======
+# Eclipse workspace/project files
+>>>>>>> f5d08438db46c4521d3f8cf62baec81eb5769b33
 /.metadata/
 **/.metadata/
 **/.log
@@ -27,7 +31,7 @@ build/
 *.iml
 
 # OS
-.DS_Store
+.DS_Store/
 Thumbs.db
 
 # Gradle/Maven
@@ -38,5 +42,10 @@ dependency-reduced-pom.xml
 # Logs
 *.log
 
+<<<<<<< HEAD
 # temporary
 *.tmp
+=======
+# Other
+*.tmp
+>>>>>>> f5d08438db46c4521d3f8cf62baec81eb5769b33
